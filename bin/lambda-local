@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+
+/*
+ * Local executor for Amazon Lambda function
+ */
+
+(function(){
+	var utils = require('../lib/utils.js');
+
+	// process opts
+	var program = require('commander');
+	program
+		.version('0.0.1')
+		.option('-l, --lambdapath [lambda file name]', 'Specify Lambda function file name.')
+		.option('-h, --handler [lambda-function handler](optional)', 'Lambda function handler name.')
+		.option('-e, --eventpath [event data file name]', 'Specify event data file name.')
+		.parse(process.argv);
+
+	var eventPath = program.eventpath;
+	var lambdaPath = program.lambdapath;
+	var lambdaHandler = program.handler;
+	if (!lambdaPath || !eventPath) {
+		program.help();
+	}
+
+	// default handler name
+	if (!lambdaHandler) {
+		lambdaHandler = "handler";
+	}
+
+	var lambdaAbsolutePath = utils.getAbsolutePath(lambdaPath);
+	var lambdaFunc = require(lambdaAbsolutePath);
+
+	// load stubs
+	var eventAbsolutePath = utils.getAbsolutePath(eventPath);
+	var eventStub = require(eventAbsolutePath);
+	var contextStub = require('../lib/context-stub.js');
+
+	// execute lambda function
+	lambdaFunc[lambdaHandler](eventStub, contextStub);
+
+})();
+

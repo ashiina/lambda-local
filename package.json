@@ -1,0 +1,17 @@
+{
+  "name": "lambda-local",
+  "version": "0.0.1",
+  "description": "Commandline tool to run Lambda functions on your local machine.",
+  "author": "ashiina",
+  "engines": {
+    "node": ">=0.10"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1.6",
+    "commander": "^2.6.0"
+  },
+  "preferGlobal": true,
+  "bin": {
+    "lambda-local": "lambda-local.js"
+  }
+}

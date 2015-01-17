@@ -1,2 +1,37 @@
-# lambda-local
-Local executor for Amazon Lambda functions
+Lambda-local
+============
+
+Lambda-local lets you test Amazon Lambda functions on your local machine with stub data.  
+The `context` of the Lambda function is already loaded so you do not have to worry about it.  
+You can pass any `event` JSON object as you please.  
+
+Usage
+-----
+
+```bash
+# Usage
+lambda-local -l index.js -h handler -e event-samples/s3-put.js 
+```
+
+About
+-----
+### Event data
+Event sample data are placed in `event-samples` folder - feel free to use the files in here, or create your own event data.  
+Event data are just JSON objects exported:  
+
+```js
+# Sample event data 
+module.exports = {
+	foo: "bar"
+};
+```
+
+### Context
+The `context` object has been directly extracted from the source visible when running an actual Lambda function on AWS. They may change the internals of this object, and Lambda-local does not guarantee that this will always be up-to-date with the actual context object. 
+
+
+License
+----------
+This library is released under the MIT license.
+
+

@@ -5,6 +5,14 @@ Lambda-local lets you test Amazon Lambda functions on your local machine with st
 The `context` of the Lambda function is already loaded so you do not have to worry about it.  
 You can pass any `event` JSON object as you please.  
 
+
+Install
+----
+```bash
+npm install -g lambda-local
+```
+
+
 Usage
 -----
 

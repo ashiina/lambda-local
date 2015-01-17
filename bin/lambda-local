@@ -12,8 +12,9 @@
 	program
 		.version('0.0.1')
 		.option('-l, --lambdapath [lambda file name]', 'Specify Lambda function file name.')
-		.option('-h, --handler [lambda-function handler](optional)', 'Lambda function handler name.')
 		.option('-e, --eventpath [event data file name]', 'Specify event data file name.')
+		.option('-h, --handler [lambda-function handler name](optional)', 'Lambda function handler name.')
+		.option('-t, --timeout [timeout seconds](optional)', 'Seconds until lambda function timeout.')
 		.parse(process.argv);
 
 	var eventPath = program.eventpath;
@@ -36,6 +37,17 @@
 	var eventAbsolutePath = utils.getAbsolutePath(eventPath);
 	var eventStub = require(eventAbsolutePath);
 	var contextStub = require('../lib/context-stub.js');
+
+	var timeoutMs;
+	if (program.timeout) {
+		timeoutMs = program.timeout * 1000;
+	} else {
+		timeoutMs = 3000;
+	}
+	setTimeout(function(){
+		console.log("Task timed out after "+(timeoutMs/1000).toFixed(2)+" seconds");
+		process.exit();
+	}, timeoutMs); 
 
 	// execute lambda function
 	lambdaFunc[lambdaHandler](eventStub, contextStub);

@@ -32,10 +32,10 @@
 	var lambdaAbsolutePath = utils.getAbsolutePath(lambdaPath);
 	var lambdaFunc = require(lambdaAbsolutePath);
 
-	// load stubs
+	// load event & context
 	var eventAbsolutePath = utils.getAbsolutePath(eventPath);
-	var eventStub = require(eventAbsolutePath);
-	var contextStub = require('../lib/context-stub.js');
+	var _event = require(eventAbsolutePath);
+	var _context = require('../lib/context.js');
 
 	var timeoutMs;
 	if (program.timeout) {
@@ -49,7 +49,7 @@
 	}, timeoutMs); 
 
 	// execute lambda function
-	lambdaFunc[lambdaHandler](eventStub, contextStub);
+	lambdaFunc[lambdaHandler](_event, _context);
 
 })();
 

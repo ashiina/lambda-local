@@ -1,7 +1,7 @@
 Lambda-local
 ============
 
-Lambda-local lets you test Amazon Lambda functions on your local machine with stub data.  
+Lambda-local lets you test Amazon Lambda functions on your local machine with sample event data.  
 The `context` of the Lambda function is already loaded so you do not have to worry about it.  
 You can pass any `event` JSON object as you please.  
 

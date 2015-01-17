@@ -10,7 +10,6 @@
 	// process opts
 	var program = require('commander');
 	program
-		.version('0.0.1')
 		.option('-l, --lambdapath [lambda file name]', 'Specify Lambda function file name.')
 		.option('-e, --eventpath [event data file name]', 'Specify event data file name.')
 		.option('-h, --handler [lambda-function handler name (optional)]', 'Lambda function handler name. Default is "handler".')

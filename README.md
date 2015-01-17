@@ -15,6 +15,12 @@ lambda-local -l index.js -h handler -e event-samples/s3-put.js
 
 About
 -----
+### Command
+*    -l, --lambdapath [lambda file name]                     Specify Lambda function file name.
+*    -e, --eventpath [event data file name]                  Specify event data file name.
+*    -h, --handler [lambda-function handler name](optional)  Lambda function handler name.
+*    -t, --timeout [timeout seconds](optional)               Seconds until lambda function timeout.
+
 ### Event data
 Event sample data are placed in `event-samples` folder - feel free to use the files in here, or create your own event data.  
 Event data are just JSON objects exported:  

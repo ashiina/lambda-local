@@ -28,6 +28,7 @@
 		lambdaHandler = "handler";
 	}
 
+	// load lambda function
 	var lambdaAbsolutePath = utils.getAbsolutePath(lambdaPath);
 	var lambdaFunc = require(lambdaAbsolutePath);
 

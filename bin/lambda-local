@@ -13,8 +13,8 @@
 		.version('0.0.1')
 		.option('-l, --lambdapath [lambda file name]', 'Specify Lambda function file name.')
 		.option('-e, --eventpath [event data file name]', 'Specify event data file name.')
-		.option('-h, --handler [lambda-function handler name](optional)', 'Lambda function handler name.')
-		.option('-t, --timeout [timeout seconds](optional)', 'Seconds until lambda function timeout.')
+		.option('-h, --handler [lambda-function handler name (optional)]', 'Lambda function handler name. Default is "handler".')
+		.option('-t, --timeout [timeout seconds (optional)]', 'Seconds until lambda function timeout. Default is 3 seconds.')
 		.parse(process.argv);
 
 	var eventPath = program.eventpath;

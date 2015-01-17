@@ -27,7 +27,12 @@ module.exports = {
 ```
 
 ### Context
-The `context` object has been directly extracted from the source visible when running an actual Lambda function on AWS. They may change the internals of this object, and Lambda-local does not guarantee that this will always be up-to-date with the actual context object. 
+The `context` object has been directly extracted from the source visible when running an actual Lambda function on AWS. 
+They may change the internals of this object, and Lambda-local does not guarantee that this will always be up-to-date with the actual context object. 
+
+### AWS-SDK
+Since the Amazon Lambda can load the AWS-SDK npm without installation, Lambda-local has also packaged AWS-SDK in its dependencies.
+If you want to use this, please manually `export NODE_PATH='/path/to/lambda-local/node_modules'`.
 
 
 License

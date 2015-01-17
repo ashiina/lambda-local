@@ -38,7 +38,11 @@ They may change the internals of this object, and Lambda-local does not guarante
 
 ### AWS-SDK
 Since the Amazon Lambda can load the AWS-SDK npm without installation, Lambda-local has also packaged AWS-SDK in its dependencies.
-If you want to use this, please manually `export NODE_PATH='/path/to/lambda-local/node_modules'`.
+If you want to use this, please manually add Lambda-local's path to NODE_PATH with the following:  
+
+```bash
+export NODE_PATH='/path/to/lambda-local/node_modules'
+```
 
 
 License

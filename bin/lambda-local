@@ -3,7 +3,6 @@
 /*
  * Local executor for Amazon Lambda function
  */
-
 (function(){
 	var utils = require('../lib/utils.js');
 
@@ -49,6 +48,9 @@
 	}, timeoutMs); 
 
 	// execute lambda function
+	console.log("Logs");
+	console.log("----");
+	console.log("START RequestId: " + _context.invokeid);
 	lambdaFunc[lambdaHandler](_event, _context);
 
 })();

@@ -51,7 +51,8 @@
 	console.log("Logs");
 	console.log("----");
 	console.log("START RequestId: " + _context.invokeid);
+	
+	_context.invoke(timeoutMs);
 	lambdaFunc[lambdaHandler](_event, _context);
 
 })();
-

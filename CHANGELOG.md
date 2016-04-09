@@ -1,5 +1,8 @@
 # ChangeLog
 
+## 0.0.9 (2016/4/9)
+ * Fixed package.json information for npm
+
 ## 0.0.8 (2016/4/9)
  * Added support for all propertiesin the Context object. 
    Supporting everything in here:

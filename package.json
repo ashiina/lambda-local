@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "aws-sdk": "^2.1.6",
-    "commander": "^2.6.0"
+    "commander": "^2.6.0",
+    "mocha": "^2.4.5"
   },
   "preferGlobal": true,
   "bin": {

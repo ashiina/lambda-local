@@ -47,11 +47,17 @@
 		process.exit();
 	}, timeoutMs); 
 
+	_context._initialize({
+		functionName: lambdaHandler,
+		awsRequestId: _context.createInvokeId,
+		timeoutMs: timeoutMs
+	});
+
 	// execute lambda function
 	console.log("Logs");
 	console.log("----");
-	console.log("START RequestId: " + _context.invokeid);
+	console.log("START RequestId: " + _context.awsRequestId);
+
 	lambdaFunc[lambdaHandler](_event, _context);
 
 })();
-

@@ -49,7 +49,7 @@
 
 	_context._initialize({
 		functionName: lambdaHandler,
-		awsRequestId: _context.invokeid,
+		awsRequestId: _context.createInvokeId,
 		timeoutMs: timeoutMs
 	});
 

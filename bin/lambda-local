@@ -45,7 +45,7 @@
 	setTimeout(function(){
 		console.log("Task timed out after "+(timeoutMs/1000).toFixed(2)+" seconds");
 		process.exit();
-	}, timeoutMs); 
+	}, timeoutMs);
 
 	_context._initialize({
 		functionName: lambdaHandler,
@@ -53,11 +53,26 @@
 		timeoutMs: timeoutMs
 	});
 
+  const callback = function(err, result) {
+		console.log("END");
+		console.log("\n");
+		if (err !== null){
+			console.log("Error");
+			console.log("------");
+			utils.outputJSON(err);
+		}
+		else {
+			console.log("Message");
+			console.log("------");
+			utils.outputJSON(result);
+		}
+		process.exit();
+	}
 	// execute lambda function
 	console.log("Logs");
 	console.log("----");
 	console.log("START RequestId: " + _context.awsRequestId);
 
-	lambdaFunc[lambdaHandler](_event, _context);
+	lambdaFunc[lambdaHandler](_event, _context, callback);
 
 })();

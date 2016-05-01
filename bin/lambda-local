@@ -52,6 +52,8 @@
 		awsRequestId: _context.createInvokeId,
 		timeoutMs: timeoutMs
 	});
+    // export the LAMBDA_TASK_ROOT enviroment variable
+    process.env['LAMBDA_TASK_ROOT'] = process.cwd();
 
 	// execute lambda function
 	console.log("Logs");

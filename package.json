@@ -1,17 +1,33 @@
 {
   "name": "lambda-local",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "description": "Commandline tool to run Lambda functions on your local machine.",
+  "keywords": [
+    "lambda",
+    "amazon", 
+    "aws",
+    "AWS",
+    "local",
+    "run"
+  ],
   "author": "ashiina",
   "engines": {
     "node": ">=0.10"
   },
   "dependencies": {
     "aws-sdk": "^2.1.6",
-    "commander": "^2.6.0"
+    "commander": "^2.6.0",
+    "mocha": "^2.4.5"
   },
   "preferGlobal": true,
   "bin": {
     "lambda-local": "./bin/lambda-local"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ashiina/lambda-local.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ashiina/lambda-local/issues"
   }
 }

@@ -13,11 +13,13 @@
 		.option('-e, --eventpath [event data file name]', 'Specify event data file name.')
 		.option('-h, --handler [lambda-function handler name (optional)]', 'Lambda function handler name. Default is "handler".')
 		.option('-t, --timeout [timeout seconds (optional)]', 'Seconds until lambda function timeout. Default is 3 seconds.')
+		.option('-c, --callbackforce (optional)', 'Force the function to stop after having called context.done/succeed/fail.')
 		.parse(process.argv);
 
 	var eventPath = program.eventpath;
 	var lambdaPath = program.lambdapath;
 	var lambdaHandler = program.handler;
+	var callbackWaitsForEmptyEventLoop = program.callbackforce;
 	if (!lambdaPath || !eventPath) {
 		program.help();
 	}
@@ -25,6 +27,13 @@
 	// default handler name
 	if (!lambdaHandler) {
 		lambdaHandler = "handler";
+	}
+	
+	//default callbackWaitsForEmptyEventLoop
+	if(!callbackWaitsForEmptyEventLoop){
+		callbackWaitsForEmptyEventLoop = true;
+	} else {
+		callbackWaitsForEmptyEventLoop = false;
 	}
 
 	// load lambda function
@@ -50,14 +59,19 @@
 	_context._initialize({
 		functionName: lambdaHandler,
 		awsRequestId: _context.createInvokeId,
-		timeoutMs: timeoutMs
+		timeoutMs: timeoutMs,
+		callbackWaitsForEmptyEventLoop: callbackWaitsForEmptyEventLoop
 	});
 
 	// execute lambda function
 	console.log("Logs");
-	console.log("----");
+	console.log("------");
 	console.log("START RequestId: " + _context.awsRequestId);
 
 	lambdaFunc[lambdaHandler](_event, _context);
-
+	
+	if(callbackWaitsForEmptyEventLoop){		
+		//Finish the process
+		process.exit();
+	}
 })();

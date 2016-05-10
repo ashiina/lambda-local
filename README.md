@@ -28,6 +28,7 @@ About
 *    -e, --eventpath [event data file name]                  Specify event data file name.
 *    -h, --handler [lambda-function handler name (optional)] Lambda function handler name. Default is "handler".
 *    -t, --timeout [timeout seconds (optional)]              Seconds until lambda function timeout. Default is 3 seconds.
+*    -c, --callbackforce (optional)                          Force the function to stop after having called context.done/succeed/fail.
 
 ### Event data
 Event sample data are placed in `event-samples` folder - feel free to use the files in here, or create your own event data.  

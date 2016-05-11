@@ -70,7 +70,12 @@
 		timeoutMs: timeoutMs,
 		callbackWaitsForEmptyEventLoop: callbackWaitsForEmptyEventLoop
 	});
-
+	
+	//setting common other vars environments 
+	process.env['LAMBDA_CONSOLE_SOCKET'] = 14;
+	process.env['LAMBDA_CONTROL_SOCKET'] = 11;
+	process.env['AWS_SESSION_TOKEN'] = _context.awsRequestId; /*Just a random value...*/
+	
 	// execute lambda function
 	console.log("Logs");
 	console.log("------");

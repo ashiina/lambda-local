@@ -40,7 +40,6 @@
 
 	//load profile
 	if(profilePath){
-		console.log("path; " + profilePath);
 		utils.loadAWSFile(utils.getAbsolutePath(profilePath));
 	}
 	

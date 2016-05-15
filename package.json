@@ -17,7 +17,7 @@
   "dependencies": {
     "aws-sdk": "^2.1.6",
     "commander": "^2.6.0",
-    "fs": "0.0.2",
+    "fs": "^0.0.2",
     "mocha": "^2.4.5"
   },
   "preferGlobal": true,

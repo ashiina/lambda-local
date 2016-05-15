@@ -71,6 +71,7 @@
 	});
 	
 	//setting common other vars environments 
+	process.env['NODE_PATH'] = Utils.getAbsolutePath("node_modules");
 	process.env['LAMBDA_CONSOLE_SOCKET'] = 14;
 	process.env['LAMBDA_CONTROL_SOCKET'] = 11;
 	process.env['AWS_SESSION_TOKEN'] = _context.awsRequestId; /*Just a random value...*/

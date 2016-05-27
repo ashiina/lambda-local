@@ -73,6 +73,6 @@
 	console.log("----");
 	console.log("START RequestId: " + _context.awsRequestId);
 
-	lambdaFunc[lambdaHandler](_event, _context, callback);
+	lambdaFunc[lambdaHandler](_event, _context, _context.done);
 
 })();

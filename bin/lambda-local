@@ -53,21 +53,6 @@
 		timeoutMs: timeoutMs
 	});
 
-  const callback = function(err, result) {
-		console.log("END");
-		console.log("\n");
-		if (err !== null){
-			console.log("Error");
-			console.log("------");
-			utils.outputJSON(err);
-		}
-		else {
-			console.log("Message");
-			console.log("------");
-			utils.outputJSON(result);
-		}
-		process.exit();
-	}
 	// execute lambda function
 	console.log("Logs");
 	console.log("----");

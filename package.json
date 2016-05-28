@@ -1,10 +1,10 @@
 {
   "name": "lambda-local",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Commandline tool to run Lambda functions on your local machine.",
   "keywords": [
     "lambda",
-    "amazon", 
+    "amazon",
     "aws",
     "AWS",
     "local",

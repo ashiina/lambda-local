@@ -45,7 +45,7 @@
 	setTimeout(function(){
 		console.log("Task timed out after "+(timeoutMs/1000).toFixed(2)+" seconds");
 		process.exit();
-	}, timeoutMs); 
+	}, timeoutMs);
 
 	_context._initialize({
 		functionName: lambdaHandler,
@@ -60,6 +60,6 @@
 	console.log("----");
 	console.log("START RequestId: " + _context.awsRequestId);
 
-	lambdaFunc[lambdaHandler](_event, _context);
+	lambdaFunc[lambdaHandler](_event, _context, _context.done);
 
 })();

@@ -67,6 +67,13 @@
 			}
 		});
 
+		// handling timeout
+		setTimeout(function(){
+			console.log("-----");
+			console.log("Task timed out after "+(timeoutMs/1000).toFixed(2)+" seconds");
+			process.exit();
+		}, timeoutMs);
+
 	};
 
 	invoke();

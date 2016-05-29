@@ -11,5 +11,5 @@ sudo: false
 #  directories:
 #    - node_modules
 script: 
-    - ./node_modules/mocha/bin/mocha
+    - "cd test && ../node_modules/mocha/bin/mocha"
 

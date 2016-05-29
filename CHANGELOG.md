@@ -1,10 +1,14 @@
 # ChangeLog
 
+## 0.0.10 (2016/5/29)
+ * Support for Node.js 4.3.2 runtime
+ * Added feature to import AWS profile from commandline option
+
 ## 0.0.9 (2016/4/9)
  * Fixed package.json information for npm
 
 ## 0.0.8 (2016/4/9)
- * Added support for all propertiesin the Context object. 
+ * Added support for all properties in the Context object. 
    Supporting everything in here:
    https://docs.aws.amazon.com/en_us/lambda/latest/dg/nodejs-prog-model-context.html
 

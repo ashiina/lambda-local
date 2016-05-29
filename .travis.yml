@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - "0.10"
+  - "0.12"
+  - "1.8"
+  - "2.5"
+  - "3.3"
+  - "4.4"
+sudo: false
+#cache:
+#  directories:
+#    - node_modules
+script: 
+    - ./node_modules/mocha/bin/mocha
+

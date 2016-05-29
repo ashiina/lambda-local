@@ -54,11 +54,19 @@
 			lambdaHandler: lambdaHandler,
 			profilePath: profilePath,
 			callbackWaitsForEmptyEventLoop: callbackWaitsForEmptyEventLoop,
-			timeoutMs: timeoutMs
+			timeoutMs: timeoutMs,
+			callback: function (result) {
+				console.log("-----");
+				if (result == true) {
+					console.log("lambda-local successfully complete.");
+				} else {
+					console.log("lambda-local failed.");
+				}
+				//Finish the process
+				process.exit();
+			}
 		});
 
-		// is reached if callbackWaitsForEmptyEventLoop is false
-		process.exit();
 	};
 
 	invoke();

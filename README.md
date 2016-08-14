@@ -31,7 +31,7 @@ About
 *    -h, --handler [lambda-function handler name (optional)] Lambda function handler name. Default is "handler".
 *    -t, --timeout [timeout seconds (optional)]              Seconds until lambda function timeout. Default is 3 seconds.
 *    -c, --callbackforce (optional)                          Force the function to stop after having called context.done/succeed/fail.
-*    -p, --profile [aws file path (optional)]                Read the AWS profile to get the credidentials.
+*    -p, --profile [aws file path (optional)]                Read the AWS profile to get the credentials.
 
 ### Event data
 Event sample data are placed in `event-samples` folder - feel free to use the files in here, or create your own event data.  

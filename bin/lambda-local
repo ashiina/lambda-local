@@ -14,7 +14,7 @@
 		.option('-h, --handler [lambda-function handler name (optional)]', 'Lambda function handler name. Default is "handler".')
 		.option('-t, --timeout [timeout seconds (optional)]', 'Seconds until lambda function timeout. Default is 3 seconds.')
 		.option('-c, --callbackforce (optional)', 'Force the function to stop after having called context.done/succeed/fail.')
-		.option('-p, --profile [aws file path (optional)]', 'Read the AWS profile to get the credidentials')
+		.option('-p, --profile [aws file path (optional)]', 'Read the AWS profile to get the credentials')
 		.parse(process.argv);
 
 	var eventPath = program.eventpath;

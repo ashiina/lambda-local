@@ -1,5 +1,6 @@
 
 var assert = require('assert');
+var path = require('path');
 
 var functionName = 'handler';
 var timeoutMs = 3000;
@@ -26,10 +27,10 @@ var callbackFunc = function (result) {
 };
 
 lambdalocal.execute({
-	eventPath: './test-event.js',
-	lambdaPath: './test-func.js',
+	eventPath: path.join(__dirname, './test-event.js'),
+	lambdaPath: path.join(__dirname, './test-func.js'),
 	lambdaHandler: functionName,
-	profilePath: './debug.aws',
+	profilePath: path.join(__dirname, './debug.aws'),
 	callbackWaitsForEmptyEventLoop: false,
 	timeoutMs: timeoutMs,
 	callback: callbackFunc

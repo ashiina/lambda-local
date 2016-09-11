@@ -21,7 +21,7 @@
 	var lambdaPath = program.lambdapath;
 	var lambdaHandler = program.handler;
 	var profilePath = program.profile;
-	var callbackWaitsForEmptyEventLoop = program.callbackforce;
+	var callbackWaitsForEmptyEventLoop = program.nocallbackforce;
 	if (!lambdaPath || !eventPath) {
 		program.help();
 	}

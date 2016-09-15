@@ -1,5 +1,4 @@
 # Lambda-local
-============
 
 [![Build Status](https://travis-ci.org/ashiina/lambda-local.svg?branch=develop)](https://travis-ci.org/ashiina/lambda-local)
 
@@ -7,27 +6,54 @@ Lambda-local lets you test Amazon Lambda functions on your local machine with sa
 The `context` of the Lambda function is already loaded so you do not have to worry about it.
 You can pass any `event` JSON object as you please.
 
-## As a command line tool
+## Install
 
-You can use Lambda-local as a command line tool.
-
-# Install
-----
 ```bash
 npm install -g lambda-local
 ```
 
+## Usage
 
-# Usage
------
+### As a command line tool
+
+You can use Lambda-local as a command line tool.
 
 ```bash
 # Usage
 lambda-local -l index.js -h handler -e event-samples/s3-put.js
 ```
 
-# About
------
+### In another node.js script
+
+You can also use Lambda local directly in a script. For instance, it is interesting in a [mocha][1] test suite in combination with [istanbull][2] in order to get test coverage.
+
+```js
+const lambdaLocal = require('lambda-local');
+
+var jsonPayload = {
+    'key1': 'value1',
+    'key2': 'value2',
+    'key3': 'value3'
+}
+
+lambdaLocal.execute({
+    event: jsonPayload,
+    lambdaPath: path.join(__dirname, 'path/to/index.js'),
+    profilePath: '~/.aws/credentials',
+    profileName: 'default',
+    timeoutMs: 3000,
+    callback: function(err, data) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(data);
+        }
+    }
+});
+```
+
+## About
+
 ### Command
 *    -l, --lambda-path <lambda index path>            (required) Specify Lambda function file name.
 *    -e, --event-path <event path>                    (required) Specify event data file name.
@@ -57,37 +83,6 @@ Since the Amazon Lambda can load the AWS-SDK npm without installation, Lambda-lo
 If you want to use this, please use the "-p" option with the aws credentials file. More infos here:
 http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cli-config-files
 
-# In another node.js script
-
-You can also use Lambda local directly in a script. For instance, it is interesting in a [mocha][1] test suite in combination with [istanbull][2] in order to get test coverage.
-
-## Usage
-
-```js
-const lambdaLocal = require('lambda-local');
-
-var jsonPayload = {
-    'key1': 'value1',
-    'key2': 'value2',
-    'key3': 'value3'
-}
-
-lambdaLocal.execute({
-    event: jsonPayload,
-    lambdaPath: path.join(__dirname, 'path/to/index.js'),
-    profilePath: '~/.aws/credentials',
-    profileName: 'default',
-    timeoutMs: 3000,
-    callback: function(err, data) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(data);
-        }
-    }
-});
-```
-
 ## API
 
 ### LambdLocal
@@ -106,8 +101,8 @@ Executes a lambda given the `options` object where keys are:
 - `mute` - optional, allows to mute console.log calls in the lambda function, default false
 - `callback` - optional lambda third parameter [callback][3]
 
-# License
-----------
+## License
+
 This library is released under the MIT license.
 
 [1]: https://mochajs.org/

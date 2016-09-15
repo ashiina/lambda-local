@@ -1,5 +1,8 @@
 # ChangeLog
 
+## 1.0.0 (2016/6/xx)
+ * lambda-local can now be imported as a node module, and be executed from other node.js programs
+
 ## 0.0.10 (2016/5/29)
  * Support for Node.js 4.3.2 runtime
  * Added feature to import AWS profile from commandline option

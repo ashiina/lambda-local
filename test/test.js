@@ -1,28 +1,15 @@
 'use strict';
 
-var assert = require('assert');
+var assert = require('chai').assert;
 var path = require('path');
+var fs = require('fs');
 
 var functionName = 'handler';
 var timeoutMs = 3000;
 
-var lambdalocal = require('../lib/lambdalocal.js');
-var callbackFunc = function(err, data) {
-  describe('LambdaLocal', function() {
-    it('err should be null', function() {
-      assert.equal(err, null);
-    });
-    it('data should not be null', function() {
-    	assert.notEqual(data, null);
-    });
-  });
+var winston = require("winston");
+winston.level="error";
 
-  describe('Context object', function() {
-    it('should contain initialized functionName', function() {
-      assert.equal(lambdalocal.context.functionName, functionName);
-    });
-    it('should contain initialized awsRequestId', function() {
-      assert.equal(lambdalocal.context.awsRequestId.length === 36, true);
     });
     it('should contain initialized getRemainingTimeInMillis', function() {
       assert.equal((lambdalocal.context.getRemainingTimeInMillis() <= timeoutMs), true);
@@ -38,4 +25,7 @@ lambdalocal.execute({
   callbackWaitsForEmptyEventLoop: true,
   timeoutMs: timeoutMs,
   callback: callbackFunc
+});
+        });
+    });
 });

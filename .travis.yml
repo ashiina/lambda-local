@@ -1,7 +1,6 @@
 language: node_js
 node_js:
-  - "0.10"
-  - "0.12"
+  - "1.8"
   - "4"
   - "6"
   - "node"
@@ -10,5 +9,5 @@ sudo: false
 #  directories:
 #    - node_modules
 script: 
-    - "cd test && ../node_modules/mocha/bin/mocha --harmony-proxies"
+    - "cd test && ../node_modules/mocha/bin/mocha"
 

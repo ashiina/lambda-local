@@ -96,7 +96,7 @@ Executes a lambda given the `options` object where keys are:
 - `profileName` - optional aws profile name
 - `lambdaHandler` - optional handler name, default to `handler`
 - `region` - optional AWS region, default to `us-east-1`
-- `callbackWaitsForEmptyEventLoop` - optional, default to `true` which forces the function to stop after having called the handler function even if context.done/succeed/fail was not called.
+- `callbackWaitsForEmptyEventLoop` - optional, default to `true`. Setting it to `false` will force the function to stop after having called the handler function even if context.done/succeed/fail was not called.
 - `timeoutMs` - optional timeout, default to 3000 ms
 - `mute` - optional, allows to mute console.log calls in the lambda function, default false
 - `callback` - optional lambda third parameter [callback][3]

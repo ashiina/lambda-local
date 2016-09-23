@@ -1,6 +1,12 @@
 # ChangeLog
 
-## 1.0.0 (2016/6/xx)
+## 1.1.0 (2016/9/15)
+ * The default behavior of lambda-local now does not forcefully call the callback function (`-c` option).
+ * Dropped Node.js v0.1, v0.12 suport
+ * Added AWS region option `-r`. Defaults to `us-east-1`.
+ * Added AWS profile name option `-p`. 
+
+## 1.0.0 (2016/6/10)
  * lambda-local can now be imported as a node module, and be executed from other node.js programs
 
 ## 0.0.10 (2016/5/29)

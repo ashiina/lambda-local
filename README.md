@@ -60,8 +60,9 @@ lambdaLocal.execute({
 *    -h, --handler <handler name>                     (optional) Lambda function handler name. Default is "handler".
 *    -t, --timeout <timeout>                          (optional) Seconds until lambda function timeout. Default is 3 seconds.
 *    -n, --no-force-callback                          (optional) Force the function to stop after having called the handler function even if context.done/succeed/fail was not called.
+*    -r, --region <aws region>                        (optional) Sets the AWS region, defaults to us-east-1.
 *    -p, --profile <aws profile name>                 (optional) Read the AWS profile to get the credentials from file name.
-*    -p, --profile-path <aws profile name>            (optional) Read the specified AWS credentials file.
+*    -P, --profile-path <aws profile name>            (optional) Read the specified AWS credentials file.
 
 ### Event data
 Event sample data are placed in `event-samples` folder - feel free to use the files in here, or create your own event data.

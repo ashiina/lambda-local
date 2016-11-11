@@ -43,7 +43,7 @@ exports.handler = function(event, context) {
 };
 ```
 
-
+Then you will be able to use in your test.js mocha file, something like:
 
 ```js
 

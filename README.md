@@ -28,7 +28,7 @@ lambda-local -l index.js -h handler -e event-samples/s3-put.js
 
 You can also use Lambda local directly in a script. For instance, it is interesting in a [MochaJS][1] test suite in order to get test coverage.
 
-See [API][#api] for more infos
+See [API](#api) for more infos
 
 ## About
 
@@ -83,9 +83,9 @@ Executes a lambda given the `options` object where keys are:
 
 #### `setLogger(logger)`
 
-If you are using [winston][https://www.npmjs.com/package/winston], this pass a winston logger instead of the console.
+If you are using [winston](https://www.npmjs.com/package/winston), this pass a winston logger instead of the console.
 
-#### [Samples][REQUIRE_SAMPLES.md]
+#### [Samples](REQUIRE_SAMPLES.md)
 
 ## License
 

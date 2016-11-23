@@ -1,6 +1,6 @@
 {
   "name": "lambda-local",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Commandline tool to run Lambda functions on your local machine.",
   "keywords": [
     "lambda",
@@ -16,12 +16,15 @@
   },
   "dependencies": {
     "aws-sdk": "^2.1.6",
+    "chai": "^3.5.0",
     "commander": "^2.6.0",
     "fs": "^0.0.2",
-    "mute": "^2.0.6"
+    "mute": "^2.0.6",
+    "winston": "^2.2.0"
   },
   "devDependencies": {
-    "mocha": "^2.4.5"
+    "mocha": "^2.4.5",
+    "sinon": "^1.17.6"
   },
   "scripts": {
     "test": "mocha"

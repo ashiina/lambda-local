@@ -25,32 +25,10 @@ lambda-local -l index.js -h handler -e event-samples/s3-put.js
 
 ### In another node.js script
 
-You can also use Lambda local directly in a script. For instance, it is interesting in a [mocha][1] test suite in combination with [istanbull][2] in order to get test coverage.
 
-```js
-const lambdaLocal = require('lambda-local');
+You can also use Lambda local directly in a script. For instance, it is interesting in a [MochaJS][1] test suite in order to get test coverage.
 
-var jsonPayload = {
-    'key1': 'value1',
-    'key2': 'value2',
-    'key3': 'value3'
-}
-
-lambdaLocal.execute({
-    event: jsonPayload,
-    lambdaPath: path.join(__dirname, 'path/to/index.js'),
-    profilePath: '~/.aws/credentials',
-    profileName: 'default',
-    timeoutMs: 3000,
-    callback: function(err, data) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(data);
-        }
-    }
-});
-```
+See [API](#api) for more infos
 
 ## About
 
@@ -60,8 +38,9 @@ lambdaLocal.execute({
 *    -h, --handler <handler name>                     (optional) Lambda function handler name. Default is "handler".
 *    -t, --timeout <timeout>                          (optional) Seconds until lambda function timeout. Default is 3 seconds.
 *    -n, --no-force-callback                          (optional) Force the function to stop after having called the handler function even if context.done/succeed/fail was not called.
-*    -p, --profile <aws profile name>                 (optional) Read the AWS profile to get the credentials from file name.
-*    -p, --profile-path <aws profile name>            (optional) Read the specified AWS credentials file.
+*    -r, --region <aws region>                        (optional) Sets the AWS region, defaults to us-east-1.
+*    -P, --profile-path <aws profile name>            (optional) Read the specified AWS credentials file.
+*    -p, --profile <aws profile name>                 (optional) Use with **-P**: Read the AWS profile of the file.
 
 ### Event data
 Event sample data are placed in `event-samples` folder - feel free to use the files in here, or create your own event data.
@@ -85,27 +64,31 @@ http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cl
 
 ## API
 
-### LambdLocal
+### LambdaLocal
 
 #### `execute(options)`
 
 Executes a lambda given the `options` object where keys are:
 - `event` - requested event as a json object,
 - `lambdaPath` - requested path to the lambda function,
-- `profilePath` - optional path to your AWS credentials file
-- `profileName` - optional aws profile name
+- `lambdaFunc` - pass the lambda function. You cannot use it at the same time as lambdaPath,
+- `profilePath` - optional, path to your AWS credentials file
+- `profileName` - optional, aws profile name. Must be used with 
 - `lambdaHandler` - optional handler name, default to `handler`
-- `region` - optional AWS region, default to `us-east-1`
-- `callbackWaitsForEmptyEventLoop` - optional, default to `true` which forces the function to stop after having called the handler function even if context.done/succeed/fail was not called.
-- `timeoutMs` - optional timeout, default to 3000 ms
+- `region` - optional, AWS region, default to `us-east-1`
+- `callbackWaitsForEmptyEventLoop` - optional, default to `true`. Setting it to `false` will call the callback when your code do, before finishing lambda-local.
+- `timeoutMs` - optional, timeout, default to 3000 ms
 - `mute` - optional, allows to mute console.log calls in the lambda function, default false
-- `callback` - optional lambda third parameter [callback][3]
+- `callback` - optional, lambda third parameter [callback][1]
+
+#### `setLogger(logger)`
+
+If you are using [winston](https://www.npmjs.com/package/winston), this pass a winston logger instead of the console.
+
+#### [Samples](REQUIRE_SAMPLES.md)
 
 ## License
 
 This library is released under the MIT license.
 
-[1]: https://mochajs.org/
-[2]: http://gotwarlost.github.io/istanbul/
-[3]: http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html
-
+[1]: http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html

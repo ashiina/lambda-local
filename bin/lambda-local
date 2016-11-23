@@ -6,91 +6,101 @@
  * Local executor for Amazon Lambda function
  */
 (function() {
-  var lambdaLocal = require('../lib/lambdalocal.js'),
-    utils = require('../lib/utils.js');
 
-  // process opts
-  var program = require('commander');
-  program
-    .option('-l, --lambda-path <lambda index path>', '(required) Lambda function file name.')
-    .option('-e, --event-path <path>', '(required) Event data file name.')
-    .option('-h, --handler <handler name>',
-      '(optional) Lambda function handler name. Default is \'handler\'.')
-    .option('-t, --timeout <timeout seconds>',
-      '(optional) Seconds until lambda function timeout. Default is 3 seconds.')
-    .option('-n, --no-force-callback',
-      '(optional) Force the function to stop after having called the handler function' +
-      ' even if context.done/succeed/fail was not called.')
-    .option('-r, --region <aws region>',
-      '(optional) default set to us-east-1')
-    .option('-p, --profile <aws profile name>',
-      '(optional) Read the AWS profile to get the credentials from profile name')
-    .option('-P, --profile-path <aws credentials path>',
-      '(optional) Read the specified AWS credentials file')
-    .parse(process.argv);
+	var winston = require('winston');
+	var logger = new winston.Logger({
+		level: 'info',
+		transports: [
+			new (winston.transports.Console)({handleExceptions: true, json: false, colorize: true})
+		]
+	});
 
-  var eventPath = program.eventPath,
-    lambdaPath = program.lambdaPath,
-    lambdaHandler = program.handler,
-    profilePath = program.profilePath,
-    profileName = program.profile,
-    region = program.region,
-    callbackWaitsForEmptyEventLoop = program.noForceCallback;
+    var lambdaLocal = require('../lib/lambdalocal.js'),
+        utils = require('../lib/utils.js');
+	lambdaLocal.setLogger(logger);
 
-  if (!lambdaPath || !eventPath) {
-    program.help();
-  }
+    // process opts
+    var program = require('commander');
+    program
+        .option('-l, --lambda-path <lambda index path>', '(required) Lambda function file name.')
+        .option('-e, --event-path <path>', '(required) Event data file name.')
+        .option('-h, --handler <handler name>',
+            '(optional) Lambda function handler name. Default is \'handler\'.')
+        .option('-t, --timeout <timeout seconds>',
+            '(optional) Seconds until lambda function timeout. Default is 3 seconds.')
+        .option('-n, --no-force-callback',
+            '(optional) Force the function to stop after having called the handler function' +
+            ' even if context.done/succeed/fail was not called.')
+        .option('-r, --region <aws region>',
+            '(optional) default set to us-east-1')
+        .option('-p, --profile <aws profile name>',
+            '(optional) Read the AWS profile to get the credentials from profile name')
+        .option('-P, --profile-path <aws credentials path>',
+            '(optional) Read the specified AWS credentials file')
+        .parse(process.argv);
 
-  // default handler name
-  if (!lambdaHandler) {
-    lambdaHandler = 'handler';
-  }
+    var eventPath = program.eventPath,
+        lambdaPath = program.lambdaPath,
+        lambdaHandler = program.handler,
+        profilePath = program.profilePath,
+        profileName = program.profile,
+        region = program.region,
+        callbackWaitsForEmptyEventLoop = program.noForceCallback;
 
-  //default callbackWaitsForEmptyEventLoop
-  if (!callbackWaitsForEmptyEventLoop) {
-    callbackWaitsForEmptyEventLoop = false;
-  } else {
-    callbackWaitsForEmptyEventLoop = true;
-  }
-
-  // timeout milliseconds
-  var timeoutMs;
-  if (program.timeout) {
-    timeoutMs = program.timeout * 1000;
-  } else {
-    timeoutMs = 3000;
-  }
-
-  var event = require(utils.getAbsolutePath(eventPath));
-
-  // execute
-  lambdaLocal.execute({
-    event: event,
-    lambdaPath: lambdaPath,
-    lambdaHandler: lambdaHandler,
-    profilePath: profilePath,
-    profileName: profileName,
-    region: region,
-    callbackWaitsForEmptyEventLoop: callbackWaitsForEmptyEventLoop,
-    timeoutMs: timeoutMs,
-    callback: function(err /*, data */) { //data unused
-      console.log('-----');
-      if (err === null) {
-        console.log('lambda-local successfully complete.');
-        process.exit(0);
-      } else {
-        console.log('lambda-local failed.');
-        // Finish the process
-        process.exit(1);
-      }
+    if (!lambdaPath || !eventPath) {
+        program.help();
     }
-  });
 
-  // Handling timeout
-  setTimeout(function() {
-    console.log('-----');
-    console.log('Task timed out after ' + (timeoutMs / 1000).toFixed(2) + ' seconds');
-    process.exit();
-  }, timeoutMs);
+    // default handler name
+    if (!lambdaHandler) {
+        lambdaHandler = 'handler';
+    }
+
+    //default callbackWaitsForEmptyEventLoop
+    if (!callbackWaitsForEmptyEventLoop) {
+        callbackWaitsForEmptyEventLoop = false;
+    } else {
+        callbackWaitsForEmptyEventLoop = true;
+    }
+
+    // timeout milliseconds
+    var timeoutMs;
+    if (program.timeout) {
+        timeoutMs = program.timeout * 1000;
+    } else {
+        timeoutMs = 3000;
+    }
+
+    var event = require(utils.getAbsolutePath(eventPath));
+
+    // execute
+    lambdaLocal.execute({
+        event: event,
+        lambdaPath: lambdaPath,
+        lambdaHandler: lambdaHandler,
+        profilePath: profilePath,
+        profileName: profileName,
+        region: region,
+        callbackWaitsForEmptyEventLoop: callbackWaitsForEmptyEventLoop,
+        timeoutMs: timeoutMs,
+        callback: function(err /*, data */) { //data unused
+            logger.log('info', '-----');
+            if (err === null) {
+                logger.log('info', 'lambda-local successfully complete.');
+                process.exit(0);
+            } else {
+                logger.log('error', 'lambda-local failed.');
+                // Finish the process
+                process.exit(1);
+            }
+        }
+    });
+
+    // Handling timeout
+    setTimeout(function() {
+        logger.log('error', '-----');
+        logger.log('error', 'Task timed out after ' + (timeoutMs / 1000).toFixed(2) + ' seconds');
+        process.exit();
+    }, timeoutMs);
 
 })();

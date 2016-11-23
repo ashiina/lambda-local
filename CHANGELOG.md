@@ -1,8 +1,11 @@
 # ChangeLog
 
+## 1.1.1 (2016/11/23)
+ * Added mock functionality
+ * Dropped Node.js v0.1, v0.12 suport
+
 ## 1.1.0 (2016/9/15)
  * The default behavior of lambda-local now does not forcefully call the callback function (`-c` option).
- * Dropped Node.js v0.1, v0.12 suport
  * Added AWS region option `-r`. Defaults to `us-east-1`.
  * Added AWS profile name option `-p`. 
 

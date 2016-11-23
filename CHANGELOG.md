@@ -1,6 +1,6 @@
 # ChangeLog
 
-## 1.1.1 (2016/11/23)
+## 1.2.0 (2016/11/23)
  * Added mock functionality
  * Dropped Node.js v0.1, v0.12 suport
 

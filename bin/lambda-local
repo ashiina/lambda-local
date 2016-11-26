@@ -9,6 +9,11 @@
 
     var logger = require('winston');
     logger.level = 'info';
+    logger.configure({
+        transports: [
+            new (logger.transports.Console)({handleExceptions: true, json: false, colorize: true})
+        ]
+    });
 
     var lambdaLocal = require('../lib/lambdalocal.js'),
         utils = require('../lib/utils.js');

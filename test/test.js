@@ -28,6 +28,32 @@ describe("- Testing utils.js", function () {
         });
     });
 });
+describe("- Testing lambdalocal.js Logger", function () {
+    var lambdalocal = require("../lib/lambdalocal.js");
+    var defaultLogger = lambdalocal.getLogger();
+    describe("* Use winston logger", function () {
+        it("should correctly load Logger", function () {
+            lambdalocal.setLogger(winston);
+            var logger = lambdalocal.getLogger();
+            assert.equal(winston, logger);
+        });
+    });
+    describe("* Use invalid logger (object)", function () {
+        it("should load default Logger", function () {
+            lambdalocal.setLogger(Object);
+            var logger = lambdalocal.getLogger();
+            assert.equal(logger, defaultLogger);
+        });
+    });
+    describe("* Use null logger", function () {
+        it("should load default Logger", function () {
+            lambdalocal.setLogger(null);
+            var logger = lambdalocal.getLogger();
+            assert.equal(logger, defaultLogger);
+        });
+    });
+});
+
 describe("- Testing lambdalocal.js", function () {
     describe("* Basic Run", function () {
         var done, err;

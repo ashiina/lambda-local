@@ -7,12 +7,12 @@
  */
 (function() {
 
-	var logger = require('winston');
-	logger.level = 'info';
+    var logger = require('winston');
+    logger.level = 'info';
 
     var lambdaLocal = require('../lib/lambdalocal.js'),
         utils = require('../lib/utils.js');
-	lambdaLocal.setLogger(logger);
+    lambdaLocal.setLogger(logger);
 
     // process opts
     var program = require('commander');

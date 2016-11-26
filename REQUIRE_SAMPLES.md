@@ -72,13 +72,13 @@ Then you will be able to use in your test.js mocha file, something like:
                 cb();
             }
         });
-        describe("Your first test", function () {
-            it("should return mocked value", function () {
-                assert.equal(done, "MockedData");
-            });
-        });
-        ... Other tests
     });
+    describe("Your first test", function () {
+        it("should return mocked value", function () {
+            assert.equal(done, "MockedData");
+        });
+    });
+    ... Other tests
 ```
 
 [1]: https://mochajs.org/

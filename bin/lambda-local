@@ -48,7 +48,7 @@
         profilePath = program.profilePath,
         profileName = program.profile,
         region = program.region,
-	environment = JSON.parse(program.environment),
+        environment = JSON.parse(program.environment),
         callbackWaitsForEmptyEventLoop = program.noForceCallback;
 
     if (!lambdaPath || !eventPath) {
@@ -87,7 +87,7 @@
         region: region,
         callbackWaitsForEmptyEventLoop: callbackWaitsForEmptyEventLoop,
         timeoutMs: timeoutMs,
-	environment: environment,
+        environment: environment,
         callback: function(err /*, data */) { //data unused
             logger.log('info', '-----');
             if (err === null) {

@@ -1,5 +1,8 @@
 # ChangeLog
 
+## 1.4.1 (2017/02/09)
+ * Fixed critical bug
+
 ## 1.4.0 (2017/02/08)
  * Added support for environment variables
 

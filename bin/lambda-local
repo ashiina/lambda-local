@@ -40,17 +40,16 @@
         .option('-E, --environment <JSON {key:value}>',
             '(optional) Set extra environment variables for the lambda')
         .parse(process.argv);
-
-
+    
     var eventPath = program.eventPath,
         lambdaPath = program.lambdaPath,
         lambdaHandler = program.handler,
         profilePath = program.profilePath,
         profileName = program.profile,
         region = program.region,
-        environment = JSON.parse(program.environment),
+        environment = program.environment,
         callbackWaitsForEmptyEventLoop = program.noForceCallback;
-
+    
     if (!lambdaPath || !eventPath) {
         program.help();
     }
@@ -58,6 +57,12 @@
     // default handler name
     if (!lambdaHandler) {
         lambdaHandler = 'handler';
+    }
+    
+    if (environment) {
+        environment = JSON.parse(environment);
+    } else {
+        environment = [];
     }
 
     //default callbackWaitsForEmptyEventLoop

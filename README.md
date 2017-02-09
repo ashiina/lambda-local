@@ -41,6 +41,7 @@ See [API](#api) for more infos
 *    -r, --region <aws region>                        (optional) Sets the AWS region, defaults to us-east-1.
 *    -P, --profile-path <aws profile name>            (optional) Read the specified AWS credentials file.
 *    -p, --profile <aws profile name>                 (optional) Use with **-P**: Read the AWS profile of the file.
+*    -E, --environment <JSON {key:value}>             (optional) Set extra environment variables for the lambda
 
 ### Event data
 Event sample data are placed in `event-samples` folder - feel free to use the files in here, or create your own event data.
@@ -69,15 +70,16 @@ http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cl
 #### `execute(options)`
 
 Executes a lambda given the `options` object where keys are:
-- `event` - requested event as a json object,
-- `lambdaPath` - requested path to the lambda function,
-- `lambdaFunc` - pass the lambda function. You cannot use it at the same time as lambdaPath,
+- `event` - requested event as a json object
+- `lambdaPath` - requested path to the lambda function
+- `lambdaFunc` - pass the lambda function. You cannot use it at the same time as lambdaPath
 - `profilePath` - optional, path to your AWS credentials file
 - `profileName` - optional, aws profile name. Must be used with 
 - `lambdaHandler` - optional handler name, default to `handler`
 - `region` - optional, AWS region, default to `us-east-1`
-- `callbackWaitsForEmptyEventLoop` - optional, default to `true`. Setting it to `false` will call the callback when your code do, before finishing lambda-local.
+- `callbackWaitsForEmptyEventLoop` - optional, default to `true`. Setting it to `false` will call the callback when your code do, before finishing lambda-local
 - `timeoutMs` - optional, timeout, default to 3000 ms
+- `environment` - optional, extra environment variables for the lambda
 - `mute` - optional, allows to mute console.log calls in the lambda function, default false
 - `callback` - optional, lambda third parameter [callback][1]
 

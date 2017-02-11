@@ -87,6 +87,10 @@ Executes a lambda given the `options` object where keys are:
 - `mute` - optional, allows to mute console.log calls in the lambda function, default false
 - `callback` - optional, lambda third parameter [callback][1]
 
+#### `executePromised(options)`
+
+Executes a lambda given the `options` object as in the `execute` function but returns a promise instead of using a callback.
+
 #### `setLogger(logger)`
 
 If you are using [winston](https://www.npmjs.com/package/winston), this pass a winston logger instead of the console.

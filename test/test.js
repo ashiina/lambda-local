@@ -148,4 +148,20 @@ describe("- Testing lambdalocal.js", function () {
             });
         });
     });
+    
+    describe('* Promised Run', function () {
+        it('should return correct values as promise', function () {
+            var lambdalocal = require("../lib/lambdalocal.js");
+            lambdalocal.setLogger(winston);
+            return lambdalocal.executePromised({
+                event: require(path.join(__dirname, "./events/test-event.js")),
+                lambdaPath: path.join(__dirname, "./functs/test-func.js"),
+                lambdaHandler: functionName,
+                callbackWaitsForEmptyEventLoop: false,
+                timeoutMs: timeoutMs
+            }).then(function (data) {
+                assert.equal(data.result, "testvar");
+            });
+        });
+    })
 });

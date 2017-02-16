@@ -36,7 +36,7 @@ var jsonPayload = {
     'another_key': "Some text"
 }
 
-lambdaLocal.executePromised({
+lambdaLocal.execute({
     event: jsonPayload,
     lambdaPath: path.join(__dirname, 'path_to_index.js'),
     profilePath: '~/.aws/credentials',

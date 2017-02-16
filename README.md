@@ -19,8 +19,12 @@ npm install -g lambda-local
 You can use Lambda-local as a command line tool.
 
 ```bash
-# Usage
+# Simple usage
 lambda-local -l index.js -h handler -e event-samples/s3-put.js
+
+# Input environment variables
+lambda-local -l index.js -h handler -e event-samples/s3-put.js -E {\"key\":\"value\"}
+
 ```
 
 ### In another node.js script

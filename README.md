@@ -95,7 +95,7 @@ If you are using [winston](https://www.npmjs.com/package/winston), this pass a w
 
 ## Development
 
- * Run `make` to install npm modules.
+ * Run `make` to install npm modules. (Required to develop & test lambda-local)
  * Run `make test` to execute the mocha test.
 
 ## License

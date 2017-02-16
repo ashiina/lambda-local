@@ -153,7 +153,7 @@ describe("- Testing lambdalocal.js", function () {
         it('should return correct values as promise', function () {
             var lambdalocal = require("../lib/lambdalocal.js");
             lambdalocal.setLogger(winston);
-            return lambdalocal.executePromised({
+            return lambdalocal.execute({
                 event: require(path.join(__dirname, "./events/test-event.js")),
                 lambdaPath: path.join(__dirname, "./functs/test-func.js"),
                 lambdaHandler: functionName,

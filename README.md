@@ -93,6 +93,11 @@ If you are using [winston](https://www.npmjs.com/package/winston), this pass a w
 
 #### [Samples](REQUIRE_SAMPLES.md)
 
+## Development
+
+ * Run `make` to install npm modules.
+ * Run `make test` to execute the mocha test.
+
 ## License
 
 This library is released under the MIT license.

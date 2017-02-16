@@ -85,11 +85,7 @@ Executes a lambda given the `options` object where keys are:
 - `timeoutMs` - optional, timeout, default to 3000 ms
 - `environment` - optional, extra environment variables for the lambda
 - `mute` - optional, allows to mute console.log calls in the lambda function, default false
-- `callback` - optional, lambda third parameter [callback][1]
-
-#### `executePromised(options)`
-
-Executes a lambda given the `options` object as in the `execute` function but returns a promise instead of using a callback.
+- `callback` - optional, lambda third parameter [callback][1]. When left out a Promise is returned
 
 #### `setLogger(logger)`
 

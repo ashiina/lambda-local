@@ -60,7 +60,13 @@
     }
     
     if (environment) {
-        environment = JSON.parse(environment);
+        try {
+            environment = JSON.parse(environment);
+        } catch (e) {
+            console.log("Invalid environment variable JSON format. ");
+            console.log("Example: {\\\"key\\\":\\\"val\\\"}");
+            process.exit();
+        }
     } else {
         environment = [];
     }

@@ -64,7 +64,7 @@
             environment = JSON.parse(environment);
         } catch (e) {
             console.log("Invalid environment variable JSON format. ");
-            console.log("Example: {\\\"key\\\":\\\"val\\\"}");
+            console.log("Example: {\\\"key\\\":\\\"val\\\"\\\,\\\"key2\\\":\\\"val2\\\"}");
             process.exit();
         }
     } else {

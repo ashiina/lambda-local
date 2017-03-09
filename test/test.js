@@ -64,15 +64,37 @@ describe("- Testing lambdalocal.js", function () {
                 event: require(path.join(__dirname, "./events/test-event.js")),
                 lambdaPath: path.join(__dirname, "./functs/test-func.js"),
                 lambdaHandler: functionName,
+                profilePath: path.join(__dirname, "./other/debug.aws"),
                 callbackWaitsForEmptyEventLoop: false,
                 timeoutMs: timeoutMs,
                 callback: function (_err, _done) {
                     err = _err;
                     done = _done;
                     cb();
+                },
+                environment: {
+                    "envkey1": "Environment",
+                    "envkey2": {"k":"v"},
+                    "envkey3": 123
                 }
             });
         });
+        describe("# Environment Variables", function () {
+            it("should return correct environment variables", function () {
+                assert.equal(process.env.envkey1, "Environment");
+                assert.equal(process.env.envkey2, {"k":"v"});
+                assert.equal(process.env.envkey3, 123);
+            });
+        });
+
+
+        describe("# AWS credentials", function () {
+            it("should return correct credentials", function () {
+                assert.equal(process.env.AWS_ACCESS_KEY_ID, "AKIAIOSFODNN7EXAMPLE");
+                assert.equal(process.env.AWS_SECRET_ACCESS_KEY, "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY");
+            });
+        });
+
         describe("# LambdaLocal", function () {
             it("should return correct testvar", function () {
                 assert.equal(done.result, "testvar");
@@ -126,31 +148,20 @@ describe("- Testing lambdalocal.js", function () {
             });
         });
     });
-
-    describe("* AWS Profile Test Run", function () {
-        var done, err;
-        before(function (cb) {
+    
+    describe('* Promised Run', function () {
+        it('should return correct values as promise', function () {
             var lambdalocal = require("../lib/lambdalocal.js");
             lambdalocal.setLogger(winston);
-            lambdalocal.execute({
+            return lambdalocal.execute({
                 event: require(path.join(__dirname, "./events/test-event.js")),
-                lambdaPath: path.join(__dirname, "./functs/test-func-awsprofile.js"),
+                lambdaPath: path.join(__dirname, "./functs/test-func.js"),
                 lambdaHandler: functionName,
-                profilePath: path.join(__dirname, "./other/debug.aws"),
                 callbackWaitsForEmptyEventLoop: false,
-                timeoutMs: timeoutMs,
-                callback: function (_err, _done) {
-                    done = _done;
-                    err = _err;
-                    cb();
-                }
+                timeoutMs: timeoutMs
+            }).then(function (data) {
+                assert.equal(data.result, "testvar");
             });
         });
-        describe("# AWS credentials", function () {
-            it("should return correct credentials", function () {
-                assert.equal(done.key, "AKIAIOSFODNN7EXAMPLE");
-                assert.equal(done.secret, "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY");
-            });
-        });
-    });
+    })
 });

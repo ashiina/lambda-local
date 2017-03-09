@@ -19,8 +19,12 @@ npm install -g lambda-local
 You can use Lambda-local as a command line tool.
 
 ```bash
-# Usage
+# Simple usage
 lambda-local -l index.js -h handler -e event-samples/s3-put.js
+
+# Input environment variables
+lambda-local -l index.js -h handler -e event-samples/s3-put.js -E {\"key\":\"value\"\,\"key2\":\"value2\"}
+
 ```
 
 ### In another node.js script
@@ -81,13 +85,18 @@ Executes a lambda given the `options` object where keys are:
 - `timeoutMs` - optional, timeout, default to 3000 ms
 - `environment` - optional, extra environment variables for the lambda
 - `mute` - optional, allows to mute console.log calls in the lambda function, default false
-- `callback` - optional, lambda third parameter [callback][1]
+- `callback` - optional, lambda third parameter [callback][1]. When left out a Promise is returned
 
 #### `setLogger(logger)`
 
 If you are using [winston](https://www.npmjs.com/package/winston), this pass a winston logger instead of the console.
 
 #### [Samples](REQUIRE_SAMPLES.md)
+
+## Development
+
+ * Run `make` to install npm modules. (Required to develop & test lambda-local)
+ * Run `make test` to execute the mocha test.
 
 ## License
 

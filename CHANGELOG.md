@@ -1,5 +1,9 @@
 # ChangeLog
 
+## 1.4.2 (2017/03/09)
+ * Added promise support
+ * Better JSON parse error handling for environment variables
+
 ## 1.4.1 (2017/02/09)
  * Fixed critical bug
 

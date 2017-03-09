@@ -26,6 +26,29 @@ lambdaLocal.execute({
 });
 ```
 
+##### Using Promises
+
+```js
+const lambdaLocal = require('lambda-local');
+
+var jsonPayload = {
+    'key': 1,
+    'another_key': "Some text"
+}
+
+lambdaLocal.execute({
+    event: jsonPayload,
+    lambdaPath: path.join(__dirname, 'path_to_index.js'),
+    profilePath: '~/.aws/credentials',
+    profileName: 'default',
+    timeoutMs: 3000
+}).then(function(done) {
+    console.log(done);
+}).catch(function(err) {
+    console.log(err);
+});
+```
+
 ### Use lambda-local to Mock
 
 You can use Lambda local to mock your lambda then run it, using [MochaJS][1] and [SinonJS][2]

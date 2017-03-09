@@ -9,5 +9,5 @@ sudo: false
 #  directories:
 #    - node_modules
 script: 
-    - "cd test && ../node_modules/mocha/bin/mocha"
+    - "make test"
 

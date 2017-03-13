@@ -39,6 +39,8 @@
             '(optional) Read the specified AWS credentials file')
         .option('-E, --environment <JSON {key:value}>',
             '(optional) Set extra environment variables for the lambda')
+        .option('--envfile <path/to/env/file>',
+            '(optional) Load additional environment variables from a file')
         .parse(process.argv);
     
     var eventPath = program.eventPath,
@@ -48,6 +50,7 @@
         profileName = program.profile,
         region = program.region,
         environment = program.environment,
+        envfile = program.envfile,
         callbackWaitsForEmptyEventLoop = program.noForceCallback;
     
     if (!lambdaPath || !eventPath) {
@@ -99,6 +102,7 @@
         callbackWaitsForEmptyEventLoop: callbackWaitsForEmptyEventLoop,
         timeoutMs: timeoutMs,
         environment: environment,
+        envfile: envfile,
         callback: function(err /*, data */) { //data unused
             logger.log('info', '-----');
             if (err === null) {

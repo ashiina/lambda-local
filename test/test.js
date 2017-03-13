@@ -76,7 +76,8 @@ describe("- Testing lambdalocal.js", function () {
                     "envkey1": "Environment",
                     "envkey2": {"k":"v"},
                     "envkey3": 123
-                }
+                },
+                envfile: path.join(__dirname, "./other/env")
             });
         });
         describe("# Environment Variables", function () {
@@ -84,6 +85,10 @@ describe("- Testing lambdalocal.js", function () {
                 assert.equal(process.env.envkey1, "Environment");
                 assert.equal(process.env.envkey2, {"k":"v"});
                 assert.equal(process.env.envkey3, 123);
+
+                // from envfile
+                assert.equal(process.env.envkey4, 'foo');
+                assert.equal(process.env.envkey5, 'bar');
             });
         });
 

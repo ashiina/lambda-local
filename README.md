@@ -46,6 +46,7 @@ See [API](#api) for more infos
 *    -P, --profile-path <aws profile name>            (optional) Read the specified AWS credentials file.
 *    -p, --profile <aws profile name>                 (optional) Use with **-P**: Read the AWS profile of the file.
 *    -E, --environment <JSON {key:value}>             (optional) Set extra environment variables for the lambda
+*    --envfile <path/to/env/file>                     (optional) Set extra environment variables from an env file
 
 ### Event data
 Event sample data are placed in `event-samples` folder - feel free to use the files in here, or create your own event data.

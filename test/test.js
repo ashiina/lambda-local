@@ -18,9 +18,9 @@ function get_shell(data){
         return ["cmd", ["/C", data]];
     } else {
         if (data.startsWith("node")){
-            return ["node", data.slice(4)];
+            return ["node", data.slice(5).split(" ")];
         }
-        return ["node", data];
+        return ["node", [data]];
     }
 }
 
@@ -112,6 +112,7 @@ describe("- Testing lambdalocal.js", function () {
             it("should return correct credentials", function () {
                 assert.equal(process.env.AWS_ACCESS_KEY_ID, "AKIAIOSFODNN7EXAMPLE");
                 assert.equal(process.env.AWS_SECRET_ACCESS_KEY, "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY");
+                assert.equal(process.env.AWS_SESSION_TOKEN, "TOKEN44545");
             });
         });
 
@@ -213,6 +214,8 @@ describe("- Testing bin/lambda-local", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
             assert.equal(r.status, 0);
+            console.log(r.output);
+            console.log(r.stderr.toString('utf8'));
         });
     });
     describe("* Failing Run", function () {

@@ -79,5 +79,5 @@ module.exports = {
       "eventVersion": "1.0"
     }
   ]
-};
+}
 

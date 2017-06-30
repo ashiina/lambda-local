@@ -1,26 +1,29 @@
 #!/usr/bin/env node
 
-'use strict';
+'use strict'
 
 /*
  * Local executor for Amazon Lambda function
  */
-(function() {
+(() => {
 
-    var logger = require('winston');
-    logger.level = 'info';
+    var logger = require('winston')
+    logger.level = 'info'
+
     logger.configure({
         transports: [
             new (logger.transports.Console)({handleExceptions: true, json: false, colorize: true})
         ]
-    });
+    })
 
     var lambdaLocal = require('../lib/lambdalocal.js'),
-        utils = require('../lib/utils.js');
-    lambdaLocal.setLogger(logger);
+        utils = require('../lib/utils.js')
+
+    lambdaLocal.setLogger(logger)
 
     // process opts
-    var program = require('commander');
+    var program = require('commander')
+
     program
         .option('-l, --lambda-path <lambda index path>', '(required) Lambda function file name.')
         .option('-e, --event-path <path>', '(required) Event data file name.')
@@ -41,7 +44,7 @@
             '(optional) Set extra environment variables for the lambda')
         .option('--envfile <path/to/env/file>',
             '(optional) Load additional environment variables from a file')
-        .parse(process.argv);
+        .parse(process.argv)
     
     var eventPath = program.eventPath,
         lambdaPath = program.lambdaPath,
@@ -51,45 +54,45 @@
         region = program.region,
         environment = program.environment,
         envfile = program.envfile,
-        callbackWaitsForEmptyEventLoop = program.noForceCallback;
+        callbackWaitsForEmptyEventLoop = program.noForceCallback
     
     if (!lambdaPath || !eventPath) {
-        program.help();
+        program.help()
     }
 
     // default handler name
     if (!lambdaHandler) {
-        lambdaHandler = 'handler';
+        lambdaHandler = 'handler'
     }
     
     if (environment) {
         try {
             environment = JSON.parse(environment);
         } catch (e) {
-            console.log("Invalid environment variable JSON format. ");
-            console.log("Example: {\\\"key\\\":\\\"val\\\"\\\,\\\"key2\\\":\\\"val2\\\"}");
-            process.exit();
+            console.log("Invalid environment variable JSON format. ")
+            console.log("Example: {\\\"key\\\":\\\"val\\\"\\\,\\\"key2\\\":\\\"val2\\\"}")
+            process.exit()
         }
     } else {
-        environment = [];
+        environment = []
     }
 
     //default callbackWaitsForEmptyEventLoop
     if (!callbackWaitsForEmptyEventLoop) {
-        callbackWaitsForEmptyEventLoop = false;
+        callbackWaitsForEmptyEventLoop = false
     } else {
-        callbackWaitsForEmptyEventLoop = true;
+        callbackWaitsForEmptyEventLoop = true
     }
 
     // timeout milliseconds
-    var timeoutMs;
+    var timeoutMs
     if (program.timeout) {
-        timeoutMs = program.timeout * 1000;
+        timeoutMs = program.timeout * 1000
     } else {
-        timeoutMs = 3000;
+        timeoutMs = 3000
     }
 
-    var event = require(utils.getAbsolutePath(eventPath));
+    var event = require(utils.getAbsolutePath(eventPath))
 
     // execute
     lambdaLocal.execute({
@@ -103,24 +106,24 @@
         timeoutMs: timeoutMs,
         environment: environment,
         envfile: envfile,
-        callback: function(err /*, data */) { //data unused
-            logger.log('info', '-----');
+        callback: (error) => { //data unused
+            logger.log('info', '-----')
             if (err === null) {
-                logger.log('info', 'lambda-local successfully complete.');
-                process.exit(0);
+                logger.log('info', 'lambda-local successfully complete.')
+                process.exit(0)
             } else {
-                logger.log('error', 'lambda-local failed.');
+                logger.log('error', 'lambda-local failed.')
                 // Finish the process
-                process.exit(1);
+                process.exit(1)
             }
         }
-    });
+    })
 
     // Handling timeout
-    setTimeout(function() {
-        logger.log('error', '-----');
-        logger.log('error', 'Task timed out after ' + (timeoutMs / 1000).toFixed(2) + ' seconds');
-        process.exit();
-    }, timeoutMs);
+    setTimeout(() => {
+        logger.log('error', '-----')
+        logger.log('error', 'Task timed out after ' + (timeoutMs / 1000).toFixed(2) + ' seconds')
+        process.exit()
+    }, timeoutMs)
 
-})();
+})()

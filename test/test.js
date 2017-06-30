@@ -16,7 +16,7 @@ describe("- Testing utils.js", function () {
     var utils = require("../lib/utils.js");
     describe("* getAbsolutePath", function () {
         it("should return existing path file", function () {
-            var f_path = utils.getAbsolutePath("test.js");
+            var f_path = utils.getAbsolutePath(".");
             assert.doesNotThrow(function(){fs.accessSync(f_path, fs.F_OK)});
         });
     });

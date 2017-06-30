@@ -3,5 +3,5 @@
  */
 
 const LambdaLocal = require('./lib/lambdalocal.js')
-module.exports = LambdaLocal
 
+module.exports = LambdaLocal

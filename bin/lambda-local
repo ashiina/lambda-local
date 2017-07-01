@@ -90,37 +90,37 @@
     }
 
     var event = require(utils.getAbsolutePath(eventPath));
-
-    // execute
-    lambdaLocal.execute({
-        event: event,
-        lambdaPath: lambdaPath,
-        lambdaHandler: lambdaHandler,
-        profilePath: profilePath,
-        profileName: profileName,
-        region: region,
-        callbackWaitsForEmptyEventLoop: callbackWaitsForEmptyEventLoop,
-        timeoutMs: timeoutMs,
-        environment: environment,
-        envfile: envfile,
-        callback: function(err /*, data */) { //data unused
-            logger.log('info', '-----');
-            if (err === null) {
-                logger.log('info', 'lambda-local successfully complete.');
-                process.exit(0);
-            } else {
-                logger.log('error', 'lambda-local failed.');
-                // Finish the process
-                process.exit(1);
+    try {
+        // execute
+        lambdaLocal.execute({
+            event: event,
+            lambdaPath: lambdaPath,
+            lambdaHandler: lambdaHandler,
+            profilePath: profilePath,
+            profileName: profileName,
+            region: region,
+            callbackWaitsForEmptyEventLoop: callbackWaitsForEmptyEventLoop,
+            timeoutMs: timeoutMs,
+            environment: environment,
+            envfile: envfile,
+            callback: function(err /*, data */) { //data unused
+                logger.log('info', '-----');
+                if (err === null) {
+                    logger.log('info', 'lambda-local successfully complete.');
+                    process.exit(0);
+                } else {
+                    logger.log('error', 'lambda-local failed.');
+                    // Finish the process
+                    process.exit(1);
+                }
             }
+        });
+    } catch (ex) {
+        if (ex instanceof utils.TimeoutError) {
+            logger.log('error', '-----');
+            logger.log('error', 'Task timed out after ' + (timeoutMs / 1000).toFixed(2) + ' seconds');
+            process.exit(1);
         }
-    });
-
-    // Handling timeout
-    setTimeout(function() {
-        logger.log('error', '-----');
-        logger.log('error', 'Task timed out after ' + (timeoutMs / 1000).toFixed(2) + ' seconds');
-        process.exit();
-    }, timeoutMs);
-
+        logger.log('error', ex);
+    }
 })();

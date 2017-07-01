@@ -1,10 +1,14 @@
 # Lambda-local
 
-[![Build Status](https://travis-ci.org/ashiina/lambda-local.svg?branch=develop)](https://travis-ci.org/ashiina/lambda-local)
+[![Build Status](https://travis-ci.org/gpotter2/lambda-local.svg?branch=develop)](https://travis-ci.org/gpotter2/lambda-local)
 
 Lambda-local lets you test Amazon Lambda functions on your local machine with sample event data.
 The `context` of the Lambda function is already loaded so you do not have to worry about it.
 You can pass any `event` JSON object as you please.
+
+## Repository
+
+This repository is not the official one, but https://github.com/ashiina/lambda-local seems to be inactive. If he comes back one day, this will certainly get merged into it.
 
 ## Install
 

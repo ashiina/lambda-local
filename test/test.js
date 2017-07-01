@@ -1,5 +1,11 @@
 "use strict";
 
+//Move to ./test if not already in it
+var path = require("path");
+if (process.cwd().split(path.sep).pop() != "test"){
+    process.chdir("test");
+}
+
 var assert = require("chai").assert;
 var path = require("path");
 var fs = require("fs");

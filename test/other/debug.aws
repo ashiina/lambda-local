@@ -1,10 +1,12 @@
 [default]
 something_other=sdfsdf
+region=not-us-east
 aws_access_key_id =      AKIAIOSFODNN7EXAMPLE
 aws_secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 aws_session_token = TOKEN44545
 
 [user2]
+region=not-us-east
 aws_access_key_id=AKIAI44QH8DHBEXAMPLE
 aws_secret_access_key=je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY
 

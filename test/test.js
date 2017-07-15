@@ -116,6 +116,7 @@ describe("- Testing lambdalocal.js", function () {
 
         describe("# AWS credentials", function () {
             it("should return correct credentials", function () {
+                assert.equal(process.env.AWS_DEFAULT_REGION, "not-us-east");
                 assert.equal(process.env.AWS_ACCESS_KEY_ID, "AKIAIOSFODNN7EXAMPLE");
                 assert.equal(process.env.AWS_SECRET_ACCESS_KEY, "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY");
                 assert.equal(process.env.AWS_SESSION_TOKEN, "TOKEN44545");

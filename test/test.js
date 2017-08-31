@@ -98,7 +98,8 @@ describe("- Testing lambdalocal.js", function () {
                     "envkey2": {"k":"v"},
                     "envkey3": 123
                 },
-                envfile: path.join(__dirname, "./other/env")
+                envfile: path.join(__dirname, "./other/env"),
+                verboseLevel: 1
             });
         });
         describe("# Environment Variables", function () {
@@ -166,7 +167,8 @@ describe("- Testing lambdalocal.js", function () {
                         err = _err;
                         done = _done;
                         cb();
-                    }
+                    },
+                    verboseLevel: 1
                 });
             });
             describe("# LambdaLocal", function () {
@@ -189,7 +191,8 @@ describe("- Testing lambdalocal.js", function () {
                         timeoutMs: 1000,
                         callback: function (_err, _done) {
                             cb();
-                        }
+                        },
+                        verboseLevel: 1
                     }, utils.TimeoutError);
                 })
                 cb();
@@ -206,7 +209,8 @@ describe("- Testing lambdalocal.js", function () {
                 lambdaPath: path.join(__dirname, "./functs/test-func.js"),
                 lambdaHandler: functionName,
                 callbackWaitsForEmptyEventLoop: false,
-                timeoutMs: timeoutMs
+                timeoutMs: timeoutMs,
+                verboseLevel: 1
             }).then(function (data) {
                 assert.equal(data.result, "testvar");
             });
@@ -221,13 +225,21 @@ describe("- Testing bin/lambda-local", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
             assert.equal(r.status, 0);
-            console.log(r.output);
+            console.log(r.output.toString('utf8'));
             console.log(r.stderr.toString('utf8'));
         });
     });
     describe("* Failing Run", function () {
         it("should fail", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-fail.js -e ./events/test-event.js");
+            var r = spawnSync(command[0], command[1]);
+            assert.equal(r.status, 1);
+            console.log(r.output.toString('utf8'));
+        });
+    });
+    describe("* Crashing run", function () {
+        it("should fail", function () {
+            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-error.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
             assert.equal(r.status, 1);
         });
@@ -237,6 +249,14 @@ describe("- Testing bin/lambda-local", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-timeout.js -e ./events/test-event.js -t 1");
             var r = spawnSync(command[0], command[1]);
             assert.equal(r.status, 1);
+        });
+    });
+    describe("* Verbose test", function () {
+        it("should end normally", function () {
+            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-print.js -e ./events/test-event.js -v 0");
+            var r = spawnSync(command[0], command[1]);
+            assert.equal(r.status, 0);
+            assert.equal(r.output.toString('utf8'), ",,")
         });
     });
 });

@@ -46,6 +46,7 @@ See [API](#api) for more infos
 *    -P, --profile-path <aws profile name>            (optional) Read the specified AWS credentials file.
 *    -p, --profile <aws profile name>                 (optional) Use with **-P**: Read the AWS profile of the file.
 *    -E, --environment <JSON {key:value}>             (optional) Set extra environment variables for the lambda
+*    -v, --verboselevel <3/2/1/0>',                   (optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.
 *    --envfile <path/to/env/file>                     (optional) Set extra environment variables from an env file
 
 ### Event data
@@ -85,7 +86,7 @@ Executes a lambda given the `options` object where keys are:
 - `callbackWaitsForEmptyEventLoop` - optional, default to `true`. Setting it to `false` will call the callback when your code do, before finishing lambda-local
 - `timeoutMs` - optional, timeout, default to 3000 ms
 - `environment` - optional, extra environment variables for the lambda
-- `mute` - optional, allows to mute console.log calls in the lambda function, default false
+- `verboseLevel` - optional, default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.
 - `callback` - optional, lambda third parameter [callback][1]. When left out a Promise is returned
 
 #### `setLogger(logger)`
@@ -187,7 +188,8 @@ Then you will be able to use in your test.js mocha file, something like:
                 err = _err;
                 done = _done;
                 cb();
-            }
+            },
+            verboseLevel: 1 //only prints a JSON of the final result
         });
     });
     describe("Your first test", function () {

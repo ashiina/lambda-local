@@ -39,6 +39,9 @@
             '(optional) Read the specified AWS credentials file')
         .option('-E, --environment <JSON {key:value}>',
             '(optional) Set extra environment variables for the lambda')
+        .option('-v, --verboselevel <0/1/2>',
+            '(optional) Default 3. Level 2 dismiss handler in-text, level 1 dismiss +lambda-local text ' +
+            'and level 0 dismiss also the result.')
         .option('--envfile <path/to/env/file>',
             '(optional) Load additional environment variables from a file')
         .parse(process.argv);
@@ -51,7 +54,8 @@
         region = program.region,
         environment = program.environment,
         envfile = program.envfile,
-        callbackWaitsForEmptyEventLoop = program.noForceCallback;
+        callbackWaitsForEmptyEventLoop = program.noForceCallback,
+        verboseLevel = program.verboselevel;
     
     if (!lambdaPath || !eventPath) {
         program.help();
@@ -104,7 +108,6 @@
             environment: environment,
             envfile: envfile,
             callback: function(err /*, data */) { //data unused
-                logger.log('info', '-----');
                 if (err === null) {
                     logger.log('info', 'lambda-local successfully complete.');
                     process.exit(0);
@@ -113,7 +116,8 @@
                     // Finish the process
                     process.exit(1);
                 }
-            }
+            },
+            verboseLevel: verboseLevel
         });
     } catch (ex) {
         if (ex instanceof utils.TimeoutError) {

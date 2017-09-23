@@ -1,5 +1,10 @@
 # ChangeLog
 
+## 1.4.3 (2017/09/23)
+ * Several token fixes
+ * New log system, using a verbose level
+ * Bug fixes
+
 ## 1.4.2 (2017/03/09)
  * Added promise support
  * Better JSON parse error handling for environment variables

@@ -32,7 +32,7 @@ lambda-local -l index.js -h handler -e event-samples/s3-put.js -E "{\"key\":\"va
 
 You can also use Lambda local directly in a script. For instance, it is interesting in a [MochaJS][1] test suite in order to get test coverage.
 
-See [API](#api) for more infos
+See [API](#about-api) for more infos
 
 ## About: CLI
 

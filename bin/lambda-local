@@ -39,6 +39,11 @@
             '(optional) Read the specified AWS credentials file')
         .option('-E, --environment <JSON {key:value}>',
             '(optional) Set extra environment variables for the lambda')
+        .option('-v, --verboselevel <3/2/1/0>',
+            '(optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text ' +
+            'and level 0 dismiss also the result.')
+        .option('--envfile <path/to/env/file>',
+            '(optional) Load additional environment variables from a file')
         .parse(process.argv);
     
     var eventPath = program.eventPath,
@@ -48,7 +53,9 @@
         profileName = program.profile,
         region = program.region,
         environment = program.environment,
-        callbackWaitsForEmptyEventLoop = program.noForceCallback;
+        envfile = program.envfile,
+        callbackWaitsForEmptyEventLoop = program.noForceCallback,
+        verboseLevel = program.verboselevel;
     
     if (!lambdaPath || !eventPath) {
         program.help();
@@ -87,36 +94,37 @@
     }
 
     var event = require(utils.getAbsolutePath(eventPath));
-
-    // execute
-    lambdaLocal.execute({
-        event: event,
-        lambdaPath: lambdaPath,
-        lambdaHandler: lambdaHandler,
-        profilePath: profilePath,
-        profileName: profileName,
-        region: region,
-        callbackWaitsForEmptyEventLoop: callbackWaitsForEmptyEventLoop,
-        timeoutMs: timeoutMs,
-        environment: environment,
-        callback: function(err /*, data */) { //data unused
-            logger.log('info', '-----');
-            if (err === null) {
-                logger.log('info', 'lambda-local successfully complete.');
-                process.exit(0);
-            } else {
-                logger.log('error', 'lambda-local failed.');
-                // Finish the process
-                process.exit(1);
-            }
+    try {
+        // execute
+        lambdaLocal.execute({
+            event: event,
+            lambdaPath: lambdaPath,
+            lambdaHandler: lambdaHandler,
+            profilePath: profilePath,
+            profileName: profileName,
+            region: region,
+            callbackWaitsForEmptyEventLoop: callbackWaitsForEmptyEventLoop,
+            timeoutMs: timeoutMs,
+            environment: environment,
+            envfile: envfile,
+            callback: function(err /*, data */) { //data unused
+                if (err === null) {
+                    logger.log('info', 'lambda-local successfully complete.');
+                    process.exit(0);
+                } else {
+                    logger.log('error', 'lambda-local failed.');
+                    // Finish the process
+                    process.exit(1);
+                }
+            },
+            verboseLevel: verboseLevel
+        });
+    } catch (ex) {
+        if (ex instanceof utils.TimeoutError) {
+            logger.log('error', '-----');
+            logger.log('error', 'Task timed out after ' + (timeoutMs / 1000).toFixed(2) + ' seconds');
+            process.exit(1);
         }
-    });
-
-    // Handling timeout
-    setTimeout(function() {
-        logger.log('error', '-----');
-        logger.log('error', 'Task timed out after ' + (timeoutMs / 1000).toFixed(2) + ' seconds');
-        process.exit();
-    }, timeoutMs);
-
+        logger.log('error', ex);
+    }
 })();

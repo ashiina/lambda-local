@@ -20,10 +20,10 @@ You can use Lambda-local as a command line tool.
 
 ```bash
 # Simple usage
-lambda-local -l index.js -h handler -e event-samples/s3-put.js
+lambda-local -l index.js -h handler -e examples/s3-put.js
 
 # Input environment variables
-lambda-local -l index.js -h handler -e event-samples/s3-put.js -E "{\"key\":\"value\"\,\"key2\":\"value2\"}"
+lambda-local -l index.js -h handler -e examples/s3-put.js -E "{\"key\":\"value\"\,\"key2\":\"value2\"}"
 
 ```
 
@@ -50,7 +50,7 @@ See [API](#about-api) for more infos
 *    --envfile <path/to/env/file>                     (optional) Set extra environment variables from an env file
 
 ### Event data
-Event sample data are placed in `event-samples` folder - feel free to use the files in here, or create your own event data.
+Event sample data are placed in `examples` folder - feel free to use the files in here, or create your own event data.
 Event data are just JSON objects exported:
 
 ```js

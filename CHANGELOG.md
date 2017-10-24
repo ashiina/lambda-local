@@ -1,5 +1,10 @@
 # ChangeLog
 
+## 1.4.4 (2017/10/24)
+ * Timeout fix
+ * Better context management
+ * Add execution time log
+
 ## 1.4.3 (2017/09/23)
  * Several token fixes
  * New log system, using a verbose level

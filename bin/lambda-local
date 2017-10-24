@@ -95,6 +95,7 @@
 
     var event = require(utils.getAbsolutePath(eventPath));
     try {
+        var init_time = new Date().getTime();
         // execute
         lambdaLocal.execute({
             event: event,
@@ -108,11 +109,12 @@
             environment: environment,
             envfile: envfile,
             callback: function(err /*, data */) { //data unused
+                var exec_time = new Date().getTime() - init_time;
                 if (err === null) {
-                    logger.log('info', 'lambda-local successfully complete.');
+                    logger.log('info', 'Lambda successfully executed in ' + exec_time + 'ms.');
                     process.exit(0);
                 } else {
-                    logger.log('error', 'lambda-local failed.');
+                    logger.log('error', 'Lambda failed in ' + exec_time + 'ms.');
                     // Finish the process
                     process.exit(1);
                 }

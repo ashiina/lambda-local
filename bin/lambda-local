@@ -112,7 +112,7 @@
                     logger.log('info', 'lambda-local successfully complete.');
                     process.exit(0);
                 } else {
-                    logger.log('error', 'lambda-local failed.');
+                    logger.log('error', err.message);
                     // Finish the process
                     process.exit(1);
                 }

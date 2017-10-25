@@ -30,6 +30,10 @@ function get_shell(data){
     }
 }
 
+function get_node_major_version(){
+    return parseInt(process.version[1]);
+}
+
 //Tests
 
 describe("- Testing utils.js", function () {
@@ -199,23 +203,32 @@ describe("- Testing lambdalocal.js", function () {
             });
         });
     });
-    
-    describe('* Promised Run', function () {
-        it('should return correct values as promise', function () {
-            var lambdalocal = require("../lib/lambdalocal.js");
-            lambdalocal.setLogger(winston);
-            return lambdalocal.execute({
+    if (get_node_major_version() >= 2){
+        describe('* Promised Run', function () {
+            var opts = {
                 event: require(path.join(__dirname, "./events/test-event.js")),
                 lambdaPath: path.join(__dirname, "./functs/test-func.js"),
                 lambdaHandler: functionName,
                 callbackWaitsForEmptyEventLoop: false,
                 timeoutMs: timeoutMs,
                 verboseLevel: 1
-            }).then(function (data) {
-                assert.equal(data.result, "testvar");
+            }
+            it('should return correct values as promise', function () {
+                var lambdalocal = require("../lib/lambdalocal.js");
+                lambdalocal.setLogger(winston);
+                return lambdalocal.execute(opts).then(function (data) {
+                    assert.equal(data.result, "testvar");
+                });
+            });
+            it('should be stateless', function () {
+                var lambdalocal = require("../lib/lambdalocal.js");
+                lambdalocal.setLogger(winston);
+                return lambdalocal.execute(opts).then(function (data) {
+                    assert.equal(data.result, "testvar");
+                });
             });
         });
-    })
+    }
 });
 
 describe("- Testing bin/lambda-local", function () {

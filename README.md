@@ -23,7 +23,7 @@ You can use Lambda-local as a command line tool.
 lambda-local -l index.js -h handler -e examples/s3-put.js
 
 # Input environment variables
-lambda-local -l index.js -h handler -e examples/s3-put.js -E "{\"key\":\"value\"\,\"key2\":\"value2\"}"
+lambda-local -l index.js -h handler -e examples/s3-put.js -E '{"key":"value","key2":"value2"}'
 
 ```
 

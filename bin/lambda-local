@@ -22,8 +22,8 @@
     // process opts
     var program = require('commander');
     program
-        .option('-l, --lambda-path <lambda index path>', '(required) Lambda function file name.')
-        .option('-e, --event-path <path>', '(required) Event data file name.')
+        .option('-l, --lambda-path <lambda script path>', '(required) Lambda function file path.')
+        .option('-e, --event <JSON {key:value} | file path>', 'JSON event data or path to local file.')
         .option('-h, --handler <handler name>',
             '(optional) Lambda function handler name. Default is \'handler\'.')
         .option('-t, --timeout <timeout seconds>',
@@ -46,7 +46,7 @@
             '(optional) Load additional environment variables from a file')
         .parse(process.argv);
     
-    var eventPath = program.eventPath,
+    var event = program.event,
         lambdaPath = program.lambdaPath,
         lambdaHandler = program.handler,
         profilePath = program.profilePath,
@@ -92,8 +92,24 @@
     } else {
         timeoutMs = 3000;
     }
-
-    var event = require(utils.getAbsolutePath(eventPath));
+    
+    event = (function(event) {
+        try {
+            return JSON.parse(event);
+        } catch (e) {};
+        
+        try {
+            return require(utils.getAbsolutePath(event))
+        } catch (e) {};
+    })(event);
+    
+    if (!event) {
+        console.log("Event must be JSON format or path to local file.");
+        console.log("JSON example:      {\\\"key\\\":\\\"val\\\"\\\,\\\"key2\\\":\\\"val2\\\"}");
+        console.log("File path example: ./events/foo.js");
+        process.exit();
+    }
+    
     try {
         var init_time = new Date().getTime();
         // execute

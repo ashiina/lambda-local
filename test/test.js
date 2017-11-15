@@ -241,15 +241,61 @@ describe("- Testing bin/lambda-local", function () {
             console.log(r.output.toString('utf8'));
             console.log(r.stderr.toString('utf8'));
         });
+
+        it("should end normally: callback null", function () {
+            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-null.js -e ./events/test-event.js");
+            var r = spawnSync(command[0], command[1]);
+            assert.equal(r.status, 0);
+            console.log(r.output.toString('utf8'));
+            console.log(r.stderr.toString('utf8'));
+        });
+
+        it("should end normally: callback undefined", function () {
+            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-undefined.js -e ./events/test-event.js");
+            var r = spawnSync(command[0], command[1]);
+            assert.equal(r.status, 0);
+            console.log(r.output.toString('utf8'));
+            console.log(r.stderr.toString('utf8'));
+        });
     });
+
     describe("* Failing Run", function () {
-        it("should fail", function () {
+        it("should fail: context", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-fail.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
             assert.equal(r.status, 1);
             console.log(r.output.toString('utf8'));
         });
+
+        it("should fail: callback string", function () {
+            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-fail.js -e ./events/test-event.js");
+            var r = spawnSync(command[0], command[1]);
+            assert.equal(r.status, 1);
+            console.log(r.output.toString('utf8'));
+        });
+
+        it("should fail: callback empty string", function () {
+            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-empty.js -e ./events/test-event.js");
+            var r = spawnSync(command[0], command[1]);
+            assert.equal(r.status, 1);
+            console.log(r.output.toString('utf8'));
+        });
+
+        it("should fail: callback false", function () {
+            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-false.js -e ./events/test-event.js");
+            var r = spawnSync(command[0], command[1]);
+            assert.equal(r.status, 1);
+            console.log(r.output.toString('utf8'));
+        });
+
+        it("should fail: callback 0", function () {
+            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-0.js -e ./events/test-event.js");
+            var r = spawnSync(command[0], command[1]);
+            assert.equal(r.status, 1);
+            console.log(r.output.toString('utf8'));
+        });
     });
+
     describe("* Crashing run", function () {
         it("should fail", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-error.js -e ./events/test-event.js");

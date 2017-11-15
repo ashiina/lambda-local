@@ -72,7 +72,7 @@
         } catch (e) {
             console.log("Invalid environment variable JSON format. ");
             console.log("Example: {\\\"key\\\":\\\"val\\\"\\\,\\\"key2\\\":\\\"val2\\\"}");
-            process.exit();
+            process.exit(1);
         }
     } else {
         environment = [];
@@ -93,7 +93,7 @@
         timeoutMs = 3000;
     }
 
-    var event = require(utils.getAbsolutePath(eventPath));
+    var event = function(){return require(utils.getAbsolutePath(eventPath));}
     try {
         var init_time = new Date().getTime();
         // execute

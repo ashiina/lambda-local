@@ -110,13 +110,13 @@
             envfile: envfile,
             callback: function(err /*, data */) { //data unused
                 var exec_time = new Date().getTime() - init_time;
-                if (err === null) {
-                    logger.log('info', 'Lambda successfully executed in ' + exec_time + 'ms.');
-                    process.exit(0);
-                } else {
+                if (err !== null && typeof err !== 'undefined') {
                     logger.log('error', 'Lambda failed in ' + exec_time + 'ms.');
                     // Finish the process
                     process.exit(1);
+                } else {
+                    logger.log('info', 'Lambda successfully executed in ' + exec_time + 'ms.');
+                    process.exit(0);
                 }
             },
             verboseLevel: verboseLevel

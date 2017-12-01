@@ -202,6 +202,26 @@ describe("- Testing lambdalocal.js", function () {
                 cb();
             });
         });
+        describe("* Return Error object", function () {
+            it("should convert it to correct JSON format", function (cb) {
+                var lambdalocal = require("../lib/lambdalocal.js");
+                lambdalocal.setLogger(winston);
+                var lambdaFunc = require("./functs/test-func-cb-error.js");
+                lambdalocal.execute({
+                    event: require(path.join(__dirname, "./events/test-event.js")),
+                    lambdaFunc: lambdaFunc,
+                    lambdaHandler: functionName,
+                    callbackWaitsForEmptyEventLoop: false,
+                    timeoutMs: 1000,
+                    callback: function (err, _done) {
+                        assert.equal(err.errorType, "Error");
+                        assert.equal(err.errorMessage, "Failed for an unknown reason !");
+                        cb();
+                    },
+                    verboseLevel: 1
+                });
+            });
+        });
     });
     if (get_node_major_version() >= 2){
         describe('* Promised Run', function () {

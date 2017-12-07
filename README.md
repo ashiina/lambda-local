@@ -46,6 +46,7 @@ See [API](#about-api) for more infos
 *    -P, --profile-path <aws profile name>            (optional) Read the specified AWS credentials file.
 *    -p, --profile <aws profile name>                 (optional) Use with **-P**: Read the AWS profile of the file.
 *    -E, --environment <JSON {key:value}>             (optional) Set extra environment variables for the lambda
+*    --envdestroy                                     (optional) Destroy added environment on closing. Defaults to false
 *    -v, --verboselevel <3/2/1/0>',                   (optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.
 *    --envfile <path/to/env/file>                     (optional) Set extra environment variables from an env file
 

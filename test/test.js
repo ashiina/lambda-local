@@ -100,7 +100,7 @@ describe("- Testing lambdalocal.js", function () {
                 environment: {
                     "envkey1": "Environment",
                     "envkey2": {"k":"v"},
-                    "envkey3": 123
+                    "envkey3": 123,
                 },
                 envfile: path.join(__dirname, "./other/env"),
                 verboseLevel: 1
@@ -115,6 +115,35 @@ describe("- Testing lambdalocal.js", function () {
                 // from envfile
                 assert.equal(process.env.envkey4, 'foo');
                 assert.equal(process.env.envkey5, 'bar');
+            });
+        });
+        describe("# Environment Variables (destroy)", function () {
+            var done, err;
+            before(function (cb) {
+                var lambdalocal = require("../lib/lambdalocal.js");
+                lambdalocal.setLogger(winston);
+                lambdalocal.execute({
+                    event: require(path.join(__dirname, "./events/test-event.js")),
+                    lambdaPath: path.join(__dirname, "./functs/test-func.js"),
+                    lambdaHandler: functionName,
+                    profilePath: path.join(__dirname, "./other/debug.aws"),
+                    callbackWaitsForEmptyEventLoop: false,
+                    timeoutMs: timeoutMs,
+                    callback: function (_err, _done) {
+                        err = _err;
+                        done = _done;
+                        cb();
+                    },
+                    environment: {
+                        "isnetestlambda": "I should not exist",
+                    },
+                    envdestroy: true,
+                    envfile: path.join(__dirname, "./other/env"),
+                    verboseLevel: 1
+                });
+            });
+            it("environment should have been deleted", function () {
+                assert.equal(!("isnetestlambda" in process.env), true);
             });
         });
 
@@ -198,7 +227,7 @@ describe("- Testing lambdalocal.js", function () {
                         },
                         verboseLevel: 1
                     }, utils.TimeoutError);
-                })
+                });
                 cb();
             });
         });
@@ -318,11 +347,12 @@ describe("- Testing bin/lambda-local", function () {
 
     describe("* Environment test run", function () {
         it("event should have used ENV while building", function () {
-            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-env.js -e ./events/test-event-env.js -v 1 -E {\"TEST_HUBID\":\"potato\"}");
+            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-env.js -e ./events/test-event-env.js -v 1 --envdestroy -E {\"TEST_HUBID\":\"potato\"}");
             var r = spawnSync(command[0], command[1]);
             assert.equal(r.status, 0);
             console.log(r.output.toString('utf8'));
             //test included in test-func-env.js
+            assert.equal(!("TEST_HUBID" in process.env), true);
         });
     });
 

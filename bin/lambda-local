@@ -39,6 +39,8 @@
             '(optional) Read the specified AWS credentials file')
         .option('-E, --environment <JSON {key:value}>',
             '(optional) Set extra environment variables for the lambda')
+        .option('--envdestroy',
+            '(optional) Destroy added environment on closing. Defaults to false')
         .option('-v, --verboselevel <3/2/1/0>',
             '(optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text ' +
             'and level 0 dismiss also the result.')
@@ -53,6 +55,7 @@
         profileName = program.profile,
         region = program.region,
         environment = program.environment,
+        envdestroy = program.envdestroy,
         envfile = program.envfile,
         callbackWaitsForEmptyEventLoop = program.noForceCallback,
         verboseLevel = program.verboselevel;
@@ -72,7 +75,7 @@
         } catch (e) {
             console.log("Invalid environment variable JSON format. ");
             console.log("Example: {\\\"key\\\":\\\"val\\\"\\\,\\\"key2\\\":\\\"val2\\\"}");
-            process.exit();
+            process.exit(1);
         }
     } else {
         environment = [];
@@ -93,7 +96,7 @@
         timeoutMs = 3000;
     }
 
-    var event = require(utils.getAbsolutePath(eventPath));
+    var event = function(){return require(utils.getAbsolutePath(eventPath));}
     try {
         var init_time = new Date().getTime();
         // execute
@@ -107,16 +110,17 @@
             callbackWaitsForEmptyEventLoop: callbackWaitsForEmptyEventLoop,
             timeoutMs: timeoutMs,
             environment: environment,
+            envdestroy: envdestroy,
             envfile: envfile,
             callback: function(err /*, data */) { //data unused
                 var exec_time = new Date().getTime() - init_time;
-                if (err === null) {
-                    logger.log('info', 'Lambda successfully executed in ' + exec_time + 'ms.');
-                    process.exit(0);
-                } else {
+                if (err !== null && typeof err !== 'undefined') {
                     logger.log('error', 'Lambda failed in ' + exec_time + 'ms.');
                     // Finish the process
                     process.exit(1);
+                } else {
+                    logger.log('info', 'Lambda successfully executed in ' + exec_time + 'ms.');
+                    process.exit(0);
                 }
             },
             verboseLevel: verboseLevel

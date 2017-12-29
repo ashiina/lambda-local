@@ -1,5 +1,9 @@
 # ChangeLog
 
+## 1.4.5 (2017/11/15)
+ * Better environment variables managing
+ * Fix lambda ending rules (context.done/fail/succeed)
+
 ## 1.4.4 (2017/10/24)
  * Timeout fix
  * Better context management

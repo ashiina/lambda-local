@@ -19,8 +19,7 @@ module.exports = {
       "slot-name": "value",
       "slot-name": "value"
     },
-    "confirmationStatus": "None, Confirmed, or Denied
-      (intent confirmation, if configured)"
+    "confirmationStatus": "None, Confirmed, or Denied (intent confirmation, if configured)"
   }
 }
   

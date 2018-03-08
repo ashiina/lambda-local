@@ -1,5 +1,11 @@
 # ChangeLog
 
+## 1.4.6 (2018/03/08)
+ * Fix region detection
+ * Add --envdestroy option to restore the environment after testing.
+ * Support builtin Error object handling
+ * More examples & better README
+
 ## 1.4.5 (2017/11/15)
  * Better environment variables managing
  * Fix lambda ending rules (context.done/fail/succeed)

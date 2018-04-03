@@ -1,5 +1,8 @@
 # ChangeLog
 
+## 1.4.7 (2018/04/03)
+ * Support async functions (thanks to @hoegertn)
+
 ## 1.4.6 (2018/03/08)
  * Fix region detection
  * Add --envdestroy option to restore the environment after testing.

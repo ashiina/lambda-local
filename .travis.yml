@@ -3,11 +3,12 @@ node_js:
   - "1.8"
   - "4"
   - "6"
+  - "8"
   - "node"
 sudo: false
 #cache:
 #  directories:
 #    - node_modules
 script: 
-    - "make test"
+  - "make test"
 

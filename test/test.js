@@ -278,6 +278,54 @@ describe("- Testing lambdalocal.js", function () {
             });
         });
     }
+    if (get_node_major_version() >= 8){
+        describe('* Async Run', function () {
+            it('should understand direct return in async functions', function () {
+                var lambdalocal = require("../lib/lambdalocal.js");
+                lambdalocal.setLogger(winston);
+                return lambdalocal.execute({
+                  event: require(path.join(__dirname, "./events/test-event.js")),
+                  lambdaPath: path.join(__dirname, "./functs/test-func-async.js"),
+                  lambdaHandler: functionName,
+                  callbackWaitsForEmptyEventLoop: false,
+                  timeoutMs: timeoutMs,
+                  verboseLevel: 1
+                }).then(function (data) {
+                    assert.equal(data.result, "testvar");
+                });
+            });
+            it('should understand Promise return in functions', function () {
+                var lambdalocal = require("../lib/lambdalocal.js");
+                lambdalocal.setLogger(winston);
+                return lambdalocal.execute({
+                  event: require(path.join(__dirname, "./events/test-event.js")),
+                  lambdaPath: path.join(__dirname, "./functs/test-func-promise.js"),
+                  lambdaHandler: functionName,
+                  callbackWaitsForEmptyEventLoop: false,
+                  timeoutMs: timeoutMs,
+                  verboseLevel: 1
+                }).then(function (data) {
+                    assert.equal(data.result, "testvar");
+                });
+            });
+            it('should understand Promise rejection in functions', function () {
+                var lambdalocal = require("../lib/lambdalocal.js");
+                lambdalocal.setLogger(winston);
+                return lambdalocal.execute({
+                  event: require(path.join(__dirname, "./events/test-event.js")),
+                  lambdaPath: path.join(__dirname, "./functs/test-func-promise-fail.js"),
+                  lambdaHandler: functionName,
+                  callbackWaitsForEmptyEventLoop: false,
+                  timeoutMs: timeoutMs,
+                  verboseLevel: 1
+                }).then(function () {
+                    assert.fail('Should not happen');
+                }, function (err) {
+                    assert.equal(err, "Failed");
+                });
+            });
+        });
+    }
 });
 
 describe("- Testing bin/lambda-local", function () {

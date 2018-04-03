@@ -28,9 +28,6 @@
             '(optional) Lambda function handler name. Default is \'handler\'.')
         .option('-t, --timeout <timeout seconds>',
             '(optional) Seconds until lambda function timeout. Default is 3 seconds.')
-        .option('-n, --no-force-callback',
-            '(optional) Force the function to stop after having called the handler function' +
-            ' even if context.done/succeed/fail was not called.')
         .option('-r, --region <aws region>',
             '(optional) default set to us-east-1')
         .option('-p, --profile <aws profile name>',
@@ -39,6 +36,9 @@
             '(optional) Read the specified AWS credentials file')
         .option('-E, --environment <JSON {key:value}>',
             '(optional) Set extra environment variables for the lambda')
+        .option('--force-callback',
+            '(optional) Force the function to stop after having called the handler function' +
+            ' without waiting for an empty look (callbackWaitsForEmptyEventLoop=False)')
         .option('--envdestroy',
             '(optional) Destroy added environment on closing. Defaults to false')
         .option('-v, --verboselevel <3/2/1/0>',
@@ -46,6 +46,8 @@
             'and level 0 dismiss also the result.')
         .option('--envfile <path/to/env/file>',
             '(optional) Load additional environment variables from a file')
+        .option('--inspect [[host:]port]',
+            '(optional) Starts lambda-local using the NodeJS inspector (available in nodejs > 8.0.0)')
         .parse(process.argv);
     
     var eventPath = program.eventPath,
@@ -57,7 +59,7 @@
         environment = program.environment,
         envdestroy = program.envdestroy,
         envfile = program.envfile,
-        callbackWaitsForEmptyEventLoop = program.noForceCallback,
+        callbackWaitsForEmptyEventLoop = program.forceCallback,
         verboseLevel = program.verboselevel;
     
     if (!lambdaPath || !eventPath) {
@@ -96,6 +98,30 @@
         timeoutMs = 3000;
     }
 
+    //Use NodeJS inspector
+    var inspector;
+    var _close_inspector;
+    if (program.inspect) {
+        if (parseInt(process.version[1]) < 8) {
+            logger.log('error', 'Inspector API not available on NodeJS < 8.0.0');
+        } else {
+            inspector = require('inspector');
+            if (program.inspect == true) {
+                inspector.open();
+            } else if (typeof(program.inspect) === 'string') {
+                if (program.inspect.indexOf(":") !== -1){
+                    var arr = program.inspect.split(":");
+                    inspector.open(parseInt(arr[1]), arr[0]);
+                } else {
+                    inspector.open(parseInt(program.inspect));
+                }
+            } else {
+                logger.log('error', 'Unknown parameters following --inspect');
+            }
+            _close_inspector = function(){inspector.close();}
+        }
+    }
+
     var event = function(){return require(utils.getAbsolutePath(eventPath));}
     try {
         var init_time = new Date().getTime();
@@ -114,6 +140,9 @@
             envfile: envfile,
             callback: function(err /*, data */) { //data unused
                 var exec_time = new Date().getTime() - init_time;
+                if (_close_inspector) {
+                    _close_inspector();
+                }
                 if (err !== null && typeof err !== 'undefined') {
                     logger.log('error', 'Lambda failed in ' + exec_time + 'ms.');
                     // Finish the process

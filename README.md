@@ -41,14 +41,15 @@ See [API](#about-api) for more infos
 *    -e, --event-path <event path>                    (required) Specify event data file name.
 *    -h, --handler <handler name>                     (optional) Lambda function handler name. Default is "handler".
 *    -t, --timeout <timeout>                          (optional) Seconds until lambda function timeout. Default is 3 seconds.
-*    -n, --no-force-callback                          (optional) Force the function to stop after having called the handler function even if context.done/succeed/fail was not called.
 *    -r, --region <aws region>                        (optional) Sets the AWS region, defaults to us-east-1.
 *    -P, --profile-path <aws profile name>            (optional) Read the specified AWS credentials file.
 *    -p, --profile <aws profile name>                 (optional) Use with **-P**: Read the AWS profile of the file.
 *    -E, --environment <JSON {key:value}>             (optional) Set extra environment variables for the lambda
+*    --force-callback                                 (optional) Force the function to stop after having called the handler function without waiting for an empty look (callbackWaitsForEmptyEventLoop=False)
 *    --envdestroy                                     (optional) Destroy added environment on closing. Defaults to false
 *    -v, --verboselevel <3/2/1/0>',                   (optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.
 *    --envfile <path/to/env/file>                     (optional) Set extra environment variables from an env file
+*    --inspect [[host:]port]                          (optional) Starts lambda-local using the NodeJS inspector (available in nodejs > 8.0.0)
 
 ### Event data
 Event sample data are placed in `examples` folder - feel free to use the files in here, or create your own event data.

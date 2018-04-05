@@ -40,7 +40,7 @@ describe("- Testing utils.js", function () {
     var utils = require("../lib/utils.js");
     describe("* getAbsolutePath", function () {
         it("should return existing path file", function () {
-            var f_path = utils.getAbsolutePath("test.js");
+            var f_path = utils.getAbsolutePath("./test.js");
             assert.doesNotThrow(function(){fs.accessSync(f_path, fs.F_OK)});
         });
     });
@@ -83,6 +83,9 @@ describe("- Testing lambdalocal.js", function () {
     describe("* Basic Run", function () {
         var done, err;
         before(function (cb) {
+            //For this test: set an environment var which should not be overwritten by lambda-local
+            process.env["AWS_REGION"] = "unicorn-universe";
+            //
             var lambdalocal = require("../lib/lambdalocal.js");
             lambdalocal.setLogger(winston);
             lambdalocal.execute({
@@ -100,7 +103,7 @@ describe("- Testing lambdalocal.js", function () {
                 environment: {
                     "envkey1": "Environment",
                     "envkey2": {"k":"v"},
-                    "envkey3": 123,
+                    "envkey3": 123
                 },
                 envfile: path.join(__dirname, "./other/env"),
                 verboseLevel: 1
@@ -116,7 +119,15 @@ describe("- Testing lambdalocal.js", function () {
                 assert.equal(process.env.envkey4, 'foo');
                 assert.equal(process.env.envkey5, 'bar');
             });
+            it("should not have overwritten already-existing env vars", function () {
+                assert.equal(process.env.AWS_REGION, "unicorn-universe");
+            });
+            after(function (cb){
+                delete process.env["AWS_REGION"];
+                cb();
+            });
         });
+
         describe("# Environment Variables (destroy)", function () {
             var done, err;
             before(function (cb) {
@@ -146,7 +157,6 @@ describe("- Testing lambdalocal.js", function () {
                 assert.equal(!("isnetestlambda" in process.env), true);
             });
         });
-
 
         describe("# AWS credentials", function () {
             it("should return correct credentials", function () {

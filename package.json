@@ -1,6 +1,6 @@
 {
   "name": "lambda-local",
-  "version": "1.4.4",
+  "version": "1.4.7",
   "description": "Commandline tool to run Lambda functions on your local machine.",
   "keywords": [
     "lambda",

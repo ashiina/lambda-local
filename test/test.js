@@ -401,6 +401,20 @@ describe("- Testing bin/lambda-local", function () {
             assert.equal(r.status, 1);
             console.log(r.output.toString('utf8'));
         });
+
+        it("should fail: syntax error", function () {
+            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-syntax-error.js -e ./events/test-event.js");
+            var r = spawnSync(command[0], command[1]);
+            assert.equal(r.status, 1);
+            console.log(r.output.toString('utf8'));
+        });
+
+        it("should fail: require error", function () {
+            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-require-error.js -e ./events/test-event.js");
+            var r = spawnSync(command[0], command[1]);
+            assert.equal(r.status, 1);
+            console.log(r.output.toString('utf8'));
+        });
     });
 
     describe("* Environment test run", function () {

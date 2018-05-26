@@ -1,5 +1,10 @@
 # ChangeLog
 
+## 1.4.8 (2018/05/26)
+ * Read default AWS config files
+ * Improve absolute/relative path finding
+ * Handle syntax error in handlers
+
 ## 1.4.7 (2018/04/03)
  * Support async functions (thanks to @hoegertn)
 

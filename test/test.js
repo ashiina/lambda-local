@@ -30,6 +30,11 @@ function get_shell(data){
     }
 }
 
+function process_outputs(r){
+    r.output = r.output.toString('utf8').slice(1, -1);
+    r.stderr = r.stderr.toString('utf8').slice(1, -1);
+}
+
 function get_node_major_version(){
     return parseInt(process.version[1]);
 }
@@ -79,6 +84,8 @@ describe("- Testing lambdalocal.js Logger", function () {
     });
 });
 
+var firstawsRequestId;
+
 describe("- Testing lambdalocal.js", function () {
     describe("* Basic Run", function () {
         var done, err;
@@ -109,6 +116,7 @@ describe("- Testing lambdalocal.js", function () {
                 verboseLevel: 1
             });
         });
+
         describe("# Environment Variables", function () {
             it("should return correct environment variables", function () {
                 assert.equal(process.env.envkey1, "Environment");
@@ -125,6 +133,34 @@ describe("- Testing lambdalocal.js", function () {
             after(function (cb){
                 delete process.env["AWS_REGION"];
                 cb();
+            });
+        });
+
+        describe("# LambdaLocal", function () {
+            it("should return correct testvar", function () {
+                assert.equal(done.result, "testvar");
+            });
+        });
+
+        describe("# Context object", function () {
+            it("should contain initialized functionName", function () {
+                assert.equal(done.context.functionName, functionName);
+            });
+            it("should contain initialized awsRequestId", function () {
+                assert.equal(done.context.awsRequestId.length, 36);
+                firstawsRequestId = done.context.awsRequestId;
+            });
+            it("should contain initialized getRemainingTimeInMillis", function () {
+                assert.isAtMost(done.context.getRemainingTimeInMillis(), timeoutMs);
+            });
+            it("should contain done function", function () {
+                assert.isDefined(done.context.done);
+            });
+            it("should contain succeed function", function () {
+                assert.isDefined(done.context.succeed);
+            });
+            it("should contain fail function", function () {
+                assert.isDefined(done.context.fail);
             });
         });
 
@@ -156,6 +192,9 @@ describe("- Testing lambdalocal.js", function () {
             it("environment should have been deleted", function () {
                 assert.equal(!("isnetestlambda" in process.env), true);
             });
+            it("should contain an awsRequestId different from the first one", function () {
+                assert.notEqual(done.context.awsRequestId, firstawsRequestId);
+            });
         });
 
         describe("# AWS credentials", function () {
@@ -167,32 +206,6 @@ describe("- Testing lambdalocal.js", function () {
             });
         });
 
-        describe("# LambdaLocal", function () {
-            it("should return correct testvar", function () {
-                assert.equal(done.result, "testvar");
-            });
-        });
-
-        describe("# Context object", function () {
-            it("should contain initialized functionName", function () {
-                assert.equal(done.context.functionName, functionName);
-            });
-            it("should contain initialized awsRequestId", function () {
-                assert.equal(done.context.awsRequestId.length, 36);
-            });
-            it("should contain initialized getRemainingTimeInMillis", function () {
-                assert.isAtMost(done.context.getRemainingTimeInMillis(), timeoutMs);
-            });
-            it("should contain done function", function () {
-                assert.isDefined(done.context.done);
-            });
-            it("should contain succeed function", function () {
-                assert.isDefined(done.context.succeed);
-            });
-            it("should contain fail function", function () {
-                assert.isDefined(done.context.fail);
-            });
-        });
         describe("* Mocked function", function () {
             var done, err;
             before(function (cb) {
@@ -259,6 +272,36 @@ describe("- Testing lambdalocal.js", function () {
                     },
                     verboseLevel: 1
                 });
+            });
+        });
+    });
+    describe('* Nested Run', function () {
+        it("Should handle nested calls properly (context singleton)", function (cb) {
+            var lambdalocal = require("../lib/lambdalocal.js");
+            lambdalocal.setLogger(winston);
+            lambdalocal.execute({
+                event: require(path.join(__dirname, "./events/test-event.js")),
+                lambdaPath: path.join(__dirname, "./functs/test-func.js"),
+                lambdaHandler: functionName,
+                callbackWaitsForEmptyEventLoop: false,
+                timeoutMs: timeoutMs,
+                callback: function (err, done) {
+                    assert.equal(done.result, "testvar");
+                    //Second run
+                    lambdalocal.execute({
+                        event: require(path.join(__dirname, "./events/test-event.js")),
+                        lambdaPath: path.join(__dirname, "./functs/test-func.js"),
+                        lambdaHandler: functionName,
+                        callbackWaitsForEmptyEventLoop: false,
+                        timeoutMs: timeoutMs,
+                        callback: function (_err, _done) {
+                            assert.equal(_done.result, "testvar");
+                            cb();
+                        },
+                        verboseLevel: 0
+                    });
+                },
+                verboseLevel: 0
             });
         });
     });
@@ -344,25 +387,28 @@ describe("- Testing bin/lambda-local", function () {
         it("should end normally", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
             assert.equal(r.status, 0);
-            console.log(r.output.toString('utf8'));
-            console.log(r.stderr.toString('utf8'));
+            console.log(r.output);
+            console.log(r.stderr);
         });
 
         it("should end normally: callback null", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-null.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
             assert.equal(r.status, 0);
-            console.log(r.output.toString('utf8'));
-            console.log(r.stderr.toString('utf8'));
+            console.log(r.output);
+            console.log(r.stderr);
         });
 
         it("should end normally: callback undefined", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-undefined.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
             assert.equal(r.status, 0);
-            console.log(r.output.toString('utf8'));
-            console.log(r.stderr.toString('utf8'));
+            console.log(r.output);
+            console.log(r.stderr);
         });
     });
 
@@ -370,50 +416,57 @@ describe("- Testing bin/lambda-local", function () {
         it("should fail: context", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-fail.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
             assert.equal(r.status, 1);
-            console.log(r.output.toString('utf8'));
+            console.log(r.output);
         });
 
         it("should fail: callback string", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-fail.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
             assert.equal(r.status, 1);
-            console.log(r.output.toString('utf8'));
+            console.log(r.output);
         });
 
         it("should fail: callback empty string", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-empty.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
             assert.equal(r.status, 1);
-            console.log(r.output.toString('utf8'));
+            console.log(r.output);
         });
 
         it("should fail: callback false", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-false.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
             assert.equal(r.status, 1);
-            console.log(r.output.toString('utf8'));
+            console.log(r.output);
         });
 
         it("should fail: callback 0", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-0.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
             assert.equal(r.status, 1);
-            console.log(r.output.toString('utf8'));
+            console.log(r.output);
         });
 
         it("should fail: syntax error", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-syntax-error.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
             assert.equal(r.status, 1);
-            console.log(r.output.toString('utf8'));
+            console.log(r.output);
         });
 
         it("should fail: require error", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-require-error.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
             assert.equal(r.status, 1);
-            console.log(r.output.toString('utf8'));
+            console.log(r.output);
         });
     });
 
@@ -421,8 +474,9 @@ describe("- Testing bin/lambda-local", function () {
         it("event should have used ENV while building", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-env.js -e ./events/test-event-env.js -v 1 --envdestroy -E {\"TEST_HUBID\":\"potato\"}");
             var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
             assert.equal(r.status, 0);
-            console.log(r.output.toString('utf8'));
+            console.log(r.output);
             //test included in test-func-env.js
             assert.equal(!("TEST_HUBID" in process.env), true);
         });
@@ -443,11 +497,12 @@ describe("- Testing bin/lambda-local", function () {
         });
     });
     describe("* Verbose test", function () {
-        it("should end normally", function () {
+        it("should have no output", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-print.js -e ./events/test-event.js -v 0");
             var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
             assert.equal(r.status, 0);
-            assert.equal(r.output.toString('utf8'), ",,")
+            assert.equal(r.output, "")
         });
     });
 });

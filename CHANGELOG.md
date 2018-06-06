@@ -1,5 +1,10 @@
 # ChangeLog
 
+## 1.5.0 (2018/06/06)
+ * Make context an object
+ * Support multi-threading & nested calls
+ * Context is regenerated on each run (e.g. awsRequestId will change)
+
 ## 1.4.8 (2018/05/26)
  * Read default AWS config files
  * Improve absolute/relative path finding

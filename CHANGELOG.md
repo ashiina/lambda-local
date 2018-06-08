@@ -1,5 +1,9 @@
 # ChangeLog
 
+## 1.5.1 (2018/06/08)
+ * NodeJS >= 10 proper detection
+ * Timeout message fix (thanks to @ribizli)
+
 ## 1.5.0 (2018/06/06)
  * Make context an object
  * Support multi-threading & nested calls

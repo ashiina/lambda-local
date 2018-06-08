@@ -36,7 +36,7 @@ function process_outputs(r){
 }
 
 function get_node_major_version(){
-    return parseInt(process.version[1]);
+    return parseInt(process.version.slice(1).split('.')[0]);
 }
 
 //Tests
@@ -493,7 +493,9 @@ describe("- Testing bin/lambda-local", function () {
         it("should end arbruptly", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-timeout.js -e ./events/test-event.js -t 1");
             var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
             assert.equal(r.status, 1);
+            console.log(r.stderr);
         });
     });
     describe("* Verbose test", function () {

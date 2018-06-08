@@ -98,11 +98,15 @@
         timeoutMs = 3000;
     }
 
+    function get_node_major_version(){
+        return parseInt(process.version.slice(1).split('.')[0]);
+    }
+    
     //Use NodeJS inspector
     var inspector;
     var _close_inspector;
     if (program.inspect) {
-        if (parseInt(process.version[1]) < 8) {
+        if (get_node_major_version() < 8) {
             logger.log('error', 'Inspector API not available on NodeJS < 8.0.0');
         } else {
             inspector = require('inspector');

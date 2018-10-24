@@ -85,7 +85,7 @@ Executes a lambda given the `options` object where keys are:
 - `profileName` - optional, aws profile name. Must be used with 
 - `lambdaHandler` - optional handler name, default to `handler`
 - `region` - optional, AWS region, default to `us-east-1`
-- `callbackWaitsForEmptyEventLoop` - optional, default to `true`. Setting it to `false` will call the callback when your code do, before finishing lambda-local
+- `callbackWaitsForEmptyEventLoop` - optional, default to `false`. Setting it to True will wait for an empty loop before returning.
 - `timeoutMs` - optional, timeout, default to 3000 ms
 - `environment` - optional, extra environment variables for the lambda
 - `envfile` - optional, load an environment file before booting

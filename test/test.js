@@ -503,17 +503,26 @@ describe("- Testing bin/lambda-local", function () {
             console.log(r.stderr);
         });
     });
+    describe("* Not stringifyable run", function () {
+        it("should fallback on util.inspect", function () {
+            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-not-stringifyableoutput.js -e ./events/test-event.js");
+            var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
+            assert.equal(r.status, 0);
+            assert.equal((r.output.indexOf("{ result: 0, data: 1, _rec: [Circular] }") !== -1), true)
+        });
+    });
     describe("* Verbose test", function () {
         it("should have no output", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-print.js -e ./events/test-event.js -v 0");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 0);
-            assert.equal(r.output, "")
+            assert.equal(r.output, "");
         });
     });
     describe("* Test --wait-empty-event-loop", function () {
-        it("should have no output", function () {
+        it("should wait for all timeouts to end", function () {
             var command = get_shell("node ../bin/lambda-local  -l ./functs/test-func-waitemptyloop.js -e ./events/test-event.js --wait-empty-event-loop");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);

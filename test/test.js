@@ -12,6 +12,8 @@ var fs = require("fs");
 
 var functionName = "handler";
 var timeoutMs = 3000;
+var functionVersion = 1;
+var invokedFunctionArn = `arn:aws:lambda:region:account-id:function:${functionName}:${functionVersion}`;
 
 var sinon = require("sinon");
 
@@ -152,6 +154,9 @@ describe("- Testing lambdalocal.js", function () {
             });
             it("should contain initialized getRemainingTimeInMillis", function () {
                 assert.isAtMost(done.context.getRemainingTimeInMillis(), timeoutMs);
+            });
+            it("should contain initialized invokedFunctionArn", function () {
+                assert.equal(done.context.invokedFunctionArn, invokedFunctionArn);
             });
             it("should contain done function", function () {
                 assert.isDefined(done.context.done);

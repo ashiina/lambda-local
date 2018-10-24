@@ -36,9 +36,9 @@
             '(optional) Read the specified AWS credentials file')
         .option('-E, --environment <JSON {key:value}>',
             '(optional) Set extra environment variables for the lambda')
-        .option('--force-callback',
-            '(optional) Force the function to stop after having called the handler function' +
-            ' without waiting for an empty look (callbackWaitsForEmptyEventLoop=False)')
+        .option('--wait-empty-event-loop',
+            '(optional) Sets callbackWaitsForEmptyEventLoop=True => will wait for an empty loop before ' +
+            'returning. This is false by default because our implementation isn\'t perfect and only "emulates" it.')
         .option('--envdestroy',
             '(optional) Destroy added environment on closing. Defaults to false')
         .option('-v, --verboselevel <3/2/1/0>',
@@ -59,7 +59,7 @@
         environment = program.environment,
         envdestroy = program.envdestroy,
         envfile = program.envfile,
-        callbackWaitsForEmptyEventLoop = program.forceCallback,
+        callbackWaitsForEmptyEventLoop = program.waitEmptyEventLoop,
         verboseLevel = program.verboselevel;
     
     if (!lambdaPath || !eventPath) {

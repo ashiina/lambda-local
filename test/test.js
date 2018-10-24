@@ -187,7 +187,7 @@ describe("- Testing lambdalocal.js", function () {
                         cb();
                     },
                     environment: {
-                        "isnetestlambda": "I should not exist",
+                        "isnetestlambda": "I should not exist"
                     },
                     envdestroy: true,
                     envfile: path.join(__dirname, "./other/env"),
@@ -195,7 +195,7 @@ describe("- Testing lambdalocal.js", function () {
                 });
             });
             it("environment should have been deleted", function () {
-                assert.equal(!("isnetestlambda" in process.env), true);
+                assert.equal(("isnetestlambda" in process.env), false);
             });
             it("should contain an awsRequestId different from the first one", function () {
                 assert.notEqual(done.context.awsRequestId, firstawsRequestId);
@@ -510,6 +510,15 @@ describe("- Testing bin/lambda-local", function () {
             process_outputs(r);
             assert.equal(r.status, 0);
             assert.equal(r.output, "")
+        });
+    });
+    describe("* Test --wait-empty-event-loop", function () {
+        it("should have no output", function () {
+            var command = get_shell("node ../bin/lambda-local  -l ./functs/test-func-waitemptyloop.js -e ./events/test-event.js --wait-empty-event-loop");
+            var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
+            assert.equal(r.status, 0);
+            assert.equal((r.output.indexOf("Timeout finished !") !== -1), true)
         });
     });
 });

@@ -94,7 +94,7 @@ describe("- Testing lambdalocal.js", function () {
         before(function (cb) {
             //For this test: set an environment var which should not be overwritten by lambda-local
             process.env["AWS_REGION"] = "unicorn-universe";
-            clientContext = JSON.stringify({"cc1": "xxx"})
+            clientContext = {"cc1": "xxx"};
             //
             var lambdalocal = require("../lib/lambdalocal.js");
             lambdalocal.setLogger(winston);
@@ -117,7 +117,7 @@ describe("- Testing lambdalocal.js", function () {
                 },
                 envfile: path.join(__dirname, "./other/env"),
                 verboseLevel: 1,
-                clientContext: clientContext
+                clientContext: JSON.stringify(clientContext),
             });
         });
 
@@ -170,7 +170,7 @@ describe("- Testing lambdalocal.js", function () {
                 assert.isDefined(done.context.fail);
             });
             it("should contain clientContext", function () {
-               assert.equal(done.context.clientContext, clientContext);
+               assert.deepEqual(done.context.clientContext, clientContext);
             });
         });
 

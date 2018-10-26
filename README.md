@@ -122,7 +122,8 @@ lambdaLocal.execute({
         } else {
             console.log(data);
         }
-    }
+    },
+    clientContext: JSON.stringify({clientId: 'xxxx'})
 });
 ```
 

@@ -90,10 +90,11 @@ var firstawsRequestId;
 
 describe("- Testing lambdalocal.js", function () {
     describe("* Basic Run", function () {
-        var done, err;
+        var done, err, clientContext;
         before(function (cb) {
             //For this test: set an environment var which should not be overwritten by lambda-local
             process.env["AWS_REGION"] = "unicorn-universe";
+            clientContext = {"cc1": "xxx"};
             //
             var lambdalocal = require("../lib/lambdalocal.js");
             lambdalocal.setLogger(winston);
@@ -115,7 +116,8 @@ describe("- Testing lambdalocal.js", function () {
                     "envkey3": 123
                 },
                 envfile: path.join(__dirname, "./other/env"),
-                verboseLevel: 1
+                verboseLevel: 1,
+                clientContext: JSON.stringify(clientContext),
             });
         });
 
@@ -166,6 +168,9 @@ describe("- Testing lambdalocal.js", function () {
             });
             it("should contain fail function", function () {
                 assert.isDefined(done.context.fail);
+            });
+            it("should contain clientContext", function () {
+               assert.deepEqual(done.context.clientContext, clientContext);
             });
         });
 

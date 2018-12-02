@@ -12,6 +12,8 @@ var fs = require("fs");
 
 var functionName = "handler";
 var timeoutMs = 3000;
+var functionVersion = 1;
+var invokedFunctionArn = `arn:aws:lambda:region:account-id:function:${functionName}:${functionVersion}`;
 
 var sinon = require("sinon");
 
@@ -88,10 +90,11 @@ var firstawsRequestId;
 
 describe("- Testing lambdalocal.js", function () {
     describe("* Basic Run", function () {
-        var done, err;
+        var done, err, clientContext;
         before(function (cb) {
             //For this test: set an environment var which should not be overwritten by lambda-local
             process.env["AWS_REGION"] = "unicorn-universe";
+            clientContext = {"cc1": "xxx"};
             //
             var lambdalocal = require("../lib/lambdalocal.js");
             lambdalocal.setLogger(winston);
@@ -113,7 +116,8 @@ describe("- Testing lambdalocal.js", function () {
                     "envkey3": 123
                 },
                 envfile: path.join(__dirname, "./other/env"),
-                verboseLevel: 1
+                verboseLevel: 1,
+                clientContext: JSON.stringify(clientContext),
             });
         });
 
@@ -153,6 +157,9 @@ describe("- Testing lambdalocal.js", function () {
             it("should contain initialized getRemainingTimeInMillis", function () {
                 assert.isAtMost(done.context.getRemainingTimeInMillis(), timeoutMs);
             });
+            it("should contain initialized invokedFunctionArn", function () {
+                assert.equal(done.context.invokedFunctionArn, invokedFunctionArn);
+            });
             it("should contain done function", function () {
                 assert.isDefined(done.context.done);
             });
@@ -161,6 +168,9 @@ describe("- Testing lambdalocal.js", function () {
             });
             it("should contain fail function", function () {
                 assert.isDefined(done.context.fail);
+            });
+            it("should contain clientContext", function () {
+               assert.deepEqual(done.context.clientContext, clientContext);
             });
         });
 
@@ -182,7 +192,7 @@ describe("- Testing lambdalocal.js", function () {
                         cb();
                     },
                     environment: {
-                        "isnetestlambda": "I should not exist",
+                        "isnetestlambda": "I should not exist"
                     },
                     envdestroy: true,
                     envfile: path.join(__dirname, "./other/env"),
@@ -190,7 +200,7 @@ describe("- Testing lambdalocal.js", function () {
                 });
             });
             it("environment should have been deleted", function () {
-                assert.equal(!("isnetestlambda" in process.env), true);
+                assert.equal(("isnetestlambda" in process.env), false);
             });
             it("should contain an awsRequestId different from the first one", function () {
                 assert.notEqual(done.context.awsRequestId, firstawsRequestId);
@@ -498,13 +508,31 @@ describe("- Testing bin/lambda-local", function () {
             console.log(r.stderr);
         });
     });
+    describe("* Not stringifyable run", function () {
+        it("should fallback on util.inspect", function () {
+            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-not-stringifyableoutput.js -e ./events/test-event.js");
+            var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
+            assert.equal(r.status, 0);
+            assert.equal((r.output.indexOf("{ result: 0, data: 1, _rec: [Circular] }") !== -1), true)
+        });
+    });
     describe("* Verbose test", function () {
         it("should have no output", function () {
             var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-print.js -e ./events/test-event.js -v 0");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 0);
-            assert.equal(r.output, "")
+            assert.equal(r.output, "");
+        });
+    });
+    describe("* Test --wait-empty-event-loop", function () {
+        it("should wait for all timeouts to end", function () {
+            var command = get_shell("node ../bin/lambda-local  -l ./functs/test-func-waitemptyloop.js -e ./events/test-event.js --wait-empty-event-loop");
+            var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
+            assert.equal(r.status, 0);
+            assert.equal((r.output.indexOf("Timeout finished !") !== -1), true)
         });
     });
 });

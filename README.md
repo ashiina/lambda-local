@@ -45,7 +45,7 @@ See [API](#about-api) for more infos
 *    -P, --profile-path <aws profile name>            (optional) Read the specified AWS credentials file.
 *    -p, --profile <aws profile name>                 (optional) Use with **-P**: Read the AWS profile of the file.
 *    -E, --environment <JSON {key:value}>             (optional) Set extra environment variables for the lambda
-*    --force-callback                                 (optional) Force the function to stop after having called the handler function without waiting for an empty look (callbackWaitsForEmptyEventLoop=False)
+*    --wait-empty-event-loop                          (optional) Sets callbackWaitsForEmptyEventLoop=True => will wait for an empty loop before returning. This is false by default because our implementation isn\'t perfect and only "emulates" it.
 *    --envdestroy                                     (optional) Destroy added environment on closing. Defaults to false
 *    -v, --verboselevel <3/2/1/0>',                   (optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.
 *    --envfile <path/to/env/file>                     (optional) Set extra environment variables from an env file
@@ -85,13 +85,14 @@ Executes a lambda given the `options` object where keys are:
 - `profileName` - optional, aws profile name. Must be used with 
 - `lambdaHandler` - optional handler name, default to `handler`
 - `region` - optional, AWS region, default to `us-east-1`
-- `callbackWaitsForEmptyEventLoop` - optional, default to `true`. Setting it to `false` will call the callback when your code do, before finishing lambda-local
+- `callbackWaitsForEmptyEventLoop` - optional, default to `false`. Setting it to True will wait for an empty loop before returning.
 - `timeoutMs` - optional, timeout, default to 3000 ms
 - `environment` - optional, extra environment variables for the lambda
 - `envfile` - optional, load an environment file before booting
 - `envdestroy` - optional, destroy added environment on closing, default to false
 - `verboseLevel` - optional, default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.
 - `callback` - optional, lambda third parameter [callback][1]. When left out a Promise is returned
+- `clientContext` - optional, used to populated clientContext property of lambda second parameter (context)
 
 #### `setLogger(logger)`
 
@@ -121,7 +122,8 @@ lambdaLocal.execute({
         } else {
             console.log(data);
         }
-    }
+    },
+    clientContext: JSON.stringify({clientId: 'xxxx'})
 });
 ```
 

@@ -1,5 +1,11 @@
 # ChangeLog
 
+## 1.5.2 (2018/12/02)
+ * New: ability to specify the context manualy (thanks to Nathan Wright)
+ * New: Implement proper callbackWaitsForEmptyLoop
+ * Fix ARN context environment vars (thanks to @bar-sc)
+ * Better outputs management (circular outputs)
+
 ## 1.5.1 (2018/06/08)
  * NodeJS >= 10 proper detection
  * Timeout message fix (thanks to @ribizli)

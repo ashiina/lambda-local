@@ -214,6 +214,7 @@ Then you will be able to use in your test.js mocha file, something like:
 
  * Run `make` to install npm modules. (Required to develop & test lambda-local)
  * Run `make test` to execute the mocha test.
+* Run `make clean` to reset the repository.
 
 ## License
 

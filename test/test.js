@@ -264,6 +264,25 @@ describe("- Testing lambdalocal.js", function () {
                 cb();
             });
         });
+        describe("* Test aws-sdk import", function () {
+            it("should return an aws-sdk version >= 2", function (cb) {
+                var lambdalocal = require("../lib/lambdalocal.js");
+                lambdalocal.setLogger(winston);
+                var lambdaFunc = require("./functs/test-func-aws-sdk.js");
+                lambdalocal.execute({
+                    event: require(path.join(__dirname, "./events/test-event.js")),
+                    lambdaFunc: lambdaFunc,
+                    lambdaHandler: functionName,
+                    callbackWaitsForEmptyEventLoop: false,
+                    timeoutMs: 1000,
+                    callback: function (_err, _done) {
+                        assert.ok(parseInt(_done.version) >= 2);
+                        cb();
+                    },
+                    verboseLevel: 1
+                });
+            });
+        });
         describe("* Return Error object", function () {
             it("should convert it to correct JSON format", function (cb) {
                 var lambdalocal = require("../lib/lambdalocal.js");

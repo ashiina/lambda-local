@@ -11,6 +11,12 @@
     "run"
   ],
   "author": "ashiina",
+  "maintainers": [
+    {
+      "name": "Gabriel Potter (gpotter2)",
+      "email": "gabriel@potter.fr"
+    }
+  ],
   "engines": {
     "node": ">=0.10"
   },

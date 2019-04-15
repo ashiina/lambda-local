@@ -249,20 +249,19 @@ describe("- Testing lambdalocal.js", function () {
                 var lambdalocal = require("../lib/lambdalocal.js");
                 lambdalocal.setLogger(winston);
                 var lambdaFunc = require("./functs/test-func-timeout.js");
-                assert.throws(function(){
-                    lambdalocal.execute({
-                        event: require(path.join(__dirname, "./events/test-event.js")),
-                        lambdaFunc: lambdaFunc,
-                        lambdaHandler: functionName,
-                        callbackWaitsForEmptyEventLoop: false,
-                        timeoutMs: 500,
-                        callback: function (_err, _done) {
-                            assert.ok(false);
-                        },
-                        verboseLevel: 1
-                    });
-                }, utils.TimeoutError);
-                cb();
+                lambdalocal.execute({
+                    event: require(path.join(__dirname, "./events/test-event.js")),
+                    lambdaFunc: lambdaFunc,
+                    lambdaHandler: functionName,
+                    callbackWaitsForEmptyEventLoop: false,
+                    timeoutMs: 500,
+                    callback: function (err, done) {
+                        assert.equal(err.errorType, "TimeoutError");
+                        assert.equal(err.errorMessage, "Task timed out after 0.50 seconds");
+                        cb();
+                    },
+                    verboseLevel: 1
+                });
             });
         });
         describe("* Test aws-sdk import", function () {

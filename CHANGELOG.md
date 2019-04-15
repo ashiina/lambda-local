@@ -1,8 +1,10 @@
 # ChangeLog
 
+## 1.6.1 (2019/04/15)
+* Update for Winston 3
 
 ## 1.5.3 (2019/04/15)
- * Better handling of TimeoutError: now passed to context as other exceptions
+* Better handling of TimeoutError: now passed to context as other exceptions
 * Improved Makefile (thanks to @joechrysler)
 * Drop NodeJS < 6, therefore update all dependencies
 

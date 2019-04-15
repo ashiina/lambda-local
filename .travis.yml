@@ -1,9 +1,9 @@
 language: node_js
 node_js:
-  - "1.8"
-  - "4"
   - "6"
   - "8"
+  - "10"
+  - "11"
   - "node"
 sudo: false
 #cache:

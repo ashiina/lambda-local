@@ -1,5 +1,11 @@
 # ChangeLog
 
+
+## 1.5.3 (2019/04/15)
+ * Better handling of TimeoutError: now passed to context as other exceptions
+* Improved Makefile (thanks to @joechrysler)
+* Drop NodeJS < 6, therefore update all dependencies
+
 ## 1.5.2 (2018/12/02)
  * New: ability to specify the context manualy (thanks to Nathan Wright)
  * New: Implement proper callbackWaitsForEmptyLoop

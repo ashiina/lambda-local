@@ -14,10 +14,11 @@ var functionName = "handler";
 var timeoutMs = 3000;
 var functionVersion = 1;
 var invokedFunctionArn = `arn:aws:lambda:region:account-id:function:${functionName}:${functionVersion}`;
+var utils = require("../lib/utils.js");
 
 var sinon = require("sinon");
 
-var winston = require("winston");
+var winston = utils.getWinstonConsole();
 winston.level = "error";
 
 //Utils
@@ -44,7 +45,6 @@ function get_node_major_version(){
 //Tests
 
 describe("- Testing utils.js", function () {
-    var utils = require("../lib/utils.js");
     describe("* getAbsolutePath", function () {
         it("should return existing path file", function () {
             var f_path = utils.getAbsolutePath("./test.js");
@@ -62,7 +62,6 @@ describe("- Testing utils.js", function () {
 
 describe("- Testing lambdalocal.js Logger", function () {
     var lambdalocal = require("../lib/lambdalocal.js");
-    var defaultLogger = lambdalocal.getLogger();
     describe("* Use winston logger", function () {
         it("should correctly load Logger", function () {
             lambdalocal.setLogger(winston);
@@ -71,17 +70,17 @@ describe("- Testing lambdalocal.js Logger", function () {
         });
     });
     describe("* Use invalid logger (object)", function () {
-        it("should load default Logger", function () {
+        it("should ignore call", function () {
             lambdalocal.setLogger(Object);
             var logger = lambdalocal.getLogger();
-            assert.equal(logger, defaultLogger);
+            assert.equal(logger, winston);
         });
     });
     describe("* Use null logger", function () {
-        it("should load default Logger", function () {
+        it("should ignore call", function () {
             lambdalocal.setLogger(null);
             var logger = lambdalocal.getLogger();
-            assert.equal(logger, defaultLogger);
+            assert.equal(logger, winston);
         });
     });
 });
@@ -533,7 +532,7 @@ describe("- Testing bin/lambda-local", function () {
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 0);
-            assert.equal((r.output.indexOf("{ result: 0, data: 1, _rec: [Circular] }") !== -1), true)
+            assert.ok((r.output.indexOf("[Circular]") !== -1), true)
         });
     });
     describe("* Verbose test", function () {

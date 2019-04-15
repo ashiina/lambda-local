@@ -159,11 +159,8 @@
             verboseLevel: verboseLevel
         });
     } catch (ex) {
-        if (ex instanceof utils.TimeoutError) {
-            logger.log('error', '-----');
-            logger.log('error', 'Task timed out after ' + (timeoutMs / 1000).toFixed(2) + ' seconds');
-            process.exit(1);
-        }
+        logger.log('error', '-----');
         logger.log('error', ex);
+        process.exit(1);
     }
 })();

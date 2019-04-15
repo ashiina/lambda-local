@@ -245,22 +245,23 @@ describe("- Testing lambdalocal.js", function () {
         });
         describe("* Test timeout", function () {
             it("should throw TimeoutError", function (cb) {
+                var utils = require("../lib/utils.js");
+                var lambdalocal = require("../lib/lambdalocal.js");
+                lambdalocal.setLogger(winston);
+                var lambdaFunc = require("./functs/test-func-timeout.js");
                 assert.throws(function(){
-                    var lambdalocal = require("../lib/lambdalocal.js");
-                    lambdalocal.setLogger(winston);
-                    var lambdaFunc = require("./functs/test-func-timeout.js");
                     lambdalocal.execute({
                         event: require(path.join(__dirname, "./events/test-event.js")),
                         lambdaFunc: lambdaFunc,
                         lambdaHandler: functionName,
                         callbackWaitsForEmptyEventLoop: false,
-                        timeoutMs: 1000,
+                        timeoutMs: 500,
                         callback: function (_err, _done) {
-                            cb();
+                            assert.ok(false);
                         },
                         verboseLevel: 1
-                    }, utils.TimeoutError);
-                });
+                    });
+                }, utils.TimeoutError);
                 cb();
             });
         });

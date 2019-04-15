@@ -7,17 +7,10 @@
  */
 (function() {
 
-    var logger = require('winston');
-    logger.level = 'info';
-    logger.configure({
-        transports: [
-            new (logger.transports.Console)({handleExceptions: true, json: false, colorize: true})
-        ]
-    });
-
     var lambdaLocal = require('../lib/lambdalocal.js'),
         utils = require('../lib/utils.js');
-    lambdaLocal.setLogger(logger);
+
+    var logger = lambdaLocal.getLogger();
 
     // process opts
     var program = require('commander');
@@ -148,18 +141,21 @@
                     _close_inspector();
                 }
                 if (err !== null && typeof err !== 'undefined') {
-                    logger.log('error', 'Lambda failed in ' + exec_time + 'ms.');
+                    if (verboseLevel > 0) {
+                        logger.log('error', 'Lambda failed in ' + exec_time + 'ms.');
+                    }
                     // Finish the process
                     process.exit(1);
                 } else {
-                    logger.log('info', 'Lambda successfully executed in ' + exec_time + 'ms.');
+                    if (verboseLevel > 0) {
+                        logger.log('info', 'Lambda successfully executed in ' + exec_time + 'ms.');
+                    }
                     process.exit(0);
                 }
             },
             verboseLevel: verboseLevel
         });
     } catch (ex) {
-        logger.log('error', '-----');
         logger.log('error', ex);
         process.exit(1);
     }

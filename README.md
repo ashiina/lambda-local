@@ -1,6 +1,7 @@
 # Lambda-local
 
 [![Build Status](https://travis-ci.org/ashiina/lambda-local.svg?branch=develop)](https://travis-ci.org/ashiina/lambda-local)
+[![Known Vulnerabilities](https://snyk.io/test/github/ashiina/lambda-local/badge.svg)](https://snyk.io/test/github/ashiina/lambda-local)
 
 Lambda-local lets you test Amazon Lambda functions on your local machine with sample event data.
 The `context` of the Lambda function is already loaded so you do not have to worry about it.

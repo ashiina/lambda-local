@@ -3,9 +3,10 @@
 [![Build Status](https://travis-ci.org/ashiina/lambda-local.svg?branch=develop)](https://travis-ci.org/ashiina/lambda-local)
 [![Known Vulnerabilities](https://snyk.io/test/github/ashiina/lambda-local/badge.svg)](https://snyk.io/test/github/ashiina/lambda-local)
 
-Lambda-local lets you test Amazon Lambda functions on your local machine with sample event data.
+Lambda-local lets you test Amazon Lambda functions on your local machine, by providing a simplisitc API and command-line tool.
+
 The `context` of the Lambda function is already loaded so you do not have to worry about it.
-You can pass any `event` JSON object as you please.
+The calls are fully customizable, as you can pass any `event` (JSON) object to any `handler` function.
 
 ## Install
 
@@ -35,22 +36,7 @@ You can also use Lambda local directly in a script. For instance, it is interest
 
 See [API](#about-api) for more infos
 
-## About: CLI
-
-### Command
-*    -l, --lambda-path <lambda index path>            (required) Specify Lambda function file name.
-*    -e, --event-path <event path>                    (required) Specify event data file name.
-*    -h, --handler <handler name>                     (optional) Lambda function handler name. Default is "handler".
-*    -t, --timeout <timeout>                          (optional) Seconds until lambda function timeout. Default is 3 seconds.
-*    -r, --region <aws region>                        (optional) Sets the AWS region, defaults to us-east-1.
-*    -P, --profile-path <aws profile name>            (optional) Read the specified AWS credentials file.
-*    -p, --profile <aws profile name>                 (optional) Use with **-P**: Read the AWS profile of the file.
-*    -E, --environment <JSON {key:value}>             (optional) Set extra environment variables for the lambda
-*    --wait-empty-event-loop                          (optional) Sets callbackWaitsForEmptyEventLoop=True => will wait for an empty loop before returning. This is false by default because our implementation isn\'t perfect and only "emulates" it.
-*    --envdestroy                                     (optional) Destroy added environment on closing. Defaults to false
-*    -v, --verboselevel <3/2/1/0>',                   (optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.
-*    --envfile <path/to/env/file>                     (optional) Set extra environment variables from an env file
-*    --inspect [[host:]port]                          (optional) Starts lambda-local using the NodeJS inspector (available in nodejs > 8.0.0)
+## About: Definitions
 
 ### Event data
 Event sample data are placed in `examples` folder - feel free to use the files in here, or create your own event data.
@@ -72,9 +58,31 @@ Since the Amazon Lambda can load the AWS-SDK npm without installation, Lambda-lo
 If you want to use this, please use the "-p" option with the aws credentials file. More infos here:
 http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cli-config-files
 
+## About: CLI
+
+### Available Arguments
+*    -l, --lambda-path <lambda index path>            (required) Specify Lambda function file name.
+*    -e, --event-path <event path>                    (required) Specify event data file name.
+*    -h, --handler <handler name>                     (optional) Lambda function handler name. Default is "handler".
+*    -t, --timeout <timeout>                          (optional) Seconds until lambda function timeout. Default is 3 seconds.
+*    -r, --region <aws region>                        (optional) Sets the AWS region, defaults to us-east-1.
+*    -P, --profile-path <aws profile name>            (optional) Read the specified AWS credentials file.
+*    -p, --profile <aws profile name>                 (optional) Use with **-P**: Read the AWS profile of the file.
+*    -E, --environment <JSON {key:value}>             (optional) Set extra environment variables for the lambda
+*    --wait-empty-event-loop                          (optional) Sets callbackWaitsForEmptyEventLoop=True => will wait for an empty loop before returning. This is false by default because our implementation isn\'t perfect and only "emulates" it.
+*    --envdestroy                                     (optional) Destroy added environment on closing. Defaults to false
+*    -v, --verboselevel <3/2/1/0>',                   (optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.
+*    --envfile <path/to/env/file>                     (optional) Set extra environment variables from an env file
+*    --inspect [[host:]port]                          (optional) Starts lambda-local using the NodeJS inspector (available in nodejs > 8.0.0)
+
 ## About: API
 
 ### LambdaLocal
+
+API accessible with:
+```js
+const lambdaLocal = require("lambda-local");
+```
 
 #### `execute(options)`
 
@@ -96,12 +104,38 @@ Executes a lambda given the `options` object where keys are:
 - `clientContext` - optional, used to populated clientContext property of lambda second parameter (context)
 
 #### `setLogger(logger)`
+#### `getLogger()`
 
-If you are using [winston](https://www.npmjs.com/package/winston), this pass a winston logger instead of the console.
+Those functions allow to access the [winston](https://www.npmjs.com/package/winston) logger used by lambda-local.
 
-## Example Usage for API
+## API examples
 
-#### Basic: In another node.js script
+A lot of examples, especially used among Mocha, may be found in the test files over: [here](https://github.com/ashiina/lambda-local/tree/develop/test)
+
+##### Basic usage: Using Promises
+
+```js
+const lambdaLocal = require('lambda-local');
+
+var jsonPayload = {
+    'key': 1,
+    'another_key': "Some text"
+}
+
+lambdaLocal.execute({
+    event: jsonPayload,
+    lambdaPath: path.join(__dirname, 'path_to_index.js'),
+    profilePath: '~/.aws/credentials',
+    profileName: 'default',
+    timeoutMs: 3000
+}).then(function(done) {
+    console.log(done);
+}).catch(function(err) {
+    console.log(err);
+});
+```
+
+#### Basic usage: using callbacks
 
 ```js
 const lambdaLocal = require('lambda-local');
@@ -128,88 +162,9 @@ lambdaLocal.execute({
 });
 ```
 
-##### Using Promises
+## Other links
 
-```js
-const lambdaLocal = require('lambda-local');
-
-var jsonPayload = {
-    'key': 1,
-    'another_key': "Some text"
-}
-
-lambdaLocal.execute({
-    event: jsonPayload,
-    lambdaPath: path.join(__dirname, 'path_to_index.js'),
-    profilePath: '~/.aws/credentials',
-    profileName: 'default',
-    timeoutMs: 3000
-}).then(function(done) {
-    console.log(done);
-}).catch(function(err) {
-    console.log(err);
-});
-```
-
-### Use lambda-local to Mock
-
-You can use Lambda local to mock your lambda then run it, using [MochaJS][1] and [SinonJS][2]
-
-In this sample, we assume that you got a test function like this:
-```js
-/*
- * Lambda function used to test mocking.
- */
-exports.getData = function getData(){
-	return "WrongData";
-}
-exports.handler = function(event, context) {
-    context.done(null, exports.getData()); 
-};
-```
-
-Then you will be able to use in your test.js mocha file, something like:
-
-```js
-
-    //An empty event
-    var jsonPayload = {
-    
-    }
-
-    var done, err;
-    before(function (cb) {
-        var lambdalocal = require('lambda-local');
-        lambdalocal.setLogger(your_winston_logger);
-        var lambdaFunc = require("path_to_test-function.js");
-        //For instance, this will replace the getData content
-        sinon.mock(lambdaFunc).expects("getData").returns("MockedData"); 
-        //see on sinonjs page for more options
-        lambdalocal.execute({
-            event: jsonPayload,
-            lambdaFunc: lambdaFunc, //We are directly passing the lambda function
-            lambdaHandler: "handler",
-            callbackWaitsForEmptyEventLoop: true,
-            timeoutMs: 3000,
-            callback: function (_err, _done) { //We are storing the results and finishing the before() call => one lambda local call for multiple tests
-                err = _err;
-                done = _done;
-                cb();
-            },
-            verboseLevel: 1 //only prints a JSON of the final result
-        });
-    });
-    describe("Your first test", function () {
-        it("should return mocked value", function () {
-            assert.equal(done, "MockedData");
-        });
-    });
-    ... Other tests
-```
-
-[1]: https://mochajs.org/
-[2]: http://sinonjs.org/
-
+- If you are willing to test an app based on the ASK-SDK, have a look at https://github.com/taimos/ask-sdk-test
 
 ## Development
 

@@ -1,5 +1,8 @@
 # ChangeLog
 
+## 1.6.2 (2019/04/30)
+* Documentation changes. No API changes
+
 ## 1.6.1 (2019/04/15)
 * Update for Winston 3
 

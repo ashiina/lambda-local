@@ -1,5 +1,7 @@
 # Lambda-local
 
+[![NPM](https://nodei.co/npm/lambda-local.png?compact=true)](https://nodei.co/npm/lambda-local/)
+
 [![Build Status](https://travis-ci.org/ashiina/lambda-local.svg?branch=develop)](https://travis-ci.org/ashiina/lambda-local)
 [![Known Vulnerabilities](https://snyk.io/test/github/ashiina/lambda-local/badge.svg)](https://snyk.io/test/github/ashiina/lambda-local)
 
@@ -50,30 +52,30 @@ module.exports = {
 ```
 
 ### Context
-The `context` object has been directly extracted from the source visible when running an actual Lambda function on AWS.
+The `context` object has been sampled from what's visible when running an actual Lambda function on AWS, and the [available documentation](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html)
 They may change the internals of this object, and Lambda-local does not guarantee that this will always be up-to-date with the actual context object.
 
 ### AWS-SDK
 Since the Amazon Lambda can load the AWS-SDK npm without installation, Lambda-local has also packaged AWS-SDK in its dependencies.
-If you want to use this, please use the "-p" option with the aws credentials file. More infos here:
+If you want to use this, please use the `-p` or `-P` options (or their API counterpart) with the aws credentials file. More infos here:
 http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cli-config-files
 
 ## About: CLI
 
 ### Available Arguments
-*    -l, --lambda-path <lambda index path>            (required) Specify Lambda function file name.
-*    -e, --event-path <event path>                    (required) Specify event data file name.
-*    -h, --handler <handler name>                     (optional) Lambda function handler name. Default is "handler".
-*    -t, --timeout <timeout>                          (optional) Seconds until lambda function timeout. Default is 3 seconds.
-*    -r, --region <aws region>                        (optional) Sets the AWS region, defaults to us-east-1.
-*    -P, --profile-path <aws profile name>            (optional) Read the specified AWS credentials file.
-*    -p, --profile <aws profile name>                 (optional) Use with **-P**: Read the AWS profile of the file.
-*    -E, --environment <JSON {key:value}>             (optional) Set extra environment variables for the lambda
-*    --wait-empty-event-loop                          (optional) Sets callbackWaitsForEmptyEventLoop=True => will wait for an empty loop before returning. This is false by default because our implementation isn\'t perfect and only "emulates" it.
-*    --envdestroy                                     (optional) Destroy added environment on closing. Defaults to false
-*    -v, --verboselevel <3/2/1/0>',                   (optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.
-*    --envfile <path/to/env/file>                     (optional) Set extra environment variables from an env file
-*    --inspect [[host:]port]                          (optional) Starts lambda-local using the NodeJS inspector (available in nodejs > 8.0.0)
+*    `-l, --lambda-path <lambda index path>`            (required) Specify Lambda function file name.
+*    `-e, --event-path <event path>`                    (required) Specify event data file name.
+*    `-h, --handler <handler name>`                     (optional) Lambda function handler name. Default is "handler".
+*    `-t, --timeout <timeout>`                          (optional) Seconds until lambda function timeout. Default is 3 seconds.
+*    `-r, --region <aws region>`                        (optional) Sets the AWS region, defaults to us-east-1.
+*    `-P, --profile-path <aws profile name>`            (optional) Read the specified AWS credentials file.
+*    `-p, --profile <aws profile name>`                 (optional) Use with **-P**: Read the AWS profile of the file.
+*    `-E, --environment <JSON {key:value}>`             (optional) Set extra environment variables for the lambda
+*    `--wait-empty-event-loop`                          (optional) Sets callbackWaitsForEmptyEventLoop=True => will wait for an empty loop before returning. This is false by default because our implementation isn\'t perfect and only "emulates" it.
+*    `--envdestroy`                                     (optional) Destroy added environment on closing. Defaults to false
+*    `-v, --verboselevel <3/2/1/0>`                     (optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.
+*    `--envfile <path/to/env/file>`                     (optional) Set extra environment variables from an env file
+*    `--inspect [[host:]port]`                          (optional) Starts lambda-local using the NodeJS inspector (available in nodejs > 8.0.0)
 
 ## About: API
 
@@ -84,9 +86,9 @@ API accessible with:
 const lambdaLocal = require("lambda-local");
 ```
 
-#### `execute(options)`
+#### `lambdaLocal.execute(options)`
 
-Executes a lambda given the `options` object where keys are:
+Executes a lambda given the `options` object, which is a dictionary where the keys may be:
 - `event` - requested event as a json object
 - `lambdaPath` - requested path to the lambda function
 - `lambdaFunc` - pass the lambda function. You cannot use it at the same time as lambdaPath
@@ -103,8 +105,8 @@ Executes a lambda given the `options` object where keys are:
 - `callback` - optional, lambda third parameter [callback][1]. When left out a Promise is returned
 - `clientContext` - optional, used to populated clientContext property of lambda second parameter (context)
 
-#### `setLogger(logger)`
-#### `getLogger()`
+#### `lambdaLocal.setLogger(logger)`
+#### `lambdaLocal.getLogger()`
 
 Those functions allow to access the [winston](https://www.npmjs.com/package/winston) logger used by lambda-local.
 

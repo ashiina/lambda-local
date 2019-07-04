@@ -21,16 +21,16 @@
     "node": ">=6"
   },
   "dependencies": {
-    "aws-sdk": "^2.437.0",
+    "aws-sdk": "^2.488.0",
     "commander": "^2.20.0",
-    "dotenv": "^7.0.0",
+    "dotenv": "^8.0.0",
     "mute": "^2.0.6",
     "winston": "^3.2.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.1.3",
-    "sinon": "^1.17.6"
+    "mocha": "^6.1.4",
+    "sinon": "^7.3.2"
   },
   "scripts": {
     "test": "mocha"

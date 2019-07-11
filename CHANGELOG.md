@@ -1,10 +1,15 @@
 # ChangeLog
 
+## 1.6.3 (2019/07/04)
+* Security updates (update dependencies that had vulnerabilities: [mocha](https://github.com/mochajs/mocha/blob/master/CHANGELOG.md#614--2019-04-18)).
+* Pick up AWS profile from env `AWS_PROFILE` or `AWS_DEFAULT_PROFILE` (thanks to @illusori)
+
 ## 1.6.2 (2019/04/30)
 * Documentation changes. No API changes
 
 ## 1.6.1 (2019/04/15)
 * Update for Winston 3
+* Refactor console output manager
 
 ## 1.5.3 (2019/04/15)
 * Better handling of TimeoutError: now passed to context as other exceptions

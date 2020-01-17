@@ -7,8 +7,9 @@
 
 Lambda-local lets you test Amazon Lambda functions on your local machine, by providing a simplistic API and command-line tool.
 
-The `context` of the Lambda function is already loaded so you do not have to worry about it.
-The calls are fully customizable, as you can pass any `event` (JSON) object to any `handler` function.
+It does not aim to be perfectly feature proof as projects like [serverless-offline](https://github.com/dherault/serverless-offline ) or [docker-lambda](https://github.com/lambci/docker-lambda), but rather remain **very light** (it still provides a fully built `Context`, handles all of its parameters and functions, and everything is customizable easily).
+
+The main target is unit tests.
 
 ## Install
 
@@ -18,64 +19,10 @@ npm install -g lambda-local
 
 ## Usage
 
-### As a command line tool
+- **As an API:** You can also use Lambda local directly in a script. For instance, it is interesting in a [MochaJS][1] test suite in order to get test coverage.
+- **As a command line tool:** You can use Lambda-local as a command line tool.
 
-You can use Lambda-local as a command line tool.
-
-```bash
-# Simple usage
-lambda-local -l index.js -h handler -e examples/s3-put.js
-
-# Input environment variables
-lambda-local -l index.js -h handler -e examples/s3-put.js -E '{"key":"value","key2":"value2"}'
-
-```
-
-### In another node.js script
-
-
-You can also use Lambda local directly in a script. For instance, it is interesting in a [MochaJS][1] test suite in order to get test coverage.
-
-See [API](#about-api) for more infos
-
-## About: Definitions
-
-### Event data
-Event sample data are placed in `examples` folder - feel free to use the files in here, or create your own event data.
-Event data are just JSON objects exported:
-
-```js
-// Sample event data
-module.exports = {
-	foo: "bar"
-};
-```
-
-### Context
-The `context` object has been sampled from what's visible when running an actual Lambda function on AWS, and the [available documentation](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html)
-They may change the internals of this object, and Lambda-local does not guarantee that this will always be up-to-date with the actual context object.
-
-### AWS-SDK
-Since the Amazon Lambda can load the AWS-SDK npm without installation, Lambda-local has also packaged AWS-SDK in its dependencies.
-If you want to use this, please use the `-p` or `-P` options (or their API counterpart) with the aws credentials file. More infos here:
-http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cli-config-files
-
-## About: CLI
-
-### Available Arguments
-*    `-l, --lambda-path <lambda index path>`            (required) Specify Lambda function file name.
-*    `-e, --event-path <event path>`                    (required) Specify event data file name.
-*    `-h, --handler <handler name>`                     (optional) Lambda function handler name. Default is "handler".
-*    `-t, --timeout <timeout>`                          (optional) Seconds until lambda function timeout. Default is 3 seconds.
-*    `-r, --region <aws region>`                        (optional) Sets the AWS region, defaults to us-east-1.
-*    `-P, --profile-path <aws profile name>`            (optional) Read the specified AWS credentials file.
-*    `-p, --profile <aws profile name>`                 (optional) Use with **-P**: Read the AWS profile of the file.
-*    `-E, --environment <JSON {key:value}>`             (optional) Set extra environment variables for the lambda
-*    `--wait-empty-event-loop`                          (optional) Sets callbackWaitsForEmptyEventLoop=True => will wait for an empty loop before returning. This is false by default because our implementation isn\'t perfect and only "emulates" it.
-*    `--envdestroy`                                     (optional) Destroy added environment on closing. Defaults to false
-*    `-v, --verboselevel <3/2/1/0>`                     (optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.
-*    `--envfile <path/to/env/file>`                     (optional) Set extra environment variables from an env file
-*    `--inspect [[host:]port]`                          (optional) Starts lambda-local using the NodeJS inspector (available in nodejs > 8.0.0)
+If you're unsure about some definitions, see [Definitions](#about-definitions) for terminology.
 
 ## About: API
 
@@ -84,6 +31,12 @@ http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cl
 API accessible with:
 ```js
 const lambdaLocal = require("lambda-local");
+```
+
+Or on TypeScript (supported on 1.7.0+):
+
+```js
+import lambdaLocal = require("lambda-local");
 ```
 
 #### `lambdaLocal.execute(options)`
@@ -163,6 +116,55 @@ lambdaLocal.execute({
     clientContext: JSON.stringify({clientId: 'xxxx'})
 });
 ```
+
+## About: CLI
+
+### Available Arguments
+*    `-l, --lambda-path <lambda index path>`            (required) Specify Lambda function file name.
+*    `-e, --event-path <event path>`                    (required) Specify event data file name.
+*    `-h, --handler <handler name>`                     (optional) Lambda function handler name. Default is "handler".
+*    `-t, --timeout <timeout>`                          (optional) Seconds until lambda function timeout. Default is 3 seconds.
+*    `-r, --region <aws region>`                        (optional) Sets the AWS region, defaults to us-east-1.
+*    `-P, --profile-path <aws profile name>`            (optional) Read the specified AWS credentials file.
+*    `-p, --profile <aws profile name>`                 (optional) Use with **-P**: Read the AWS profile of the file.
+*    `-E, --environment <JSON {key:value}>`             (optional) Set extra environment variables for the lambda
+*    `--wait-empty-event-loop`                          (optional) Sets callbackWaitsForEmptyEventLoop=True => will wait for an empty loop before returning. This is false by default because our implementation isn\'t perfect and only "emulates" it.
+*    `--envdestroy`                                     (optional) Destroy added environment on closing. Defaults to false
+*    `-v, --verboselevel <3/2/1/0>`                     (optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.
+*    `--envfile <path/to/env/file>`                     (optional) Set extra environment variables from an env file
+*    `--inspect [[host:]port]`                          (optional) Starts lambda-local using the NodeJS inspector (available in nodejs > 8.0.0)
+
+### CLI examples
+
+```bash
+# Simple usage
+lambda-local -l index.js -h handler -e examples/s3-put.js
+
+# Input environment variables
+lambda-local -l index.js -h handler -e examples/s3-put.js -E '{"key":"value","key2":"value2"}'
+```
+
+## About: Definitions
+
+### Event data
+Event sample data are placed in `examples` folder - feel free to use the files in here, or create your own event data.
+Event data are just JSON objects exported:
+
+```js
+// Sample event data
+module.exports = {
+	foo: "bar"
+};
+```
+
+### Context
+The `context` object has been sampled from what's visible when running an actual Lambda function on AWS, and the [available documentation](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html)
+They may change the internals of this object, and Lambda-local does not guarantee that this will always be up-to-date with the actual context object.
+
+### AWS-SDK
+Since the Amazon Lambda can load the AWS-SDK npm without installation, Lambda-local has also packaged AWS-SDK in its dependencies.
+If you want to use this, please use the `-p` or `-P` options (or their API counterpart) with the aws credentials file. More infos here:
+http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cli-config-files
 
 ## Other links
 

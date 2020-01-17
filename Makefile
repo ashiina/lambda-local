@@ -1,6 +1,7 @@
 install: node_modules build
 
 test: install
+	npm install --only=dev
 	cd test && ../node_modules/mocha/bin/mocha test.js
 
 clean:

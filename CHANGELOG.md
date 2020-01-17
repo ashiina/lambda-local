@@ -1,5 +1,8 @@
 # ChangeLog
 
+## 1.7.0 (2020-01/17)
+* Migrate to TypeScript (#191)
+
 ## 1.6.3 (2019/07/04)
 * Security updates (update dependencies that had vulnerabilities: [mocha](https://github.com/mochajs/mocha/blob/master/CHANGELOG.md#614--2019-04-18)).
 * Pick up AWS profile from env `AWS_PROFILE` or `AWS_DEFAULT_PROFILE` (thanks to @illusori)

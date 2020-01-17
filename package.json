@@ -1,6 +1,6 @@
 {
   "name": "lambda-local",
-  "version": "1.6.3",
+  "version": "1.7.0",
   "description": "Commandline tool to run Lambda functions on your local machine.",
   "main": "build/lambdalocal.js",
   "types": "build/lambdalocal.d.ts",
@@ -38,7 +38,7 @@
   "dependencies": {
     "@types/node": "^13.1.7",
     "aws-sdk": "^2.488.0",
-    "commander": "^3.0.2",
+    "commander": "^4.1.0",
     "dotenv": "^8.0.0",
     "mute": "^2.0.6",
     "typescript": "^3.7.5",
@@ -46,8 +46,8 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.1.4",
-    "sinon": "^7.3.2"
+    "mocha": "^7.0.0",
+    "sinon": "^8.1.0"
   },
   "preferGlobal": true,
   "repository": {

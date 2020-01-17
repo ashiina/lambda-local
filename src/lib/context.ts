@@ -6,8 +6,8 @@
  * https://docs.aws.amazon.com/en_us/lambda/latest/dg/nodejs-prog-model-context.html
  */
 
-const utils = require('./utils.js'),
-      mute = require('mute');
+import utils = require('./utils.js');
+import mute = require('mute');
 
 function Context() {
     this.logger = null;
@@ -237,4 +237,4 @@ Context.prototype.getRemainingTimeInMillis = function() {
 /*
  * exports
  */
-module.exports = Context;
+export = Context;

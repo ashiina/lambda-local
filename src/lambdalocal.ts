@@ -6,14 +6,14 @@
  * https://docs.aws.amazon.com/en_us/lambda/latest/dg/nodejs-prog-model-context.html
  */
 
-const dotenv = require('dotenv');
-const fs = require('fs');
-const utils = require('./utils.js');
-const Context = require('./context.js');
+import dotenv = require('dotenv');
+import fs = require('fs');
+import utils = require('./lib/utils.js');
+import Context = require('./lib/context.js');
 
 var logger = utils.getWinstonConsole();
 
-var _setLogger = function(_logger){
+export function setLogger(_logger){
     if(_logger != null && typeof _logger.transports != 'undefined'){
         logger = _logger;
     } else {
@@ -21,11 +21,11 @@ var _setLogger = function(_logger){
     }
 }
  
-var _getLogger = function() {
+export function getLogger() {
     return logger;
 }
 
-var _execute = function(opts) {
+export function execute(opts) {
     if (opts.callback) {
         _executeSync.apply(this, [opts]);
     } else {
@@ -76,11 +76,11 @@ var _executeSync = function(opts) {
     
     // set environment variables before the require
     process.env['AWS_LAMBDA_FUNCTION_NAME'] = lambdaHandler;
-    process.env['AWS_LAMBDA_FUNCTION_MEMORY_SIZE'] = 1024;
+    process.env['AWS_LAMBDA_FUNCTION_MEMORY_SIZE'] = "1024";
     process.env['AWS_LAMBDA_FUNCTION_VERSION'] = "1.0";
     process.env['AWS_EXECUTION_ENV'] = "AWS_Lambda_nodejs";
-    process.env['LAMBDA_CONSOLE_SOCKET'] = 14;
-    process.env['LAMBDA_CONTROL_SOCKET'] = 11;
+    process.env['LAMBDA_CONSOLE_SOCKET'] = "14";
+    process.env['LAMBDA_CONTROL_SOCKET'] = "11";
     process.env['LAMBDA_RUNTIME_DIR'] = process.cwd();
     process.env['LAMBDA_TASK_ROOT'] = process.cwd();
     process.env['NODE_PATH'] = utils.getAbsolutePath('node_modules');
@@ -176,8 +176,3 @@ var _executeSync = function(opts) {
     }
 };
 
-module.exports = {
-    execute: _execute,
-    setLogger: _setLogger,
-    getLogger: _getLogger
-};

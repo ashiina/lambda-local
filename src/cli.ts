@@ -2,14 +2,13 @@
 
 'use strict';
 
+import lambdaLocal = require('./lambdalocal');
+import utils = require('./lib/utils');
+
 /*
  * Local executor for Amazon Lambda function
  */
 (function() {
-
-    var lambdaLocal = require('../lib/lambdalocal.js'),
-        utils = require('../lib/utils.js');
-
     var logger = lambdaLocal.getLogger();
 
     // process opts

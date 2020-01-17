@@ -1,6 +1,6 @@
-install: node_modules
+install: node_modules build
 
-test: node_modules
+test: install
 	cd test && ../node_modules/mocha/bin/mocha test.js
 
 clean:
@@ -9,5 +9,8 @@ clean:
 node_modules: package.json
 	npm install
 
+build: tsconfig.json
+	npm run build
+
 .PHONY: test install clean
-deadwood := node_modules package-lock.json
+deadwood := node_modules package-lock.json build

@@ -7,7 +7,7 @@
 
 Lambda-local lets you test Amazon Lambda functions on your local machine, by providing a simplistic API and command-line tool.
 
-It does not aim to be perfectly feature proof as projects like [serverless-offline](https://github.com/dherault/serverless-offline ) or [docker-lambda](https://github.com/lambci/docker-lambda), but rather remain **very light** (it still provides a fully built `Context`, handles all of its parameters and functions, and everything is customizable easily).
+It does not aim to be perfectly feature proof as projects like [serverless-offline](https://github.com/dherault/serverless-offline ) or [docker-lambda](https://github.com/lambci/docker-lambda), but rather to remain **very light** (it still provides a fully built `Context`, handles all of its parameters and functions, and everything is customizable easily).
 
 The main target is unit tests.
 
@@ -42,21 +42,23 @@ import lambdaLocal = require("lambda-local");
 #### `lambdaLocal.execute(options)`
 
 Executes a lambda given the `options` object, which is a dictionary where the keys may be:
-- `event` - requested event as a json object
-- `lambdaPath` - requested path to the lambda function
-- `lambdaFunc` - pass the lambda function. You cannot use it at the same time as lambdaPath
-- `profilePath` - optional, path to your AWS credentials file
-- `profileName` - optional, aws profile name. Must be used with 
-- `lambdaHandler` - optional handler name, default to `handler`
-- `region` - optional, AWS region, default to `us-east-1`
-- `callbackWaitsForEmptyEventLoop` - optional, default to `false`. Setting it to True will wait for an empty loop before returning.
-- `timeoutMs` - optional, timeout, default to 3000 ms
-- `environment` - optional, extra environment variables for the lambda
-- `envfile` - optional, load an environment file before booting
-- `envdestroy` - optional, destroy added environment on closing, default to false
-- `verboseLevel` - optional, default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.
-- `callback` - optional, lambda third parameter [callback][1]. When left out a Promise is returned
-- `clientContext` - optional, used to populated clientContext property of lambda second parameter (context)
+
+| Key name | Description |
+| --- | --- |
+| `event`|requested event as a json object|
+| `lambdaPath`|requested path to the lambda function|
+| `lambdaFunc`|pass the lambda function. You cannot use it at the same time as lambdaPath|
+| `profilePath`|optional, path to your AWS credentials file|
+| `profileName`|optional, aws profile name. Must be used with |
+| `lambdaHandler`|optional handler name, default to `handler`|
+| `region`|optional, AWS region, default to `us-east-1`|| `callbackWaitsForEmptyEventLoop`|optional, default to `false`. Setting it to True will wait for an empty loop before returning.|
+| `timeoutMs`|optional, timeout, default to 3000 ms|
+| `environment`|optional, extra environment variables for the lambda|
+| `envfile`|optional, load an environment file before booting|
+| `envdestroy`|optional, destroy added environment on closing, default to false|
+| `verboseLevel`|optional, default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.|
+| `callback`|optional, lambda third parameter [callback][1]. When left out a Promise is returned|
+| `clientContext`|optional, used to populated clientContext property of lambda second parameter (context)
 
 #### `lambdaLocal.setLogger(logger)`
 #### `lambdaLocal.getLogger()`

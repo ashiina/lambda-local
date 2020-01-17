@@ -14,7 +14,8 @@ var functionName = "handler";
 var timeoutMs = 3000;
 var functionVersion = 1;
 var invokedFunctionArn = `arn:aws:lambda:region:account-id:function:${functionName}:${functionVersion}`;
-var utils = require("../lib/utils.js");
+var utils = require("../build/lib/utils.js");
+const lambdalocal_path = "../build/lambdalocal.js"
 
 var sinon = require("sinon");
 
@@ -61,7 +62,7 @@ describe("- Testing utils.js", function () {
 });
 
 describe("- Testing lambdalocal.js Logger", function () {
-    var lambdalocal = require("../lib/lambdalocal.js");
+    var lambdalocal = require(lambdalocal_path);
     describe("* Use winston logger", function () {
         it("should correctly load Logger", function () {
             lambdalocal.setLogger(winston);
@@ -95,7 +96,7 @@ describe("- Testing lambdalocal.js", function () {
             process.env["AWS_REGION"] = "unicorn-universe";
             clientContext = {"cc1": "xxx"};
             //
-            var lambdalocal = require("../lib/lambdalocal.js");
+            var lambdalocal = require(lambdalocal_path);
             lambdalocal.setLogger(winston);
             lambdalocal.execute({
                 event: require(path.join(__dirname, "./events/test-event.js")),
@@ -176,7 +177,7 @@ describe("- Testing lambdalocal.js", function () {
         describe("# Environment Variables (destroy)", function () {
             var done, err;
             before(function (cb) {
-                var lambdalocal = require("../lib/lambdalocal.js");
+                var lambdalocal = require(lambdalocal_path);
                 lambdalocal.setLogger(winston);
                 lambdalocal.execute({
                     event: require(path.join(__dirname, "./events/test-event.js")),
@@ -218,7 +219,7 @@ describe("- Testing lambdalocal.js", function () {
         describe("* Mocked function", function () {
             var done, err;
             before(function (cb) {
-                var lambdalocal = require("../lib/lambdalocal.js");
+                var lambdalocal = require(lambdalocal_path);
                 lambdalocal.setLogger(winston);
                 var lambdaFunc = require("./functs/test-func-mocking.js");
                 sinon.mock(lambdaFunc).expects("getData").returns("MockedData");
@@ -244,8 +245,7 @@ describe("- Testing lambdalocal.js", function () {
         });
         describe("* Test timeout", function () {
             it("should throw TimeoutError", function (cb) {
-                var utils = require("../lib/utils.js");
-                var lambdalocal = require("../lib/lambdalocal.js");
+                var lambdalocal = require(lambdalocal_path);
                 lambdalocal.setLogger(winston);
                 var lambdaFunc = require("./functs/test-func-timeout.js");
                 lambdalocal.execute({
@@ -265,7 +265,7 @@ describe("- Testing lambdalocal.js", function () {
         });
         describe("* Test aws-sdk import", function () {
             it("should return an aws-sdk version >= 2", function (cb) {
-                var lambdalocal = require("../lib/lambdalocal.js");
+                var lambdalocal = require(lambdalocal_path);
                 lambdalocal.setLogger(winston);
                 var lambdaFunc = require("./functs/test-func-aws-sdk.js");
                 lambdalocal.execute({
@@ -284,7 +284,7 @@ describe("- Testing lambdalocal.js", function () {
         });
         describe("* Return Error object", function () {
             it("should convert it to correct JSON format", function (cb) {
-                var lambdalocal = require("../lib/lambdalocal.js");
+                var lambdalocal = require(lambdalocal_path);
                 lambdalocal.setLogger(winston);
                 var lambdaFunc = require("./functs/test-func-cb-error.js");
                 lambdalocal.execute({
@@ -305,7 +305,7 @@ describe("- Testing lambdalocal.js", function () {
     });
     describe('* Nested Run', function () {
         it("Should handle nested calls properly (context singleton)", function (cb) {
-            var lambdalocal = require("../lib/lambdalocal.js");
+            var lambdalocal = require(lambdalocal_path);
             lambdalocal.setLogger(winston);
             lambdalocal.execute({
                 event: require(path.join(__dirname, "./events/test-event.js")),
@@ -344,14 +344,14 @@ describe("- Testing lambdalocal.js", function () {
                 verboseLevel: 1
             }
             it('should return correct values as promise', function () {
-                var lambdalocal = require("../lib/lambdalocal.js");
+                var lambdalocal = require(lambdalocal_path);
                 lambdalocal.setLogger(winston);
                 return lambdalocal.execute(opts).then(function (data) {
                     assert.equal(data.result, "testvar");
                 });
             });
             it('should be stateless', function () {
-                var lambdalocal = require("../lib/lambdalocal.js");
+                var lambdalocal = require(lambdalocal_path);
                 lambdalocal.setLogger(winston);
                 return lambdalocal.execute(opts).then(function (data) {
                     assert.equal(data.result, "testvar");
@@ -362,7 +362,7 @@ describe("- Testing lambdalocal.js", function () {
     if (get_node_major_version() >= 8){
         describe('* Async Run', function () {
             it('should understand direct return in async functions', function () {
-                var lambdalocal = require("../lib/lambdalocal.js");
+                var lambdalocal = require(lambdalocal_path);
                 lambdalocal.setLogger(winston);
                 return lambdalocal.execute({
                   event: require(path.join(__dirname, "./events/test-event.js")),
@@ -376,7 +376,7 @@ describe("- Testing lambdalocal.js", function () {
                 });
             });
             it('should understand Promise return in functions', function () {
-                var lambdalocal = require("../lib/lambdalocal.js");
+                var lambdalocal = require(lambdalocal_path);
                 lambdalocal.setLogger(winston);
                 return lambdalocal.execute({
                   event: require(path.join(__dirname, "./events/test-event.js")),
@@ -390,7 +390,7 @@ describe("- Testing lambdalocal.js", function () {
                 });
             });
             it('should understand Promise rejection in functions', function () {
-                var lambdalocal = require("../lib/lambdalocal.js");
+                var lambdalocal = require(lambdalocal_path);
                 lambdalocal.setLogger(winston);
                 return lambdalocal.execute({
                   event: require(path.join(__dirname, "./events/test-event.js")),
@@ -409,11 +409,11 @@ describe("- Testing lambdalocal.js", function () {
     }
 });
 
-describe("- Testing bin/lambda-local", function () {
+describe("- Testing cli.js", function () {
     var spawnSync = require('child_process').spawnSync;
     describe("* Basic Run", function () {
         it("should end normally", function () {
-            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func.js -e ./events/test-event.js");
+            var command = get_shell("node ../build/cli.js -l ./functs/test-func.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 0);
@@ -422,7 +422,7 @@ describe("- Testing bin/lambda-local", function () {
         });
 
         it("should end normally: callback null", function () {
-            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-null.js -e ./events/test-event.js");
+            var command = get_shell("node ../build/cli.js -l ./functs/test-func-cb-null.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 0);
@@ -431,7 +431,7 @@ describe("- Testing bin/lambda-local", function () {
         });
 
         it("should end normally: callback undefined", function () {
-            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-undefined.js -e ./events/test-event.js");
+            var command = get_shell("node ../build/cli.js -l ./functs/test-func-cb-undefined.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 0);
@@ -442,7 +442,7 @@ describe("- Testing bin/lambda-local", function () {
 
     describe("* Failing Run", function () {
         it("should fail: context", function () {
-            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-fail.js -e ./events/test-event.js");
+            var command = get_shell("node ../build/cli.js -l ./functs/test-func-fail.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 1);
@@ -450,7 +450,7 @@ describe("- Testing bin/lambda-local", function () {
         });
 
         it("should fail: callback string", function () {
-            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-fail.js -e ./events/test-event.js");
+            var command = get_shell("node ../build/cli.js -l ./functs/test-func-cb-fail.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 1);
@@ -458,7 +458,7 @@ describe("- Testing bin/lambda-local", function () {
         });
 
         it("should fail: callback empty string", function () {
-            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-empty.js -e ./events/test-event.js");
+            var command = get_shell("node ../build/cli.js -l ./functs/test-func-cb-empty.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 1);
@@ -466,7 +466,7 @@ describe("- Testing bin/lambda-local", function () {
         });
 
         it("should fail: callback false", function () {
-            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-false.js -e ./events/test-event.js");
+            var command = get_shell("node ../build/cli.js -l ./functs/test-func-cb-false.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 1);
@@ -474,7 +474,7 @@ describe("- Testing bin/lambda-local", function () {
         });
 
         it("should fail: callback 0", function () {
-            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-cb-0.js -e ./events/test-event.js");
+            var command = get_shell("node ../build/cli.js -l ./functs/test-func-cb-0.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 1);
@@ -482,7 +482,7 @@ describe("- Testing bin/lambda-local", function () {
         });
 
         it("should fail: syntax error", function () {
-            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-syntax-error.js -e ./events/test-event.js");
+            var command = get_shell("node ../build/cli.js -l ./functs/test-func-syntax-error.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 1);
@@ -490,7 +490,7 @@ describe("- Testing bin/lambda-local", function () {
         });
 
         it("should fail: require error", function () {
-            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-require-error.js -e ./events/test-event.js");
+            var command = get_shell("node ../build/cli.js -l ./functs/test-func-require-error.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 1);
@@ -500,7 +500,7 @@ describe("- Testing bin/lambda-local", function () {
 
     describe("* Environment test run", function () {
         it("event should have used ENV while building", function () {
-            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-env.js -e ./events/test-event-env.js -v 1 --envdestroy -E {\"TEST_HUBID\":\"potato\"}");
+            var command = get_shell("node ../build/cli.js -l ./functs/test-func-env.js -e ./events/test-event-env.js -v 1 --envdestroy -E {\"TEST_HUBID\":\"potato\"}");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 0);
@@ -512,14 +512,14 @@ describe("- Testing bin/lambda-local", function () {
 
     describe("* Crashing run", function () {
         it("should fail", function () {
-            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-error.js -e ./events/test-event.js");
+            var command = get_shell("node ../build/cli.js -l ./functs/test-func-error.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
             assert.equal(r.status, 1);
         });
     });
     describe("* Timeout Run", function () {
         it("should end arbruptly", function () {
-            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-timeout.js -e ./events/test-event.js -t 1");
+            var command = get_shell("node ../build/cli.js -l ./functs/test-func-timeout.js -e ./events/test-event.js -t 1");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 1);
@@ -528,7 +528,7 @@ describe("- Testing bin/lambda-local", function () {
     });
     describe("* Not stringifyable run", function () {
         it("should fallback on util.inspect", function () {
-            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-not-stringifyableoutput.js -e ./events/test-event.js");
+            var command = get_shell("node ../build/cli.js -l ./functs/test-func-not-stringifyableoutput.js -e ./events/test-event.js");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 0);
@@ -537,7 +537,7 @@ describe("- Testing bin/lambda-local", function () {
     });
     describe("* Verbose test", function () {
         it("should have no output", function () {
-            var command = get_shell("node ../bin/lambda-local -l ./functs/test-func-print.js -e ./events/test-event.js -v 0");
+            var command = get_shell("node ../build/cli.js -l ./functs/test-func-print.js -e ./events/test-event.js -v 0");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 0);
@@ -546,7 +546,7 @@ describe("- Testing bin/lambda-local", function () {
     });
     describe("* Test --wait-empty-event-loop", function () {
         it("should wait for all timeouts to end", function () {
-            var command = get_shell("node ../bin/lambda-local  -l ./functs/test-func-waitemptyloop.js -e ./events/test-event.js --wait-empty-event-loop");
+            var command = get_shell("node ../build/cli.js  -l ./functs/test-func-waitemptyloop.js -e ./events/test-event.js --wait-empty-event-loop");
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 0);

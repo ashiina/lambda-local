@@ -2,6 +2,21 @@
   "name": "lambda-local",
   "version": "1.6.3",
   "description": "Commandline tool to run Lambda functions on your local machine.",
+  "main": "build/lambdalocal.js",
+  "types": "build/lambdalocal.d.ts",
+  "bin": {
+    "lambda-local": "build/cli.js"
+  },
+  "scripts": {
+    "test": "mocha",
+    "build": "tsc --declaration"
+  },
+  "files": [
+    "*.json",
+    "build",
+    "examples",
+    "Makefile"
+  ],
   "keywords": [
     "lambda",
     "amazon",
@@ -21,10 +36,12 @@
     "node": ">=6"
   },
   "dependencies": {
+    "@types/node": "^13.1.7",
     "aws-sdk": "^2.488.0",
     "commander": "^3.0.2",
     "dotenv": "^8.0.0",
     "mute": "^2.0.6",
+    "typescript": "^3.7.5",
     "winston": "^3.2.1"
   },
   "devDependencies": {
@@ -32,13 +49,7 @@
     "mocha": "^6.1.4",
     "sinon": "^7.3.2"
   },
-  "scripts": {
-    "test": "mocha"
-  },
   "preferGlobal": true,
-  "bin": {
-    "lambda-local": "./bin/lambda-local"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/ashiina/lambda-local.git"

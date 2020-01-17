@@ -4,10 +4,11 @@
  * Requires
  */
 
-const fs = require("fs");
-const os = require("os");
-const join = require("path").join;
-const util = require("util");
+import fs = require("fs");
+import os = require("os");
+import path_lib = require("path");
+const join = path_lib.join;
+import util = require("util");
 
 /**
  * utility functions
@@ -15,7 +16,7 @@ const util = require("util");
 
 const _hexChars = '0123456789abcdef'.split('');
 
-var _generateRandomHex = function(length) {
+export function generateRandomHex(length) {
     var hexVal = '';
     for (var i = 0; i < length; i++) {
         hexVal += _hexChars[Math.floor(Math.random() * _hexChars.length)];
@@ -23,8 +24,8 @@ var _generateRandomHex = function(length) {
     return hexVal;
 };
 
-var _getWinstonConsole = function() {
-    const winston = require("winston");
+export function getWinstonConsole() {
+    var winston = require("winston");
     const {combine, colorize, simple} = winston.format;
     const _simple = simple();
     const myFormat = winston.format(info => {
@@ -57,7 +58,7 @@ var _getWinstonConsole = function() {
     return logger;
 }
 
-var _getAbsolutePath = function(path) {
+export function getAbsolutePath(path) {
     var homeDir = process.env.HOME || process.env.USERPROFILE;
 		
 	var windowsRegex = /([A-Z|a-z]:\\[^*|"<>?\n]*)|(\\\\.*?\\.*)/;
@@ -79,7 +80,7 @@ var _getAbsolutePath = function(path) {
     return null;
 };
 
-var processJSON = function(json) {
+export function processJSON(json) {
     if(typeof json === 'object'){
         try {
             return JSON.stringify(json, null, '\t');
@@ -91,18 +92,12 @@ var processJSON = function(json) {
     }
 };
 
-function TimeoutError(message) {
-    this.message = message;
-    // Use V8's native method if available, otherwise fallback
-    if ("captureStackTrace" in Error)
-        Error.captureStackTrace(this, TimeoutError);
-    else
-        this.stack = (new Error()).stack;
+export class TimeoutError extends Error {
+    constructor(m: string) {
+        super(m);
+        this.name = "TimeoutError";
+    }
 }
-
-TimeoutError.prototype = Object.create(Error.prototype);
-TimeoutError.prototype.name = "TimeoutError";
-TimeoutError.prototype.constructor = TimeoutError;
 
 var _load_var_from_file = function(varname, envname, data, profileName){
     if(process.env[envname]){
@@ -117,14 +112,8 @@ var _load_var_from_file = function(varname, envname, data, profileName){
     }
 }
 
-var _loadAWSCredentials = function(path) {
-    //default parameter
-    var profileName = arguments.length <= 1 ||
-        arguments[1] === undefined ||
-        arguments[1] === null ? 'default' : arguments[1];
-
-    var fs = require('fs'),
-        dataRaw = fs.readFileSync(_getAbsolutePath(path)),
+export function loadAWSCredentials(path:string, profileName:string = 'default') {
+    var dataRaw = fs.readFileSync(getAbsolutePath(path)),
         data = dataRaw.toString();
     
     _load_var_from_file("aws_secret_access_key", "AWS_SECRET_ACCESS_KEY", data, profileName);
@@ -140,12 +129,12 @@ var _loadAWSCredentials = function(path) {
     }
 };
 
-var _waitForNodeJS = function(cb){
+export function waitForNodeJS(cb){
     /* Waits for all Timeouts to end before calling the callback */
     // This is quite ugly, but its hard to emulate a "wait for all timeouts" properly :/
-    const Timer_constructor = process.binding('timer_wrap').Timer;
+    const Timer_constructor = (process as any).binding('timer_wrap').Timer;
     var i=0, has_timers=false;
-    process._getActiveHandles().every(function(x){
+    (process as any)._getActiveHandles().every(function(x){
         if (x.constructor == Timer_constructor){
             if (++i > 1){ 
                 has_timers = true;
@@ -156,20 +145,10 @@ var _waitForNodeJS = function(cb){
     });
     if (has_timers){
         setTimeout(function(){
-            _waitForNodeJS(cb);
+            waitForNodeJS(cb);
         }, 100);
     } else {
         cb();
     }
 }
 
-module.exports = {
-    hexChars: _hexChars,
-    generateRandomHex: _generateRandomHex,
-    getAbsolutePath: _getAbsolutePath,
-    getWinstonConsole: _getWinstonConsole,
-    loadAWSCredentials: _loadAWSCredentials,
-    processJSON: processJSON,
-    waitForNodeJS: _waitForNodeJS,
-    TimeoutError: TimeoutError
-};

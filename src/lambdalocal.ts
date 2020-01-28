@@ -103,6 +103,11 @@ function _executeSync(opts) {
         'NODE_PATH': utils.getAbsolutePath('node_modules'),
         'TZ': Intl.DateTimeFormat().resolvedOptions().timeZone
     }
+    /*
+     * _HANDLER – The location to the handler, from the function's configuration.
+     * The standard format is `file.method`, where file is the name of the file without an extension, and method is the name of a method or function that's defined in the file.
+     * (https://docs.aws.amazon.com/lambda/latest/dg/runtimes-custom.html)
+     */
     if (lambdaPath){
         envVars['LAMBDA_TASK_ROOT'] = path.dirname(lambdaPath);
         envVars['_HANDLER'] = path.basename(lambdaPath, path.extname(lambdaPath)) + "." + lambdaHandler;

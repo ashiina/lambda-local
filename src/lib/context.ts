@@ -7,7 +7,7 @@
  */
 
 import utils = require('./utils.js');
-import mute = require('mute');
+import mute = require('./mute.js');
 
 function Context() {
     this.logger = null;

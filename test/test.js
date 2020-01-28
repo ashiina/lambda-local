@@ -12,8 +12,6 @@ var fs = require("fs");
 
 var functionName = "handler";
 var timeoutMs = 3000;
-var functionVersion = 1;
-var invokedFunctionArn = `arn:aws:lambda:region:account-id:function:${functionName}:${functionVersion}`;
 var utils = require("../build/lib/utils.js");
 const lambdalocal_path = "../build/lambdalocal.js"
 
@@ -164,7 +162,8 @@ describe("- Testing lambdalocal.js", function () {
                 assert.isAtMost(done.context.getRemainingTimeInMillis(), timeoutMs);
             });
             it("should contain initialized invokedFunctionArn", function () {
-                assert.equal(done.context.invokedFunctionArn, invokedFunctionArn);
+                var arn = new RegExp("arn:aws:lambda:unicorn-universe:\\d+:function:" + functionName + ":1.0");
+                assert.match(done.context.invokedFunctionArn, arn);
             });
             it("should contain done function", function () {
                 assert.isDefined(done.context.done);

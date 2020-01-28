@@ -31,12 +31,12 @@ function Context() {
      */
     this.callbackWaitsForEmptyEventLoop = false;  // Unlike AWS, we default it to false because our implementation is a bit ugly
     this.functionName = '';
-    this.functionVersion = '1';
-    this.invokedFunctionArn = 'a';
-    this.memoryLimitInMB = 1;
-    this.awsRequestId = '';
-    this.logGroupName = 'a';
-    this.logStreamName = null;
+    this.functionVersion = process.env.AWS_LAMBDA_FUNCTION_VERSION;
+    this.invokedFunctionArn = null;
+    this.memoryLimitInMB = parseInt(process.env.AWS_LAMBDA_FUNCTION_MEMORY_SIZE);
+    this.awsRequestId = null;
+    this.logGroupName = 'Group name';
+    this.logStreamName = 'Stream name';
     this.identity = null;
     this.clientContext = null;
 
@@ -72,8 +72,8 @@ Context.prototype.createInvokeFunctionArn = function() {
     'arn',
     'aws',
     'lambda',
-    'region',
-    'account-id',
+    process.env.AWS_REGION,
+    Math.round(Math.random() * 1000000000000).toString(),
     'function',
     this.functionName,
     this.functionVersion

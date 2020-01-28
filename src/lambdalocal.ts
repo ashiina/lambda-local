@@ -94,7 +94,7 @@ function _executeSync(opts) {
     // set environment variables before the require
     var envVars = {
         'AWS_LAMBDA_FUNCTION_NAME': lambdaHandler,
-        'AWS_LAMBDA_FUNCTION_MEMORY_SIZE': Math.floor(os.freemem() / 1024).toString(),
+        'AWS_LAMBDA_FUNCTION_MEMORY_SIZE': Math.floor(os.freemem() / 1048576).toString(),
         'AWS_LAMBDA_FUNCTION_VERSION': "1.0",
         'AWS_EXECUTION_ENV': "AWS_Lambda_nodejs" + process.version.substr(1),
         'LAMBDA_CONSOLE_SOCKET': "14",

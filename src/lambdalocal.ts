@@ -8,6 +8,8 @@
 
 import dotenv = require('dotenv');
 import fs = require('fs');
+import path = require('path');
+import os = require('os');
 import utils = require('./lib/utils.js');
 import Context = require('./lib/context.js');
 
@@ -43,7 +45,18 @@ export function execute(opts) {
     }
 };
 
-var _executeSync = function(opts) {
+function updateEnv(env) {
+    /*
+     * Update environment vars if not already in place
+     */
+    Object.keys(env).forEach(function (key){
+        if (!process.env[key]) {
+            process.env[key] = env[key];
+        }
+    });
+}
+
+function _executeSync(opts) {
     var event = opts.event,
         lambdaFunc = opts.lambdaFunc,
         lambdaPath = opts.lambdaPath,
@@ -73,18 +86,31 @@ var _executeSync = function(opts) {
         throw new SyntaxError("Cannot specify both lambdaFunc and lambdaPath !");
         return;
     }
-    
+
+    if (lambdaPath){
+        lambdaPath = utils.getAbsolutePath(lambdaPath);
+    }
+
     // set environment variables before the require
-    process.env['AWS_LAMBDA_FUNCTION_NAME'] = lambdaHandler;
-    process.env['AWS_LAMBDA_FUNCTION_MEMORY_SIZE'] = "1024";
-    process.env['AWS_LAMBDA_FUNCTION_VERSION'] = "1.0";
-    process.env['AWS_EXECUTION_ENV'] = "AWS_Lambda_nodejs";
-    process.env['LAMBDA_CONSOLE_SOCKET'] = "14";
-    process.env['LAMBDA_CONTROL_SOCKET'] = "11";
-    process.env['LAMBDA_RUNTIME_DIR'] = process.cwd();
-    process.env['LAMBDA_TASK_ROOT'] = process.cwd();
-    process.env['NODE_PATH'] = utils.getAbsolutePath('node_modules');
-    process.env['TZ'] = "utc";
+    var envVars = {
+        'AWS_LAMBDA_FUNCTION_NAME': lambdaHandler,
+        'AWS_LAMBDA_FUNCTION_MEMORY_SIZE': Math.floor(os.freemem() / 1024).toString(),
+        'AWS_LAMBDA_FUNCTION_VERSION': "1.0",
+        'AWS_EXECUTION_ENV': "AWS_Lambda_nodejs" + process.version.substr(1),
+        'LAMBDA_CONSOLE_SOCKET': "14",
+        'LAMBDA_CONTROL_SOCKET': "11",
+        'LAMBDA_RUNTIME_DIR': process.cwd(),
+        'NODE_PATH': utils.getAbsolutePath('node_modules'),
+        'TZ': Intl.DateTimeFormat().resolvedOptions().timeZone
+    }
+    if (lambdaPath){
+        envVars['LAMBDA_TASK_ROOT'] = path.dirname(lambdaPath);
+        envVars['_HANDLER'] = path.basename(lambdaPath, path.extname(lambdaPath)) + "." + lambdaHandler;
+    } else {
+        envVars['LAMBDA_TASK_ROOT'] = process.cwd();
+        envVars['_HANDLER'] = "index." + lambdaHandler;
+    }
+    updateEnv(envVars);
 
     // custom environment variables
     if (environment != null) {
@@ -92,7 +118,7 @@ var _executeSync = function(opts) {
             envdestroy = false;
         }
         Object.keys(environment).forEach(function(key) {
-            process.env[key]=environment[key];
+            process.env[key] = environment[key];
         });
     }
 
@@ -150,8 +176,8 @@ var _executeSync = function(opts) {
         // load lambda function
         if (!(lambdaFunc)){
             // delete this function from the require.cache to ensure every dependency is refreshed
-            delete require.cache[utils.getAbsolutePath(lambdaPath)];
-            lambdaFunc = require(utils.getAbsolutePath(lambdaPath));
+            delete require.cache[lambdaPath];
+            lambdaFunc = require(lambdaPath);
         }
 
         //load event

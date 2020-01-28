@@ -122,6 +122,12 @@ describe("- Testing lambdalocal.js", function () {
         });
 
         describe("# Environment Variables", function () {
+            it("should have automatic env built correctly", function () {
+                assert.equal(process.env._HANDLER, 'test-func.' + functionName);
+                assert.equal(process.env.TZ, Intl.DateTimeFormat().resolvedOptions().timeZone);
+                assert.equal(process.env.LAMBDA_TASK_ROOT, path.join(__dirname, "./functs"));
+                assert.isOk(fs.existsSync(process.env.LAMBDA_RUNTIME_DIR));
+            });
             it("should return correct environment variables", function () {
                 assert.equal(process.env.envkey1, "Environment");
                 assert.equal(process.env.envkey2, {"k":"v"});
@@ -265,6 +271,7 @@ describe("- Testing lambdalocal.js", function () {
         });
         describe("* Test aws-sdk import", function () {
             it("should return an aws-sdk version >= 2", function (cb) {
+                this.timeout(4000);
                 var lambdalocal = require(lambdalocal_path);
                 lambdalocal.setLogger(winston);
                 var lambdaFunc = require("./functs/test-func-aws-sdk.js");

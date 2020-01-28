@@ -13,5 +13,5 @@ node_modules: package.json
 build: tsconfig.json
 	npm run build
 
-.PHONY: test install clean
+.PHONY: test install clean build
 deadwood := node_modules package-lock.json build

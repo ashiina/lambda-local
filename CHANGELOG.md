@@ -1,5 +1,9 @@
 # ChangeLog
 
+## 1.7.1 (2020-01/28)
+* Add support for `_HANDLER`
+* Update environment variables computation & consistency with context
+
 ## 1.7.0 (2020-01/17)
 * Migrate to TypeScript (#191)
 

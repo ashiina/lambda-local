@@ -17,6 +17,18 @@ The main target is unit tests.
 npm install -g lambda-local
 ```
 
+## Build
+
+```bash
+make build
+```
+Or
+```bash
+npm install
+npm install --only=dev
+npm run build
+```
+
 ## Usage
 
 - **As an API:** You can also use Lambda local directly in a script. For instance, it is interesting in a [MochaJS][1] test suite in order to get test coverage.

@@ -41,8 +41,8 @@ import utils = require('./lib/utils');
             '(optional) Load additional environment variables from a file')
         .option('--inspect [[host:]port]',
             '(optional) Starts lambda-local using the NodeJS inspector (available in nodejs > 8.0.0)')
-        .option('-W, --watch [[host:]port]', 
-            '(optional) Starts lambda-local in watch mode listening to the specified port [1-65535]')
+        .option('-W, --watch [port]', 
+            '(optional) Starts lambda-local in watch mode listening to the specified port [1-65535]. Default is 8008')
         .parse(process.argv);
     
     var eventPath = program.eventPath,
@@ -59,8 +59,12 @@ import utils = require('./lib/utils');
 
     var port;
     if (program.watch) {
-        port = parseInt(program.watch);
-        if(port < 1 || port > 65535) program.help();
+        if (program.watch == true) {
+            port = 8008;
+        } else {
+            port = parseInt(program.watch);
+            if(port < 1 || port > 65535) program.help();
+        }
         eventPath = true;
     }
 

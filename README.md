@@ -160,13 +160,13 @@ lambda-local -l index.js -h handler -e examples/s3-put.js -E '{"key":"value","ke
 ```
 
 #### Running lambda functions as a HTTP Server
-A simple way you can run lambda functions locally, without the need to create any special template files (like Serverless plugin and SAM requires), just adding the parameter `--watch`. It will raise a http server listening to the specified port, then you can pass the event payload to the handler via request body.
+A simple way you can run lambda functions locally, without the need to create any special template files (like Serverless plugin and SAM requires), just adding the parameter `--watch`. It will raise a http server listening to the specified port (default is 8008), then you can pass the event payload to the handler via request body.
 
 ```bash
-lambda-local -l examples/handler_helloworld.js -h handler --watch 8080
+lambda-local -l examples/handler_helloworld.js -h handler --watch 8008
 
 curl --request POST \
-  --url http://localhost:8080/ \
+  --url http://localhost:8008/ \
   --header 'content-type: application/json' \
   --data '{
 	"event": {

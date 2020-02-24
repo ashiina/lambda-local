@@ -12,6 +12,7 @@ import path = require('path');
 import os = require('os');
 import utils = require('./lib/utils.js');
 import Context = require('./lib/context.js');
+import { createServer, IncomingMessage, ServerResponse } from 'http';
 
 var logger = utils.getWinstonConsole();
 
@@ -44,6 +45,42 @@ export function execute(opts) {
         });
     }
 };
+
+export function watch(opts) {
+    const server = createServer(async function(req: IncomingMessage, res: ServerResponse) {
+        try {
+            if(req.headers['content-type'] !== 'application/json') throw 'Missing application/json header';
+            if(req.method !== 'POST') throw 'Invalid http method (Expected POST)';
+
+            _getRequestPayload(req, async (error, result) => {
+                if(error) throw error;
+
+                const data = await execute({ ...opts, event: () => result })
+                return res.end(JSON.stringify({ data }));
+            });
+        } catch(error) {
+            res.statusCode = 500;
+            return res.end(JSON.stringify({ error }));
+        }
+    });
+    server.listen(opts.port, function() {
+        logger.log('info', `Lambda handler listening on http://localhost:${opts.port}`);
+    })
+}
+
+function _getRequestPayload(req, callback) {
+    let body = '';
+    req.on('data', chunk => {
+        body += chunk.toString(); // convert Buffer to string
+    });
+    req.on('end', () => {
+        const payload = JSON.parse(body);
+        if(!payload.event) {
+            callback('Missing event property');
+        }
+        callback(null, payload.event);
+    });
+}
 
 function updateEnv(env) {
     /*

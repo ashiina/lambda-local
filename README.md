@@ -9,7 +9,7 @@ Lambda-local lets you test **NodeJS Amazon Lambda functions** on your local mach
 
 It does not aim to be perfectly feature proof as projects like [serverless-offline](https://github.com/dherault/serverless-offline ) or [docker-lambda](https://github.com/lambci/docker-lambda), but rather to remain **very light** (it still provides a fully built `Context`, handles all of its parameters and functions, and everything is customizable easily).
 
-The main target is unit tests.
+The main target are unit tests and running lambda functions locally.
 
 ## Install
 
@@ -147,6 +147,8 @@ lambdaLocal.execute({
 *    `-v, --verboselevel <3/2/1/0>`                     (optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.
 *    `--envfile <path/to/env/file>`                     (optional) Set extra environment variables from an env file
 *    `--inspect [[host:]port]`                          (optional) Starts lambda-local using the NodeJS inspector (available in nodejs > 8.0.0)
+*    `-W, --watch`                                      (optional) Default false. Starts lambda-local in watch mode.
+*    `--port`                                           (optional) Default 8008. Sets the listening port for watch mode.
 
 ### CLI examples
 
@@ -156,6 +158,24 @@ lambda-local -l index.js -h handler -e examples/s3-put.js
 
 # Input environment variables
 lambda-local -l index.js -h handler -e examples/s3-put.js -E '{"key":"value","key2":"value2"}'
+```
+
+#### Running lambda functions as a HTTP Server
+A simple way you can run lambda functions locally, without the need to create any special template files (like Serverless plugin and SAM requires), just adding the parameter `--watch`. It will raise a http server listening to the specified port (default is 8008), then you can pass the event payload to the handler via request body.
+
+```bash
+lambda-local -l examples/handler_helloworld.js -h handler --watch
+
+curl --request POST \
+  --url http://localhost:8008/ \
+  --header 'content-type: application/json' \
+  --data '{
+	"event": {
+		"key1": "value1",
+		"key2": "value2",
+		"key3": "value3"
+	}
+}'
 ```
 
 ## About: Definitions

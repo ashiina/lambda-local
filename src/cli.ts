@@ -41,6 +41,9 @@ import utils = require('./lib/utils');
             '(optional) Load additional environment variables from a file')
         .option('--inspect [[host:]port]',
             '(optional) Starts lambda-local using the NodeJS inspector (available in nodejs > 8.0.0)')
+        .option('-W, --watch', 'Runs the lambda handler on watch mode')
+        .option('--port <number>', 
+            '(optional) Sets the listening port for watch mode', 8008)
         .parse(process.argv);
     
     var eventPath = program.eventPath,
@@ -53,8 +56,13 @@ import utils = require('./lib/utils');
         envdestroy = program.envdestroy,
         envfile = program.envfile,
         callbackWaitsForEmptyEventLoop = program.waitEmptyEventLoop,
-        verboseLevel = program.verboselevel;
-    
+        verboseLevel = program.verboselevel,
+        port = program.port;
+
+    if (program.watch) {
+        eventPath = true;
+    }
+
     if (!lambdaPath || !eventPath) {
         program.help();
     }
@@ -118,12 +126,14 @@ import utils = require('./lib/utils');
             _close_inspector = function(){inspector.close();}
         }
     }
-
-    var event = function(){return require(utils.getAbsolutePath(eventPath));}
+    var event = function(){
+        if(program.watch) return null;
+        return require(utils.getAbsolutePath(eventPath));
+    }
     try {
         var init_time = new Date().getTime();
         // execute
-        lambdaLocal.execute({
+        const opts = {
             event: event,
             lambdaPath: lambdaPath,
             lambdaHandler: lambdaHandler,
@@ -135,6 +145,15 @@ import utils = require('./lib/utils');
             environment: environment,
             envdestroy: envdestroy,
             envfile: envfile,
+            verboseLevel: verboseLevel,
+        };
+
+        if(program.watch) {
+            return lambdaLocal.watch({ ...opts, port });
+        }
+
+        lambdaLocal.execute({
+            ...opts,
             callback: function(err /*, data */) { //data unused
                 var exec_time = new Date().getTime() - init_time;
                 if (_close_inspector) {
@@ -152,8 +171,7 @@ import utils = require('./lib/utils');
                     }
                     process.exit(0);
                 }
-            },
-            verboseLevel: verboseLevel
+            }
         });
     } catch (ex) {
         logger.log('error', ex);

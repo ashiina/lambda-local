@@ -10,9 +10,9 @@ import dotenv = require('dotenv');
 import fs = require('fs');
 import path = require('path');
 import os = require('os');
+import { createServer, IncomingMessage, ServerResponse } from 'http';
 import utils = require('./lib/utils.js');
 import Context = require('./lib/context.js');
-import { createServer, IncomingMessage, ServerResponse } from 'http';
 
 var logger = utils.getWinstonConsole();
 
@@ -49,12 +49,10 @@ export function execute(opts) {
 export function watch(opts) {
     const server = createServer(async function(req: IncomingMessage, res: ServerResponse) {
         try {
-            if(req.headers['content-type'] !== 'application/json') throw 'Missing application/json header';
+            if(req.headers['content-type'] !== 'application/json') throw 'Invalid header Content-Type (Expected application/json)';
             if(req.method !== 'POST') throw 'Invalid http method (Expected POST)';
-
             _getRequestPayload(req, async (error, result) => {
                 if(error) throw error;
-
                 const data = await execute({ ...opts, event: () => result })
                 return res.end(JSON.stringify({ data }));
             });
@@ -71,12 +69,12 @@ export function watch(opts) {
 function _getRequestPayload(req, callback) {
     let body = '';
     req.on('data', chunk => {
-        body += chunk.toString(); // convert Buffer to string
+        body += chunk.toString();
     });
     req.on('end', () => {
         const payload = JSON.parse(body);
         if(!payload.event) {
-            callback('Missing event property');
+            callback('Invalid body (Expected "event" property)');
         }
         callback(null, payload.event);
     });

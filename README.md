@@ -147,7 +147,7 @@ lambdaLocal.execute({
 *    `-v, --verboselevel <3/2/1/0>`                     (optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.
 *    `--envfile <path/to/env/file>`                     (optional) Set extra environment variables from an env file
 *    `--inspect [[host:]port]`                          (optional) Starts lambda-local using the NodeJS inspector (available in nodejs > 8.0.0)
-*    `-W, --watch`                                      (optional) Starts lambda-local in watch mode listening to the specified port [1-65535].
+*    `-W, --watch [port]`                               (optional) Starts lambda-local in watch mode listening to the specified port [1-65535].
 
 ### CLI examples
 

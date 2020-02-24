@@ -147,8 +147,7 @@ lambdaLocal.execute({
 *    `-v, --verboselevel <3/2/1/0>`                     (optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.
 *    `--envfile <path/to/env/file>`                     (optional) Set extra environment variables from an env file
 *    `--inspect [[host:]port]`                          (optional) Starts lambda-local using the NodeJS inspector (available in nodejs > 8.0.0)
-*    `-W, --watch`                                      (optional) Default false. Starts lambda-local in watch mode.
-*    `--port`                                           (optional) Default 8008. Sets the listening port for watch mode.
+*    `-W, --watch`                                      (optional) Starts lambda-local in watch mode listening to the specified port [1-65535].
 
 ### CLI examples
 
@@ -161,13 +160,13 @@ lambda-local -l index.js -h handler -e examples/s3-put.js -E '{"key":"value","ke
 ```
 
 #### Running lambda functions as a HTTP Server
-A simple way you can run lambda functions locally, without the need to create any special template files (like Serverless plugin and SAM requires), just adding the parameter `--watch`. It will raise a http server listening to the specified port (default is 8008), then you can pass the event payload to the handler via request body.
+A simple way you can run lambda functions locally, without the need to create any special template files (like Serverless plugin and SAM requires), just adding the parameter `--watch`. It will raise a http server listening to the specified port, then you can pass the event payload to the handler via request body.
 
 ```bash
-lambda-local -l examples/handler_helloworld.js -h handler --watch
+lambda-local -l examples/handler_helloworld.js -h handler --watch 8080
 
 curl --request POST \
-  --url http://localhost:8008/ \
+  --url http://localhost:8080/ \
   --header 'content-type: application/json' \
   --data '{
 	"event": {

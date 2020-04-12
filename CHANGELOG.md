@@ -1,5 +1,9 @@
 # ChangeLog
 
+## 1.7.2 (2020-04/13)
+* Add --watch parameter
+* Bump dependencies
+
 ## 1.7.1 (2020-01/28)
 * Add support for `_HANDLER`
 * Update environment variables computation & consistency with context

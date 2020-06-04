@@ -1,5 +1,8 @@
 # ChangeLog
 
+## 1.7.3 (2020-06/04)
+* Bump dependencies. No API changes
+
 ## 1.7.2 (2020-04/13)
 * Add --watch parameter
 * Bump dependencies

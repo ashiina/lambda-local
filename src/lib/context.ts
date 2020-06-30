@@ -88,7 +88,7 @@ Context.prototype._initialize = function(options) {
     /* set time */
     this.startTime = new Date().getTime();
     this.timeout = options.timeoutMs;
-    
+
     this.logger = options.logger;
     this.verboseLevel = options.verboseLevel;
     this.finalCallback = options.finalCallback;
@@ -104,7 +104,7 @@ Context.prototype._initialize = function(options) {
 
     /* Set callbackWaitsForEmptyEventLoop */
     this.callbackWaitsForEmptyEventLoop = options.callbackWaitsForEmptyEventLoop;
-    
+
     if (this.verboseLevel > 1){
         this.logger.log('info', 'START RequestId: ' + this.awsRequestId);
     }
@@ -118,7 +118,7 @@ Context.prototype._initialize = function(options) {
 
 /*
  * Timeout initialization.
- * Called from lambdalocal.js 
+ * Called from lambdalocal.js
  */
 Context.prototype._init_timeout = function(){
     /* Handling timeout */
@@ -172,9 +172,10 @@ Context.prototype.done = function(err, message) {
 
     if(err instanceof Error){
         //http://docs.aws.amazon.com/en_en/lambda/latest/dg/nodejs-prog-mode-exceptions.html
-        var _stack = err.stack.split("\n");
-        _stack.shift();
-        for (var i =0; i < _stack.length; i++){_stack[i] = _stack[i].trim().substr(3);}
+        console.log(err)
+        // var _stack = err.stack.split("\n");
+        // _stack.shift();
+        // for (var i =0; i < _stack.length; i++){_stack[i] = _stack[i].trim().substr(3);}
         err = {
           "errorMessage": err.message,
           "errorType": err.name,

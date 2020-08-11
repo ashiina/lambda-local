@@ -73,7 +73,7 @@ Context.prototype.createInvokeFunctionArn = function() {
     'aws',
     'lambda',
     process.env.AWS_REGION,
-    Math.round(Math.random() * 1000000000000).toString(),
+    process.env.AWS_ACCOUNT_ID || Math.round(Math.random() * 1000000000000).toString(),
     'function',
     this.functionName,
     this.functionVersion

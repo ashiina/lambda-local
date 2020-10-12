@@ -134,7 +134,7 @@ lambdaLocal.execute({
 
 ### Available Arguments
 *    `-l, --lambda-path <lambda index path>`            (required) Specify Lambda function file name.
-*    `-e, --event-path <event path>`                    (required) Specify event data file name.
+*    `-e, --event-path <event path>`                    (required --watch is not in use) Specify event data file name.
 *    `-h, --handler <handler name>`                     (optional) Lambda function handler name. Default is "handler".
 *    `-t, --timeout <timeout>`                          (optional) Seconds until lambda function timeout. Default is 3 seconds.
 *    `-r, --region <aws region>`                        (optional) Sets the AWS region, defaults to us-east-1.

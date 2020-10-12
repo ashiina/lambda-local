@@ -17,7 +17,7 @@ import utils = require('./lib/utils');
         .name('lambda-local')
         .version(lambdaLocal.version)
         .option('-l, --lambda-path <lambda index path>', '(required) Lambda function file name.')
-        .option('-e, --event-path <path>', '(required) Event data file name.')
+        .option('-e, --event-path <path>', '(required if --watch is not in use) Event data file name.')
         .option('-h, --handler <handler name>',
             '(optional) Lambda function handler name. Default is \'handler\'.')
         .option('-t, --timeout <timeout seconds>',

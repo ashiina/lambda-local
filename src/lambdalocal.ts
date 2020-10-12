@@ -52,18 +52,31 @@ export function execute(opts) {
 };
 
 export function watch(opts) {
+    if (!opts.verboseLevel){
+        opts.verboseLevel = 0;
+    }
     const server = createServer(async function(req: IncomingMessage, res: ServerResponse) {
-        try {
-            if(req.headers['content-type'] !== 'application/json') throw 'Invalid header Content-Type (Expected application/json)';
-            if(req.method !== 'POST') throw 'Invalid http method (Expected POST)';
-            _getRequestPayload(req, async (error, result) => {
-                if(error) throw error;
-                const data = await execute({ ...opts, event: () => result })
-                return res.end(JSON.stringify({ data }));
-            });
-        } catch(error) {
+        var log_msg = `${req.method} ${req.headers.host} ${req.url}`;
+        function handle_error(error){
+            logger.log('warn', log_msg + ` -> ${error}`);
             res.statusCode = 500;
             return res.end(JSON.stringify({ error }));
+        }
+        try {
+            if(req.headers['content-type'] !== 'application/json') throw 'Invalid header Content-Type (Expected application/json)';
+            _getRequestPayload(req, async (error, result) => {
+                try {
+                    if(error) throw error;
+                    const data = await execute({ ...opts, event: () => result });
+                    const ans = JSON.stringify({ data });
+                    logger.log('info', log_msg + ` -> OK (${ans.length * 2} bytes)`);
+                    return res.end(ans);
+                } catch(error) {
+                    return handle_error(error);
+                }
+            });
+        } catch(error) {
+            return handle_error(error);
         }
     });
     server.listen(opts.port, function() {

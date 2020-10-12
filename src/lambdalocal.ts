@@ -14,6 +14,11 @@ import { createServer, IncomingMessage, ServerResponse } from 'http';
 import utils = require('./lib/utils.js');
 import Context = require('./lib/context.js');
 
+/*
+ * Lambda local version
+ */
+export const version = "1.7.3";
+
 var logger = utils.getWinstonConsole();
 
 export function setLogger(_logger){

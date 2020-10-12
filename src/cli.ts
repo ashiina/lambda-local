@@ -15,6 +15,7 @@ import utils = require('./lib/utils');
     var program = require('commander');
     program
         .name('lambda-local')
+        .version(lambdaLocal.version)
         .option('-l, --lambda-path <lambda index path>', '(required) Lambda function file name.')
         .option('-e, --event-path <path>', '(required) Event data file name.')
         .option('-h, --handler <handler name>',

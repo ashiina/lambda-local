@@ -172,14 +172,23 @@ Context.prototype.done = function(err, message) {
 
     if(err instanceof Error){
         //http://docs.aws.amazon.com/en_en/lambda/latest/dg/nodejs-prog-mode-exceptions.html
-        var _stack = err.stack.split("\n");
-        _stack.shift();
-        for (var i =0; i < _stack.length; i++){_stack[i] = _stack[i].trim().substr(3);}
-        err = {
-          "errorMessage": err.message,
-          "errorType": err.name,
-          "stackTrace": _stack
-        };
+        var _stack;
+        if (err.stack){
+          // Trim stack
+          _stack = err.stack.split("\n");
+          _stack.shift();
+          for (var i =0; i < _stack.length; i++){_stack[i] = _stack[i].trim().substr(3);}
+          err = {
+              "errorMessage": err.message,
+              "errorType": err.name,
+              "stackTrace": _stack
+          };
+        } else {
+            err = {
+                "errorMessage": err.message,
+                "errorType": err.name
+            };
+        }
     }
 
     if (err !== null && typeof err !== 'undefined') {

@@ -302,6 +302,7 @@ describe("- Testing lambdalocal.js", function () {
                     callback: function (err, _done) {
                         assert.equal(err.errorType, "Error");
                         assert.equal(err.errorMessage, "Failed for an unknown reason !");
+                        assert.ok(err.stackTrace.some(function(x){return x.includes("test-func-cb-error.js:5");}));
                         cb();
                     },
                     verboseLevel: 1

@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
-        "outDir": "./build",
         "allowJs": true,
+        "declaration": true,
+        "outDir": "./build",
         "target": "es5"
     },
     "include": [

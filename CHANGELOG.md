@@ -1,17 +1,23 @@
 # ChangeLog
 
-## 1.7.3 (2020-06/04)
+## 1.7.4 (2020/10/12)
+* Fix crash when an Error is raised with no stack (#GH202)
+* Add --version and `lambdaLocal.version` support
+* Improve logging of the --watch option
+* Bump dependencies & minor build improvements
+
+## 1.7.3 (2020/06/04)
 * Bump dependencies. No API changes
 
-## 1.7.2 (2020-04/13)
+## 1.7.2 (2020/04/13)
 * Add --watch parameter
 * Bump dependencies
 
-## 1.7.1 (2020-01/28)
+## 1.7.1 (2020/01/28)
 * Add support for `_HANDLER`
 * Update environment variables computation & consistency with context
 
-## 1.7.0 (2020-01/17)
+## 1.7.0 (2020/01/17)
 * Migrate to TypeScript (#191)
 
 ## 1.6.3 (2019/07/04)

@@ -37,7 +37,7 @@ import utils = require('./lib/utils');
             '(optional) Destroy added environment on closing. Defaults to false')
         .option('-v, --verboselevel <3/2/1/0>',
             '(optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text ' +
-            'and level 0 dismiss also the result.')
+            'and level 0 dismiss also the result.', 3)
         .option('--envfile <path/to/env/file>',
             '(optional) Load additional environment variables from a file')
         .option('--inspect [[host:]port]',

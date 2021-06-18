@@ -194,9 +194,7 @@ The `context` object has been sampled from what's visible when running an actual
 They may change the internals of this object, and Lambda-local does not guarantee that this will always be up-to-date with the actual context object.
 
 ### AWS-SDK
-Since the Amazon Lambda can load the AWS-SDK npm without installation, Lambda-local has also packaged AWS-SDK in its dependencies.
-If you want to use this, please use the `-p` or `-P` options (or their API counterpart) with the aws credentials file. More infos here:
-http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cli-config-files
+As of version 2.0.0, lambda-local no longer packages AWS-SDK in its dependencies. To run a function that makes use of this module, make sure to install it as a dependency in your project.
 
 ## Other links
 

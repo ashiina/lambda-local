@@ -17,7 +17,7 @@ import Context = require('./lib/context.js');
 /*
  * Lambda local version
  */
-export const version = "1.7.4";
+export const version = "2.0.0";
 
 var logger = utils.getWinstonConsole();
 

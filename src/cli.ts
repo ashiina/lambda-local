@@ -14,6 +14,7 @@ import utils = require('./lib/utils');
     // process opts
     var program = require('commander');
     program
+        .storeOptionsAsProperties()
         .name('lambda-local')
         .version(lambdaLocal.version)
         .option('-l, --lambda-path <lambda index path>', '(required) Lambda function file name.')

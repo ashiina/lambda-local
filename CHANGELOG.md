@@ -1,5 +1,11 @@
 # ChangeLog
 
+## 2.0.0 (2021/06/19)
+* **BREAKING CHANGE: removed aws-sdk dependency**. This allows to make `lambda-local` significantly smaller
+* Bump depencies
+* Move CI
+* Minor CLI fixes
+
 ## 1.7.4 (2020/10/12)
 * Fix crash when an Error is raised with no stack (#GH202)
 * Add --version and `lambdaLocal.version` support

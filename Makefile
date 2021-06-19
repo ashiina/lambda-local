@@ -10,7 +10,7 @@ node_modules: package.json
 	npm install
 
 build: tsconfig.json node_modules
-	npm install --only=dev
+	NODE_ENV=build npm install
 	npm run build
 
 .PHONY: test install clean build

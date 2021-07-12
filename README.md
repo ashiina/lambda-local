@@ -1,12 +1,12 @@
 # Lambda-local
 
-[![NPM](https://nodei.co/npm/lambda-local.png?compact=true)](https://nodei.co/npm/lambda-local/)
+[![NPM](https://nodei.co/npm/lambda-local.png?compact=true)](https://www.npmjs.com/package/lambda-local)
 
 [![Lambda-local unit tests](https://github.com/ashiina/lambda-local/actions/workflows/unittests.yml/badge.svg?branch=develop&event=push)](https://github.com/ashiina/lambda-local/actions?query=event%3Apush)
 
 Lambda-local lets you test **NodeJS Amazon Lambda functions** on your local machine, by providing a simplistic API and command-line tool.
 
-It does not aim to be perfectly feature proof as projects like [serverless-offline](https://github.com/dherault/serverless-offline ) or [docker-lambda](https://github.com/lambci/docker-lambda), but rather to remain **very light** (it still provides a fully built `Context`, handles all of its parameters and functions, and everything is customizable easily).
+It does not aim to be perfectly feature proof as projects like [serverless-offline](https://github.com/dherault/serverless-offline) or [docker-lambda](https://github.com/lambci/docker-lambda), but rather to remain **very light** (it still provides a fully built `Context`, handles all of its parameters and functions, and everything is customizable easily).
 
 The main target are unit tests and running lambda functions locally.
 

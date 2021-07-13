@@ -105,7 +105,7 @@ var _load_var_from_file = function(varname, envname, data, profileName){
         return;
     }
     var regex = new RegExp('\\[' + profileName +
-        '\\](.|\\n|\\r\\n)*?' + varname + '( ?)+=( ?)+(.*)'),
+        '\\]([^\\[].|\\n|\\r\\n)*?' + varname + '( ?)+=( ?)+(.*)'),
         match;
     if ((match = regex.exec(data)) !== null) {
         process.env[envname] = match[4];

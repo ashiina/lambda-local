@@ -124,6 +124,7 @@ function _executeSync(opts) {
         timeoutMs = opts.timeoutMs || 3000,
         verboseLevel = opts.verboseLevel,
         callback = opts.callback,
+        clearCache = opts.clearCache ?? true,
         clientContext = null;
 
     if (opts.clientContext) {
@@ -234,7 +235,9 @@ function _executeSync(opts) {
         // load lambda function
         if (!(lambdaFunc)){
             // delete this function from the require.cache to ensure every dependency is refreshed
-            delete require.cache[lambdaPath];
+            if (clearCache) {
+                delete require.cache[lambdaPath];
+            }
             lambdaFunc = require(lambdaPath);
         }
 

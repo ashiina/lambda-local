@@ -36,6 +36,8 @@ import utils = require('./lib/utils');
             'returning. This is false by default because our implementation isn\'t perfect and only "emulates" it.')
         .option('--envdestroy',
             '(optional) Destroy added environment on closing. Defaults to false')
+        .option('--no-clear-cache',
+            '(optional) do not remove the lambda function from require cache.')
         .option('-v, --verboselevel <3/2/1/0>',
             '(optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text ' +
             'and level 0 dismiss also the result.', 3)
@@ -57,7 +59,8 @@ import utils = require('./lib/utils');
         envdestroy = program.envdestroy,
         envfile = program.envfile,
         callbackWaitsForEmptyEventLoop = program.waitEmptyEventLoop,
-        verboseLevel = program.verboselevel;
+        verboseLevel = program.verboselevel,
+        clearCache = program.clearCache;
 
     var port;
     if (program.watch) {
@@ -153,6 +156,7 @@ import utils = require('./lib/utils');
             envdestroy: envdestroy,
             envfile: envfile,
             verboseLevel: verboseLevel,
+            clearCache: clearCache
         };
 
         if(program.watch) {

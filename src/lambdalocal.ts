@@ -90,9 +90,16 @@ function _getRequestPayload(req, callback) {
         body += chunk.toString();
     });
     req.on('end', () => {
-        const payload = JSON.parse(body);
+        let payload;
+        try {
+            payload = JSON.parse(body);
+        } catch(err) {
+            callback(err);
+            return;
+        }
         if(!payload.event) {
             callback('Invalid body (Expected "event" property)');
+            return;
         }
         callback(null, payload.event);
     });

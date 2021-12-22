@@ -33,7 +33,7 @@ function Context() {
     this.functionName = '';
     this.functionVersion = process.env.AWS_LAMBDA_FUNCTION_VERSION;
     this.invokedFunctionArn = null;
-    this.memoryLimitInMB = parseInt(process.env.AWS_LAMBDA_FUNCTION_MEMORY_SIZE);
+    this.memoryLimitInMB = process.env.AWS_LAMBDA_FUNCTION_MEMORY_SIZE;
     this.awsRequestId = null;
     this.logGroupName = 'Group name';
     this.logStreamName = 'Stream name';

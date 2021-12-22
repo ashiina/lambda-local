@@ -2,7 +2,7 @@
 
 //Move to ./test if not already in it
 var path = require("path");
-if (process.cwd().split(path.sep).pop() != "test"){
+if (process.cwd().split(path.sep).pop() != "test") {
     process.chdir("test");
 }
 
@@ -21,23 +21,23 @@ var winston = utils.getWinstonConsole();
 winston.level = "error";
 
 //Utils
-function get_shell(data){
-    if (process.platform == "win32"){
+function get_shell(data) {
+    if (process.platform == "win32") {
         return ["cmd", ["/C", data]];
     } else {
-        if (data.startsWith("node")){
+        if (data.startsWith("node")) {
             return ["node", data.slice(5).split(" ")];
         }
         return ["node", [data]];
     }
 }
 
-function process_outputs(r){
+function process_outputs(r) {
     r.output = r.output.toString('utf8').slice(1, -1);
     r.stderr = r.stderr.toString('utf8').slice(1, -1);
 }
 
-function get_node_major_version(){
+function get_node_major_version() {
     return parseInt(process.version.slice(1).split('.')[0]);
 }
 
@@ -47,7 +47,7 @@ describe("- Testing utils.js", function () {
     describe("* getAbsolutePath", function () {
         it("should return existing path file", function () {
             var f_path = utils.getAbsolutePath("./test.js");
-            assert.doesNotThrow(function(){fs.accessSync(f_path, fs.F_OK)});
+            assert.doesNotThrow(function () { fs.accessSync(f_path, fs.F_OK) });
         });
     });
     describe("* generateRandomHex", function () {
@@ -90,9 +90,11 @@ describe("- Testing lambdalocal.js", function () {
     describe("* Basic Run", function () {
         var done, err, clientContext;
         before(function (cb) {
-            //For this test: set an environment var which should not be overwritten by lambda-local
+            // For this test: set an environment var which should not be overwritten by lambda-local
             process.env["AWS_REGION"] = "unicorn-universe";
-            clientContext = {"cc1": "xxx"};
+            clientContext = { "cc1": "xxx" };
+            // Values that are used in context
+            process.env["AWS_LAMBDA_FUNCTION_MEMORY_SIZE"] = "1024";
             //
             var lambdalocal = require(lambdalocal_path);
             lambdalocal.setLogger(winston);
@@ -110,7 +112,7 @@ describe("- Testing lambdalocal.js", function () {
                 },
                 environment: {
                     "envkey1": "Environment",
-                    "envkey2": {"k":"v"},
+                    "envkey2": { "k": "v" },
                     "envkey3": 123
                 },
                 envfile: path.join(__dirname, "./other/env"),
@@ -128,7 +130,7 @@ describe("- Testing lambdalocal.js", function () {
             });
             it("should return correct environment variables", function () {
                 assert.equal(process.env.envkey1, "Environment");
-                assert.equal(process.env.envkey2, {"k":"v"});
+                assert.equal(process.env.envkey2, { "k": "v" });
                 assert.equal(process.env.envkey3, 123);
 
                 // from envfile
@@ -138,7 +140,7 @@ describe("- Testing lambdalocal.js", function () {
             it("should not have overwritten already-existing env vars", function () {
                 assert.equal(process.env.AWS_REGION, "unicorn-universe");
             });
-            after(function (cb){
+            after(function (cb) {
                 delete process.env["AWS_REGION"];
                 cb();
             });
@@ -175,35 +177,39 @@ describe("- Testing lambdalocal.js", function () {
                 assert.isDefined(done.context.fail);
             });
             it("should contain clientContext", function () {
-               assert.deepEqual(done.context.clientContext, clientContext);
+                assert.deepEqual(done.context.clientContext, clientContext);
+            });
+            it("should have populated memoryLimitInMB from env", function () {
+                assert.equal(done.context.memoryLimitInMB, "1024");
+            })
+        });
+    });
+    describe("* Second run (with profile)", function () {
+        var done, err;
+        before(function (cb) {
+            var lambdalocal = require(lambdalocal_path);
+            lambdalocal.setLogger(winston);
+            lambdalocal.execute({
+                event: require(path.join(__dirname, "./events/test-event.js")),
+                lambdaPath: path.join(__dirname, "./functs/test-func.js"),
+                lambdaHandler: functionName,
+                profilePath: path.join(__dirname, "./other/debug.aws"),
+                callbackWaitsForEmptyEventLoop: false,
+                timeoutMs: timeoutMs,
+                callback: function (_err, _done) {
+                    err = _err;
+                    done = _done;
+                    cb();
+                },
+                environment: {
+                    "isnetestlambda": "I should not exist"
+                },
+                envdestroy: true,
+                envfile: path.join(__dirname, "./other/env"),
+                verboseLevel: 1
             });
         });
-
         describe("# Environment Variables (destroy)", function () {
-            var done, err;
-            before(function (cb) {
-                var lambdalocal = require(lambdalocal_path);
-                lambdalocal.setLogger(winston);
-                lambdalocal.execute({
-                    event: require(path.join(__dirname, "./events/test-event.js")),
-                    lambdaPath: path.join(__dirname, "./functs/test-func.js"),
-                    lambdaHandler: functionName,
-                    profilePath: path.join(__dirname, "./other/debug.aws"),
-                    callbackWaitsForEmptyEventLoop: false,
-                    timeoutMs: timeoutMs,
-                    callback: function (_err, _done) {
-                        err = _err;
-                        done = _done;
-                        cb();
-                    },
-                    environment: {
-                        "isnetestlambda": "I should not exist"
-                    },
-                    envdestroy: true,
-                    envfile: path.join(__dirname, "./other/env"),
-                    verboseLevel: 1
-                });
-            });
             it("environment should have been deleted", function () {
                 assert.equal(("isnetestlambda" in process.env), false);
             });
@@ -211,7 +217,6 @@ describe("- Testing lambdalocal.js", function () {
                 assert.notEqual(done.context.awsRequestId, firstawsRequestId);
             });
         });
-
         describe("# AWS credentials", function () {
             it("should return correct credentials", function () {
                 assert.equal(process.env.AWS_REGION, "not-us-east");
@@ -220,73 +225,72 @@ describe("- Testing lambdalocal.js", function () {
                 assert.equal(process.env.AWS_SESSION_TOKEN, "TOKEN44545");
             });
         });
-
-        describe("* Mocked function", function () {
-            var done, err;
-            before(function (cb) {
-                var lambdalocal = require(lambdalocal_path);
-                lambdalocal.setLogger(winston);
-                var lambdaFunc = require("./functs/test-func-mocking.js");
-                sinon.mock(lambdaFunc).expects("getData").returns("MockedData");
-                lambdalocal.execute({
-                    event: require(path.join(__dirname, "./events/test-event.js")),
-                    lambdaFunc: lambdaFunc,
-                    lambdaHandler: functionName,
-                    callbackWaitsForEmptyEventLoop: false,
-                    timeoutMs: timeoutMs,
-                    callback: function (_err, _done) {
-                        err = _err;
-                        done = _done;
-                        cb();
-                    },
-                    verboseLevel: 1
-                });
-            });
-            describe("# LambdaLocal", function () {
-                it("should return mocked value", function () {
-                    assert.equal(done, "MockedData");
-                });
+    });
+    describe("* Mocked function", function () {
+        var done, err;
+        before(function (cb) {
+            var lambdalocal = require(lambdalocal_path);
+            lambdalocal.setLogger(winston);
+            var lambdaFunc = require("./functs/test-func-mocking.js");
+            sinon.mock(lambdaFunc).expects("getData").returns("MockedData");
+            lambdalocal.execute({
+                event: require(path.join(__dirname, "./events/test-event.js")),
+                lambdaFunc: lambdaFunc,
+                lambdaHandler: functionName,
+                callbackWaitsForEmptyEventLoop: false,
+                timeoutMs: timeoutMs,
+                callback: function (_err, _done) {
+                    err = _err;
+                    done = _done;
+                    cb();
+                },
+                verboseLevel: 1
             });
         });
-        describe("* Test timeout", function () {
-            it("should throw TimeoutError", function (cb) {
-                var lambdalocal = require(lambdalocal_path);
-                lambdalocal.setLogger(winston);
-                var lambdaFunc = require("./functs/test-func-timeout.js");
-                lambdalocal.execute({
-                    event: require(path.join(__dirname, "./events/test-event.js")),
-                    lambdaFunc: lambdaFunc,
-                    lambdaHandler: functionName,
-                    callbackWaitsForEmptyEventLoop: false,
-                    timeoutMs: 500,
-                    callback: function (err, done) {
-                        assert.equal(err.errorType, "TimeoutError");
-                        assert.equal(err.errorMessage, "Task timed out after 0.50 seconds");
-                        cb();
-                    },
-                    verboseLevel: 1
-                });
+        describe("# LambdaLocal", function () {
+            it("should return mocked value", function () {
+                assert.equal(done, "MockedData");
             });
         });
-        describe("* Return Error object", function () {
-            it("should convert it to correct JSON format", function (cb) {
-                var lambdalocal = require(lambdalocal_path);
-                lambdalocal.setLogger(winston);
-                var lambdaFunc = require("./functs/test-func-cb-error.js");
-                lambdalocal.execute({
-                    event: require(path.join(__dirname, "./events/test-event.js")),
-                    lambdaFunc: lambdaFunc,
-                    lambdaHandler: functionName,
-                    callbackWaitsForEmptyEventLoop: false,
-                    timeoutMs: 1000,
-                    callback: function (err, _done) {
-                        assert.equal(err.errorType, "Error");
-                        assert.equal(err.errorMessage, "Failed for an unknown reason !");
-                        assert.ok(err.stackTrace.some(function(x){return x.includes("test-func-cb-error.js:5");}));
-                        cb();
-                    },
-                    verboseLevel: 1
-                });
+    });
+    describe("* Test timeout", function () {
+        it("should throw TimeoutError", function (cb) {
+            var lambdalocal = require(lambdalocal_path);
+            lambdalocal.setLogger(winston);
+            var lambdaFunc = require("./functs/test-func-timeout.js");
+            lambdalocal.execute({
+                event: require(path.join(__dirname, "./events/test-event.js")),
+                lambdaFunc: lambdaFunc,
+                lambdaHandler: functionName,
+                callbackWaitsForEmptyEventLoop: false,
+                timeoutMs: 500,
+                callback: function (err, done) {
+                    assert.equal(err.errorType, "TimeoutError");
+                    assert.equal(err.errorMessage, "Task timed out after 0.50 seconds");
+                    cb();
+                },
+                verboseLevel: 1
+            });
+        });
+    });
+    describe("* Return Error object", function () {
+        it("should convert it to correct JSON format", function (cb) {
+            var lambdalocal = require(lambdalocal_path);
+            lambdalocal.setLogger(winston);
+            var lambdaFunc = require("./functs/test-func-cb-error.js");
+            lambdalocal.execute({
+                event: require(path.join(__dirname, "./events/test-event.js")),
+                lambdaFunc: lambdaFunc,
+                lambdaHandler: functionName,
+                callbackWaitsForEmptyEventLoop: false,
+                timeoutMs: 1000,
+                callback: function (err, _done) {
+                    assert.equal(err.errorType, "Error");
+                    assert.equal(err.errorMessage, "Failed for an unknown reason !");
+                    assert.ok(err.stackTrace.some(function (x) { return x.includes("test-func-cb-error.js:5"); }));
+                    cb();
+                },
+                verboseLevel: 1
             });
         });
     });
@@ -320,7 +324,7 @@ describe("- Testing lambdalocal.js", function () {
             });
         });
     });
-    if (get_node_major_version() >= 2){
+    if (get_node_major_version() >= 2) {
         describe('* Promised Run', function () {
             var opts = {
                 event: require(path.join(__dirname, "./events/test-event.js")),
@@ -346,18 +350,18 @@ describe("- Testing lambdalocal.js", function () {
             });
         });
     }
-    if (get_node_major_version() >= 8){
+    if (get_node_major_version() >= 8) {
         describe('* Async Run', function () {
             it('should understand direct return in async functions', function () {
                 var lambdalocal = require(lambdalocal_path);
                 lambdalocal.setLogger(winston);
                 return lambdalocal.execute({
-                  event: require(path.join(__dirname, "./events/test-event.js")),
-                  lambdaPath: path.join(__dirname, "./functs/test-func-async.js"),
-                  lambdaHandler: functionName,
-                  callbackWaitsForEmptyEventLoop: false,
-                  timeoutMs: timeoutMs,
-                  verboseLevel: 1
+                    event: require(path.join(__dirname, "./events/test-event.js")),
+                    lambdaPath: path.join(__dirname, "./functs/test-func-async.js"),
+                    lambdaHandler: functionName,
+                    callbackWaitsForEmptyEventLoop: false,
+                    timeoutMs: timeoutMs,
+                    verboseLevel: 1
                 }).then(function (data) {
                     assert.equal(data.result, "testvar");
                 });
@@ -366,12 +370,12 @@ describe("- Testing lambdalocal.js", function () {
                 var lambdalocal = require(lambdalocal_path);
                 lambdalocal.setLogger(winston);
                 return lambdalocal.execute({
-                  event: require(path.join(__dirname, "./events/test-event.js")),
-                  lambdaPath: path.join(__dirname, "./functs/test-func-promise.js"),
-                  lambdaHandler: functionName,
-                  callbackWaitsForEmptyEventLoop: false,
-                  timeoutMs: timeoutMs,
-                  verboseLevel: 1
+                    event: require(path.join(__dirname, "./events/test-event.js")),
+                    lambdaPath: path.join(__dirname, "./functs/test-func-promise.js"),
+                    lambdaHandler: functionName,
+                    callbackWaitsForEmptyEventLoop: false,
+                    timeoutMs: timeoutMs,
+                    verboseLevel: 1
                 }).then(function (data) {
                     assert.equal(data.result, "testvar");
                 });
@@ -380,12 +384,12 @@ describe("- Testing lambdalocal.js", function () {
                 var lambdalocal = require(lambdalocal_path);
                 lambdalocal.setLogger(winston);
                 return lambdalocal.execute({
-                  event: require(path.join(__dirname, "./events/test-event.js")),
-                  lambdaPath: path.join(__dirname, "./functs/test-func-promise-fail.js"),
-                  lambdaHandler: functionName,
-                  callbackWaitsForEmptyEventLoop: false,
-                  timeoutMs: timeoutMs,
-                  verboseLevel: 1
+                    event: require(path.join(__dirname, "./events/test-event.js")),
+                    lambdaPath: path.join(__dirname, "./functs/test-func-promise-fail.js"),
+                    lambdaHandler: functionName,
+                    callbackWaitsForEmptyEventLoop: false,
+                    timeoutMs: timeoutMs,
+                    verboseLevel: 1
                 }).then(function () {
                     assert.fail('Should not happen');
                 }, function (err) {
@@ -395,7 +399,6 @@ describe("- Testing lambdalocal.js", function () {
         });
     }
 });
-
 describe("- Testing cli.js", function () {
     var spawnSync = require('child_process').spawnSync;
     describe("* Basic Run", function () {
@@ -540,14 +543,14 @@ describe("- Testing cli.js", function () {
             assert.equal((r.output.indexOf("Timeout finished !") !== -1), true)
         });
     });
-    describe("* Test --version", function() {
-      var lambdalocal = require(lambdalocal_path);
-      it("should match the current latest version", function() {
-          var command = get_shell("node ../build/cli.js --version");
-          var r = spawnSync(command[0], command[1]);
-          process_outputs(r);
-          assert.equal(r.status, 0);
-          assert.equal(r.output.trim(), lambdalocal.version);
-      });
+    describe("* Test --version", function () {
+        var lambdalocal = require(lambdalocal_path);
+        it("should match the current latest version", function () {
+            var command = get_shell("node ../build/cli.js --version");
+            var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
+            assert.equal(r.status, 0);
+            assert.equal(r.output.trim(), lambdalocal.version);
+        });
     });
 });

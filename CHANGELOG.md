@@ -1,5 +1,9 @@
 # ChangeLog
 
+## 2.0.1 (2021/12/22)
+* Fix `memoryLimitInMB` being wrongly parsed as int
+* Update dependencies
+
 ## 2.0.0 (2021/06/19)
 * **BREAKING CHANGE: removed aws-sdk dependency**. This allows to make `lambda-local` significantly smaller
 * Drop Node 8 & Bump depencies

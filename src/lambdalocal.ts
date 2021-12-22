@@ -234,7 +234,7 @@ function _executeSync(opts) {
         // load lambda function
         if (!(lambdaFunc)){
             // delete this function from the require.cache to ensure every dependency is refreshed
-            delete require.cache[lambdaPath];
+            delete require.cache[require.resolve(lambdaPath)];
             lambdaFunc = require(lambdaPath);
         }
 

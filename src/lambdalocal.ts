@@ -252,7 +252,7 @@ function _executeSync(opts) {
             if (result.then) {
                 result.then(ctx.succeed, ctx.fail);
             } else {
-                ctx.succeed(result);
+                ctx.succeed(null);
             }
         }
     } catch(err){

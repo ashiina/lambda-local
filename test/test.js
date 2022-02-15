@@ -324,6 +324,22 @@ describe("- Testing lambdalocal.js", function () {
             });
         });
     });
+    describe('* Synchronous return', function () {
+        it('should return null', function () {
+            var lambdalocal = require(lambdalocal_path);
+            lambdalocal.setLogger(winston);
+            return lambdalocal.execute({
+                event: require(path.join(__dirname, "./events/test-event.js")),
+                lambdaPath: path.join(__dirname, "./functs/test-func-synchronous.js"),
+                lambdaHandler: functionName,
+                callbackWaitsForEmptyEventLoop: false,
+                timeoutMs: timeoutMs,
+                verboseLevel: 1
+            }).then(data => {
+                assert.isNull(data)
+            })
+        });
+    });
     if (get_node_major_version() >= 2) {
         describe('* Promised Run', function () {
             var opts = {

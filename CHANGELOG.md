@@ -1,5 +1,9 @@
 # ChangeLog
 
+## 2.0.2 (2022/03/08)
+* correctly mirror lambda's behaviour when synchronously returning (thanks Snk0tt)
+* Update dependencies
+
 ## 2.0.1 (2021/12/22)
 * Fix `memoryLimitInMB` being wrongly parsed as int
 * Update dependencies

@@ -185,10 +185,11 @@ describe("- Testing lambdalocal.js", function () {
         });
     });
     describe("* Second run (with profile)", function () {
-        var done, err;
+        var done, err, clientContext;
         before(function (cb) {
             var lambdalocal = require(lambdalocal_path);
             lambdalocal.setLogger(winston);
+            clientContext = { "cc2": "yyy" };
             lambdalocal.execute({
                 event: require(path.join(__dirname, "./events/test-event.js")),
                 lambdaPath: path.join(__dirname, "./functs/test-func.js"),
@@ -206,7 +207,13 @@ describe("- Testing lambdalocal.js", function () {
                 },
                 envdestroy: true,
                 envfile: path.join(__dirname, "./other/env"),
-                verboseLevel: 1
+                verboseLevel: 1,
+                clientContext: clientContext,
+            });
+        });
+        describe("# Context object", function () {
+            it("should also contain clientContext", function () {
+                assert.deepEqual(done.context.clientContext, clientContext);
             });
         });
         describe("# Environment Variables (destroy)", function () {

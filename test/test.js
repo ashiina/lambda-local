@@ -557,15 +557,17 @@ describe("- Testing cli.js", function () {
             assert.equal(r.output, "");
         });
     });
-    describe("* Test --wait-empty-event-loop", function () {
-        it("should wait for all timeouts to end", function () {
-            var command = get_shell("node ../build/cli.js  -l ./functs/test-func-waitemptyloop.js -e ./events/test-event.js --wait-empty-event-loop");
-            var r = spawnSync(command[0], command[1]);
-            process_outputs(r);
-            assert.equal(r.status, 0);
-            assert.equal((r.output.indexOf("Timeout finished !") !== -1), true)
+    if (get_node_major_version() >= 16) {
+        describe("* Test --wait-empty-event-loop", function () {
+            it("should wait for all timeouts to end", function () {
+                var command = get_shell("node ../build/cli.js  -l ./functs/test-func-waitemptyloop.js -e ./events/test-event.js --wait-empty-event-loop");
+                var r = spawnSync(command[0], command[1]);
+                process_outputs(r);
+                assert.equal(r.status, 0);
+                assert.equal((r.output.indexOf("Timeout finished !") !== -1), true)
+            });
         });
-    });
+    }
     describe("* Test --version", function () {
         var lambdalocal = require(lambdalocal_path);
         it("should match the current latest version", function () {

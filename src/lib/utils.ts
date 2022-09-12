@@ -127,10 +127,6 @@ export function loadAWSCredentials(path:string, profileName:string = 'default') 
     _load_var_from_file("metadata_service_num_attempts", "AWS_METADATA_SERVICE_NUM_ATTEMPTS", data, profileName);
 
     _load_var_from_file("region", "AWS_REGION", data, profileName);
-
-    if (process.env['AWS_SESSION_TOKEN'] && (process.env['AWS_ACCESS_KEY_ID'] || process.env['AWS_SECRET_ACCESS_KEY'])){
-        console.log('warning', 'Using both auth systems: aws_access_key/id and secret_access_token !');
-    }
 };
 
 export function waitForNodeJS(cb, i=0){

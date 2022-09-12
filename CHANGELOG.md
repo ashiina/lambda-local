@@ -1,5 +1,11 @@
 # ChangeLog
 
+## 2.0.3 (2022/09/12)
+* Fix `callbackWaitsForEmptyEventLoop` on recent NodeJS versions (>=16) (#217)
+* Support clientContext as an object (#223)
+* Remove useless warning (#224)
+* Update dependencies
+
 ## 2.0.2 (2022/03/08)
 * correctly mirror lambda's behaviour when synchronously returning (thanks Snk0tt)
 * Update dependencies

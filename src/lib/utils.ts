@@ -14,6 +14,10 @@ import util = require("util");
  * utility functions
  */
 
+export function get_node_major_version(){
+    return parseInt(process.version.slice(1).split('.')[0]);
+}
+
 const _hexChars = '0123456789abcdef'.split('');
 
 export function generateRandomHex(length) {
@@ -129,23 +133,12 @@ export function loadAWSCredentials(path:string, profileName:string = 'default') 
     }
 };
 
-export function waitForNodeJS(cb){
+export function waitForNodeJS(cb, i=0){
     /* Waits for all Timeouts to end before calling the callback */
     // This is quite ugly, but its hard to emulate a "wait for all timeouts" properly :/
-    const Timer_constructor = (process as any).binding('timer_wrap').Timer;
-    var i=0, has_timers=false;
-    (process as any)._getActiveHandles().every(function(x){
-        if (x.constructor == Timer_constructor){
-            if (++i > 1){ 
-                has_timers = true;
-                return false;
-            }
-        }
-        return true;
-    });
-    if (has_timers){
+    if ((process as any).getActiveResourcesInfo().filter(x => x === 'Timeout').length > i){
         setTimeout(function(){
-            waitForNodeJS(cb);
+            waitForNodeJS(cb, i=1);
         }, 100);
     } else {
         cb();

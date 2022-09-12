@@ -127,17 +127,25 @@ function _executeSync(opts) {
         clientContext = null;
 
     if (opts.clientContext) {
-        try {
-            clientContext = JSON.parse(opts.clientContext)
-        } catch(err) {
-            throw new SyntaxError("clientContext must be stringified JS object");
+        if (typeof opts.clientContext === "string") {
+            try {
+                clientContext = JSON.parse(opts.clientContext)
+            } catch(err) {
+                throw new SyntaxError("clientContext is an invalid stringified JS object");
+            }
+        } else {
+            clientContext = opts.clientContext;
         }
-
     }
 
     if (lambdaFunc && lambdaPath) {
         throw new SyntaxError("Cannot specify both lambdaFunc and lambdaPath !");
         return;
+    }
+
+    if (callbackWaitsForEmptyEventLoop && utils.get_node_major_version() < 16){
+        console.warn("callbackWaitsForEmptyEventLoop not supported on node < 16");
+	callbackWaitsForEmptyEventLoop = false;
     }
 
     if (lambdaPath){

@@ -106,15 +106,11 @@ import utils = require('./lib/utils');
         timeoutMs = 3000;
     }
 
-    function get_node_major_version(){
-        return parseInt(process.version.slice(1).split('.')[0]);
-    }
-    
     //Use NodeJS inspector
     var inspector;
     var _close_inspector;
     if (program.inspect) {
-        if (get_node_major_version() < 8) {
+        if (utils.get_node_major_version() < 8) {
             logger.log('error', 'Inspector API not available on NodeJS < 8.0.0');
         } else {
             inspector = require('inspector');

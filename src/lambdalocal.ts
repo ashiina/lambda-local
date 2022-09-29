@@ -84,13 +84,30 @@ export function watch(opts) {
     })
 }
 
+function _parseGETParams(req){
+  const params = {};
+  const query = req.url.split('?');
+  if(query.length > 1){
+    query[1].split('&').forEach((param) => {
+      const [key, value] = param.split('=');
+      params[key] = value;
+    });
+  }
+  return params;
+}
+
 function _getRequestPayload(req, callback) {
     let body = '';
+    const reqGETParams = _parseGETParams(req);
     req.on('data', chunk => {
         body += chunk.toString();
     });
     req.on('end', () => {
         const payload = JSON.parse(body || '{}');
+        if(Object.keys(reqGETParams).length > 0){
+          payload.event = { ...payload.event, ...reqGETParams};
+        }
+
         if(!payload.event) {
             callback('Invalid body (Expected "event" property)');
         }
@@ -145,7 +162,7 @@ function _executeSync(opts) {
 
     if (callbackWaitsForEmptyEventLoop && utils.get_node_major_version() < 16){
         console.warn("callbackWaitsForEmptyEventLoop not supported on node < 16");
-	callbackWaitsForEmptyEventLoop = false;
+        callbackWaitsForEmptyEventLoop = false;
     }
 
     if (lambdaPath){
@@ -267,4 +284,3 @@ function _executeSync(opts) {
         ctx.fail(err);
     }
 };
-

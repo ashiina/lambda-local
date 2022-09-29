@@ -63,7 +63,7 @@ export function watch(opts) {
             return res.end(JSON.stringify({ error }));
         }
         try {
-            if(req.headers['content-type'] !== 'application/json') throw 'Invalid header Content-Type (Expected application/json)';
+            if(req.headers['content-type'] !== 'application/json' && req.method !== 'GET') throw 'Invalid header Content-Type (Expected application/json)';
             _getRequestPayload(req, async (error, result) => {
                 try {
                     if(error) throw error;
@@ -90,7 +90,7 @@ function _getRequestPayload(req, callback) {
         body += chunk.toString();
     });
     req.on('end', () => {
-        const payload = JSON.parse(body);
+        const payload = JSON.parse(body || '{}');
         if(!payload.event) {
             callback('Invalid body (Expected "event" property)');
         }

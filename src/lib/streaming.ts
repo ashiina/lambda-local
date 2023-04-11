@@ -49,7 +49,7 @@ class HttpResponseStream {
   }
 }
 
-globalThis.awslambda = {
+globalThis.awslambda = globalThis.awslambda || {
   streamifyResponse,
   HttpResponseStream,
 };

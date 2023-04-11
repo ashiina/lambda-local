@@ -13,6 +13,7 @@ import os = require('os');
 import { createServer, IncomingMessage, ServerResponse } from 'http';
 import utils = require('./lib/utils.js');
 import Context = require('./lib/context.js');
+require("./lib/streaming.js");
 
 /*
  * Lambda local version

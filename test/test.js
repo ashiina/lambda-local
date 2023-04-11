@@ -420,6 +420,40 @@ describe("- Testing lambdalocal.js", function () {
                 });
             });
         });
+
+        describe('* Streaming Response', function () {
+            it('should return a readable stream as `body`', function () {
+                var lambdalocal = require(lambdalocal_path);
+                lambdalocal.setLogger(winston);
+                return lambdalocal.execute({
+                    event: require(path.join(__dirname, "./events/test-event.js")),
+                    lambdaPath: path.join(__dirname, "./functs/test-func-streaming.js"),
+                    lambdaHandler: functionName,
+                    callbackWaitsForEmptyEventLoop: false,
+                    timeoutMs: timeoutMs,
+                    verboseLevel: 1
+                }).then(function (data) {
+                    assert.deepEqual(
+                        data.headers,
+                        { "Content-Type": "text/plain", "X-Foo": "Bar" }
+                    );
+
+                    return new Promise((resolve, reject) => {
+                        const chunks = []
+                        const times = []
+                        data.body.on('data', (chunk) => {
+                            chunks.push(chunk.toString())
+                            times.push(performance.now())
+                        });
+                        data.body.on("end", () => {
+                            assert.deepEqual(chunks, ["foo", "bar"])
+                            assert.closeTo(times[1] - times[0], 100, 50)
+                            resolve()
+                        });
+                    })
+                })
+            });
+        });
     }
 });
 describe("- Testing cli.js", function () {

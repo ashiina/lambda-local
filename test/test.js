@@ -470,7 +470,7 @@ describe("- Testing lambdalocal.js", function () {
                         const times = []
                         data.body.on('data', (chunk) => {
                             chunks.push(chunk.toString())
-                            times.push(performance.now())
+                            times.push(Date.now())
                         });
                         data.body.on("end", () => {
                             assert.deepEqual(chunks, ["foo", "bar"])

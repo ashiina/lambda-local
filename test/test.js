@@ -453,6 +453,33 @@ describe("- Testing lambdalocal.js", function () {
                     })
                 })
             });
+
+            it('also works without calling HttpResponseStream.from', function () {
+                var lambdalocal = require(lambdalocal_path);
+                lambdalocal.setLogger(winston);
+                return lambdalocal.execute({
+                    event: require(path.join(__dirname, "./events/test-event.js")),
+                    lambdaPath: path.join(__dirname, "./functs/test-func-streaming-simple.js"),
+                    lambdaHandler: functionName,
+                    callbackWaitsForEmptyEventLoop: false,
+                    timeoutMs: timeoutMs,
+                    verboseLevel: 1
+                }).then(function (data) {
+                    return new Promise((resolve, reject) => {
+                        const chunks = []
+                        const times = []
+                        data.body.on('data', (chunk) => {
+                            chunks.push(chunk.toString())
+                            times.push(performance.now())
+                        });
+                        data.body.on("end", () => {
+                            assert.deepEqual(chunks, ["foo", "bar"])
+                            assert.closeTo(times[1] - times[0], 100, 50)
+                            resolve()
+                        });
+                    })
+                })
+            });
         });
     }
 });

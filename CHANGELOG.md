@@ -1,5 +1,10 @@
 # ChangeLog
 
+## 2.1.0 (2023/07/20)
+* Support API gateway (replaces old --watch)
+* Support ECMAScript (thanks tdanecker #230)
+* Support Lambda streaming (thanks Skn0tt #229)
+
 ## 2.0.3 (2022/09/12)
 * Fix `callbackWaitsForEmptyEventLoop` on recent NodeJS versions (>=16) (#217)
 * Support clientContext as an object (#223)

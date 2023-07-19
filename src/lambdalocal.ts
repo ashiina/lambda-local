@@ -11,6 +11,7 @@ import fs = require('fs');
 import path = require('path');
 import os = require('os');
 import { createServer, IncomingMessage, ServerResponse } from 'http';
+
 import utils = require('./lib/utils.js');
 import Context = require('./lib/context.js');
 require("./lib/streaming.js");
@@ -64,12 +65,11 @@ export function watch(opts) {
             return res.end(JSON.stringify({ error }));
         }
         try {
-            if(req.headers['content-type'] !== 'application/json') throw 'Invalid header Content-Type (Expected application/json)';
             _getRequestPayload(req, async (error, result) => {
                 try {
                     if(error) throw error;
-                    const data = await execute({ ...opts, event: () => result });
-                    const ans = JSON.stringify({ data });
+                    const data = await execute({ ...opts, event: result });
+                    const ans = _formatResponsePayload(res, data);
                     logger.log('info', log_msg + ` -> OK (${ans.length * 2} bytes)`);
                     return res.end(ans);
                 } catch(error) {
@@ -86,6 +86,9 @@ export function watch(opts) {
 }
 
 function _getRequestPayload(req, callback) {
+    /*
+     * Handle HTTP server functions.
+     */
     let body = '';
     req.on('data', chunk => {
         body += chunk.toString();
@@ -93,17 +96,63 @@ function _getRequestPayload(req, callback) {
     req.on('end', () => {
         let payload;
         try {
-            payload = JSON.parse(body);
+            payload = JSON.parse(body || '{}');
         } catch(err) {
             callback(err);
             return;
         }
-        if(!payload.event) {
-            callback('Invalid body (Expected "event" property)');
-            return;
-        }
-        callback(null, payload.event);
+        // Format: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.proxy-format
+        const url = new URL(req.url, `http://${req.headers.host}`);
+        const event = {
+            version: "2.0",
+            routeKey: "$default",
+            rawPath: url.pathname,
+            rawQueryString: url.search,
+            cookies: utils.parseCookies(req),
+            headers: req.headers,
+            queryStringParameters: Object.fromEntries(url.searchParams),
+            requestContext: {
+                accountId: "123456789012",
+                apiId: "api-id",
+                authentication: {},
+                authorizer: {},
+                http: {
+                    method: req.method,
+                    path: url.pathname,
+                    protocol: "HTTP/" + req.httpVersion,
+                    sourceIp: req.socket.localAddress,
+                    userAgent: req.headers['user-agent'],
+                },
+                requestId: "id",
+                routeKey: "$default",
+                stage: "$default",
+                time: new Date().toISOString(),
+                timeEpoch: new Date().getTime(),
+            },
+            body: payload,
+            isBase64Encoded: req.headers['content-type'] !== 'application/json',
+        };
+        callback(null, event);
     });
+}
+
+function _formatResponsePayload(res, data) {
+    /*
+     * Handle HTTP server function output.
+     */
+    // https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.response
+    if (!data.statusCode) {
+        data = {
+            isBase64Encoded: false,
+            statusCode: 200,
+            body: data,
+            headers: {
+                "content-type": "application/json",
+            }
+        }
+    }
+    res.writeHead(data.statusCode, data.headers);
+    return JSON.stringify(data.body);
 }
 
 function updateEnv(env) {

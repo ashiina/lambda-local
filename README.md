@@ -160,22 +160,23 @@ lambda-local -l index.js -h handler -e examples/s3-put.js
 lambda-local -l index.js -h handler -e examples/s3-put.js -E '{"key":"value","key2":"value2"}'
 ```
 
-#### Running lambda functions as a HTTP Server
-A simple way you can run lambda functions locally, without the need to create any special template files (like Serverless plugin and SAM requires), just adding the parameter `--watch`. It will raise a http server listening to the specified port (default is 8008), then you can pass the event payload to the handler via request body.
+#### Running lambda functions as a HTTP Server (Amazon API Gateway payload format version 2.0.)
+
+A simple way you can run lambda functions locally, without the need to create any special template files (like Serverless plugin and SAM requires), just adding the parameter `--watch`. It will raise a http server listening to the specified port (default is 8008). You can then call the lambda as mentionned here:
+https://docs.aws.amazon.com/lambda/latest/dg/urls-invocation.html
 
 ```bash
-lambda-local -l examples/handler_helloworld.js -h handler --watch 8008
+lambda-local -l examples/handler_gateway2.js -h handler --watch 8008
 
 curl --request POST \
   --url http://localhost:8008/ \
   --header 'content-type: application/json' \
   --data '{
-	"event": {
-		"key1": "value1",
-		"key2": "value2",
-		"key3": "value3"
-	}
+        "key1": "value1",
+        "key2": "value2",
+        "key3": "value3"
 }'
+{"message":"This is a response"}
 ```
 
 ## About: Definitions
@@ -187,7 +188,7 @@ Event data are just JSON objects exported:
 ```js
 // Sample event data
 module.exports = {
-	foo: "bar"
+    foo: "bar"
 };
 ```
 

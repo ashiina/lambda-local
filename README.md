@@ -64,6 +64,7 @@ Executes a lambda given the `options` object, which is a dictionary where the ke
 | `lambdaHandler`|optional handler name, default to `handler`|
 | `region`|optional, AWS region, default to `us-east-1`|| `callbackWaitsForEmptyEventLoop`|optional, default to `false`. Setting it to True will wait for an empty loop before returning.|
 | `timeoutMs`|optional, timeout, default to 3000 ms|
+| `esm`|boolean, marks that the script is an ECMAScript module (use import), default false|
 | `environment`|optional, extra environment variables for the lambda|
 | `envfile`|optional, load an environment file before booting|
 | `envdestroy`|optional, destroy added environment on closing, default to false|
@@ -137,6 +138,7 @@ lambdaLocal.execute({
 *    `-e, --event-path <event path>`                    (required --watch is not in use) Specify event data file name.
 *    `-h, --handler <handler name>`                     (optional) Lambda function handler name. Default is "handler".
 *    `-t, --timeout <timeout>`                          (optional) Seconds until lambda function timeout. Default is 3 seconds.
+*    `--esm`                                            (optional) Load lambda function as ECMAScript module.
 *    `-r, --region <aws region>`                        (optional) Sets the AWS region, defaults to us-east-1.
 *    `-P, --profile-path <aws profile name>`            (optional) Read the specified AWS credentials file.
 *    `-p, --profile <aws profile name>`                 (optional) Use with **-P**: Read the AWS profile of the file.

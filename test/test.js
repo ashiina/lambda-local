@@ -482,6 +482,25 @@ describe("- Testing lambdalocal.js", function () {
             });
         });
     }
+    if (get_node_major_version() >= 12) {
+        describe('* Loading ECMAScript module', function () {
+            it('should load ECMAScript lambda module successfully', function () {
+                var lambdalocal = require(lambdalocal_path);
+                lambdalocal.setLogger(winston);
+                return lambdalocal.execute({
+                    event: require(path.join(__dirname, "./events/test-event.js")),
+                    lambdaPath: path.join(__dirname, "./functs/test-func-esm.mjs"),
+                    lambdaHandler: functionName,
+                    esm: true,
+                    callbackWaitsForEmptyEventLoop: false,
+                    timeoutMs: timeoutMs,
+                    verboseLevel: 1
+                }).then(function (data) {
+                    assert.equal(data.result, "testvar")
+                })
+            })
+        })
+    }
 });
 describe("- Testing cli.js", function () {
     var spawnSync = require('child_process').spawnSync;
@@ -570,6 +589,14 @@ describe("- Testing cli.js", function () {
             assert.equal(r.status, 1);
             console.log(r.output);
         });
+
+        it("should fail: esm with unsupported watch mode", function () {
+            var command = get_shell("node ../build/cli.js -l ./functs/test-func-esm.mjs --esm --watch");
+            var r = spawnSync(command[0], command[1]);
+            process_outputs(r);
+            assert.equal(r.status, 1);
+            console.log(r.output);
+        })
     });
 
     describe("* Environment test run", function () {

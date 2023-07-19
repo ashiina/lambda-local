@@ -122,6 +122,7 @@ function _executeSync(opts) {
         lambdaFunc = opts.lambdaFunc,
         lambdaPath = opts.lambdaPath,
         lambdaHandler = opts.lambdaHandler || 'handler',
+        esm = opts.esm,
         profilePath = opts.profilePath,
         profileName = opts.profileName || process.env['AWS_PROFILE'] || process.env['AWS_DEFAULT_PROFILE'],
         region = opts.region,
@@ -246,30 +247,40 @@ function _executeSync(opts) {
 
     var ctx = context.generate_context();
 
+    const executeLambdaFunc = lambdaFunc => {
+        try {
+            //load event
+            if (event instanceof Function){
+                event = event();
+            }
+
+            //start timeout
+            context._init_timeout();
+
+            // execute lambda function
+            var result = lambdaFunc[lambdaHandler](event, ctx, ctx.done);
+            if (result) {
+                if (result.then) {
+                    result.then(ctx.succeed, ctx.fail);
+                } else {
+                    ctx.succeed(null);
+                }
+            }
+        } catch(err){
+            ctx.fail(err);
+        }
+    }
+
     try {
-        // load lambda function
-        if (!(lambdaFunc)){
+        if (lambdaFunc) {
+            executeLambdaFunc(lambdaFunc);
+        } else if (esm) {
+            // use eval to avoid typescript transpilation of dynamic import ()
+            eval("import(lambdaPath)").then(executeLambdaFunc, err => ctx.fail(err));
+        } else {
             // delete this function from the require.cache to ensure every dependency is refreshed
             delete require.cache[require.resolve(lambdaPath)];
-            lambdaFunc = require(lambdaPath);
-        }
-
-        //load event
-        if (event instanceof Function){
-            event = event();
-        }
-
-        //start timeout
-        context._init_timeout();
-
-        // execute lambda function
-        var result = lambdaFunc[lambdaHandler](event, ctx, ctx.done);
-        if (result) {
-            if (result.then) {
-                result.then(ctx.succeed, ctx.fail);
-            } else {
-                ctx.succeed(null);
-            }
+            executeLambdaFunc(require(lambdaPath));
         }
     } catch(err){
         ctx.fail(err);

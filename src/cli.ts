@@ -21,6 +21,8 @@ import utils = require('./lib/utils');
         .option('-e, --event-path <path>', '(required if --watch is not in use) Event data file name.')
         .option('-h, --handler <handler name>',
             '(optional) Lambda function handler name. Default is \'handler\'.')
+        .option('--esm',
+            '(optional) Load lambda function as ECMAScript module.')
         .option('-t, --timeout <timeout seconds>',
             '(optional) Seconds until lambda function timeout. Default is 3 seconds.')
         .option('-r, --region <aws region>',
@@ -50,6 +52,7 @@ import utils = require('./lib/utils');
     var eventPath = program.eventPath,
         lambdaPath = program.lambdaPath,
         lambdaHandler = program.handler,
+        esm = program.esm,
         profilePath = program.profilePath,
         profileName = program.profile,
         region = program.region,
@@ -129,6 +132,17 @@ import utils = require('./lib/utils');
             _close_inspector = function(){inspector.close();}
         }
     }
+
+    if (esm) {
+        if (utils.get_node_major_version() < 12) {
+            console.log("Loading ESCMAScript modules not available on NodeJS < 12.0.0.");
+            process.exit(1);
+        }
+        if (program.watch) {
+            console.log("Watch mode not supported for ECMAScript lambda modules.");
+            process.exit(1);
+        }
+    }
     var event = function(){
         if(program.watch) return null;
         return require(utils.getAbsolutePath(eventPath));
@@ -140,6 +154,7 @@ import utils = require('./lib/utils');
             event: event,
             lambdaPath: lambdaPath,
             lambdaHandler: lambdaHandler,
+            esm: esm,
             profilePath: profilePath,
             profileName: profileName,
             region: region,

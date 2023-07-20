@@ -36,7 +36,7 @@
     "node": ">=6"
   },
   "dependencies": {
-    "commander": "^11.0.0",
+    "commander": "^10.0.1",
     "dotenv": "^16.3.1",
     "winston": "^3.10.0"
   },

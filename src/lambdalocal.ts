@@ -206,8 +206,9 @@ function _executeSync(opts) {
 	callbackWaitsForEmptyEventLoop = false;
     }
 
-    if (lambdaPath){
-        lambdaPath = utils.getAbsolutePath(lambdaPath);
+    if (lambdaPath) {
+        var esmWindows = esm && process.platform === 'win32';
+        lambdaPath = (esmWindows ? 'file://' : '') + utils.getAbsolutePath(lambdaPath);
     }
 
     // set environment variables before the require

@@ -207,7 +207,7 @@ function _executeSync(opts) {
     }
 
     if (lambdaPath) {
-        var esmWindows = esm && process.platform === 'win32';
+        const esmWindows = esm && process.platform === 'win32';
         lambdaPath = (esmWindows ? 'file://' : '') + utils.getAbsolutePath(lambdaPath);
     }
 

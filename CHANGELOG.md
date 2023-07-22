@@ -1,9 +1,14 @@
 # ChangeLog
 
+## 2.1.1 (2023/07/22)
+* Bug fix: ESM path on Windows
+* Downgrade commander-js
+
 ## 2.1.0 (2023/07/20)
 * Support API gateway (replaces old --watch)
 * Support ECMAScript (thanks tdanecker #230)
 * Support Lambda streaming (thanks Skn0tt #229)
+* Update dependencies
 
 ## 2.0.3 (2022/09/12)
 * Fix `callbackWaitsForEmptyEventLoop` on recent NodeJS versions (>=16) (#217)

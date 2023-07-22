@@ -1,6 +1,6 @@
 {
   "name": "lambda-local",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Commandline tool to run Lambda functions on your local machine.",
   "main": "build/lambdalocal.js",
   "types": "build/lambdalocal.d.ts",
@@ -29,7 +29,7 @@
   "maintainers": [
     {
       "name": "Gabriel Potter (gpotter2)",
-      "email": "gabriel@potter.fr"
+      "email": "10530980+gpotter2@users.noreply.github.com"
     }
   ],
   "engines": {

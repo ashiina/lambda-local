@@ -33,7 +33,7 @@
     }
   ],
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "dependencies": {
     "commander": "^10.0.1",
@@ -41,11 +41,11 @@
     "winston": "^3.10.0"
   },
   "devDependencies": {
-    "@types/node": "^20.4.2",
+    "@types/node": "^20.4.4",
     "chai": "^4.3.7",
-    "mocha": "^10.2.0",
+    "mocha": "<8.0.0",
     "sinon": "^15.2.0",
-    "typescript": "^5.1.6"
+    "typescript": "<5.1.0"
   },
   "preferGlobal": true,
   "repository": {

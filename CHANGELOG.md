@@ -1,11 +1,15 @@
 # ChangeLog
 
+## 2.1.2 (2023/08/19)
+* Fix regression: support for NodeJS>=8
+* Fix regression: old events in --watch
+
 ## 2.1.1 (2023/07/22)
 * Bug fix: ESM path on Windows
 * Downgrade commander-js
 
 ## 2.1.0 (2023/07/20)
-* Support API gateway (replaces old --watch)
+* Support API gateway in --watch
 * Support ECMAScript (thanks tdanecker #230)
 * Support Lambda streaming (thanks Skn0tt #229)
 * Update dependencies

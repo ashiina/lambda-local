@@ -19,7 +19,7 @@ require("./lib/streaming.js");
 /*
  * Lambda local version
  */
-export const version = "2.1.1";
+export const version = "2.1.2";
 
 var logger = utils.getWinstonConsole();
 

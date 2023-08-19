@@ -179,6 +179,19 @@ curl --request POST \
 {"message":"This is a response"}
 ```
 
+You can also use the following format for your event, in order to avoid using the Amazon API Gateway format:
+```
+{
+    "event": {
+        "key1": "value1",
+        "key2": "value2",
+        "key3": "value3"
+    }
+}
+```
+
+In this case, the event will be passed directly to the handler.
+
 ## About: Definitions
 
 ### Event data

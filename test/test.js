@@ -504,6 +504,7 @@ describe("- Testing lambdalocal.js", function () {
 });
 describe("- Testing cli.js", function () {
     var spawnSync = require('child_process').spawnSync;
+    var spawnAsync = require('child_process').spawn;
     describe("* Basic Run", function () {
         it("should end normally", function () {
             var command = get_shell("node ../build/cli.js -l ./functs/test-func.js -e ./events/test-event.js");
@@ -610,6 +611,70 @@ describe("- Testing cli.js", function () {
             assert.equal(!("TEST_HUBID" in process.env), true);
         });
     });
+
+    if (get_node_major_version() >= 18) {
+        // we use fetch() (nodejs>=18) to not bother.
+        const doRequestWhenReady = function(r, event, check, cb) {
+            var result;
+            r.stdout.on('data', (data) => {
+                data = data.toString();
+                if (data.includes("listening on")) {
+                    // started
+                    fetch("http://localhost:8008", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify(event),
+                    }).then((res) => {
+                        res.json().then((datres) => {
+                            result = datres;
+                            r.kill('SIGINT');
+                        });
+                    });
+                }
+            });
+            r.on('error', (err) => {
+                cb(err);
+            });
+            r.on('close', () => {
+                check(result);
+                cb();
+            });
+            // add timeout
+            setTimeout(() => {
+                r.kill();
+            }, 1000);
+        }
+        describe("* --watch run", function () {
+            it("test watch with old event format", function (cb) {
+                var command = get_shell("node ../build/cli.js -l ./functs/test-func-echo.js --watch");
+                var r = spawnAsync(command[0], command[1]);
+                doRequestWhenReady(r,
+                    {
+                        "event": {"hey": "data"}
+                    },
+                    (result) => {
+                        assert.deepEqual(result, {"hey": "data"});
+                    },
+                    cb
+                );
+            });
+            it("test watch with gateway event format", function (cb) {
+                var command = get_shell("node ../build/cli.js -l ./functs/test-func-echo.js --watch");
+                var r = spawnAsync(command[0], command[1]);
+                doRequestWhenReady(r,
+                    {
+                        "hey": "data",
+                    },
+                    (result) => {
+                        assert.deepEqual(result["body"], {"hey": "data"});
+                    },
+                    cb
+                );
+            });
+        });
+    }
 
     describe("* Crashing run", function () {
         it("should fail", function () {

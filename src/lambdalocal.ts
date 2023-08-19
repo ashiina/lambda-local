@@ -94,44 +94,49 @@ function _getRequestPayload(req, callback) {
         body += chunk.toString();
     });
     req.on('end', () => {
-        let payload;
+        let payload, event;
         try {
             payload = JSON.parse(body || '{}');
         } catch(err) {
             callback(err);
             return;
         }
-        // Format: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.proxy-format
-        const url = new URL(req.url, `http://${req.headers.host}`);
-        const event = {
-            version: "2.0",
-            routeKey: "$default",
-            rawPath: url.pathname,
-            rawQueryString: url.search,
-            cookies: utils.parseCookies(req),
-            headers: req.headers,
-            queryStringParameters: Object.fromEntries(url.searchParams),
-            requestContext: {
-                accountId: "123456789012",
-                apiId: "api-id",
-                authentication: {},
-                authorizer: {},
-                http: {
-                    method: req.method,
-                    path: url.pathname,
-                    protocol: "HTTP/" + req.httpVersion,
-                    sourceIp: req.socket.localAddress,
-                    userAgent: req.headers['user-agent'],
-                },
-                requestId: "id",
+        if (payload.event) {
+            // compatibility: if "event" was provided.
+            event = payload.event;
+        } else {
+            // Format: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.proxy-format
+            const url = new URL(req.url, `http://${req.headers.host}`);
+            event = {
+                version: "2.0",
                 routeKey: "$default",
-                stage: "$default",
-                time: new Date().toISOString(),
-                timeEpoch: new Date().getTime(),
-            },
-            body: payload,
-            isBase64Encoded: req.headers['content-type'] !== 'application/json',
-        };
+                rawPath: url.pathname,
+                rawQueryString: url.search,
+                cookies: utils.parseCookies(req),
+                headers: req.headers,
+                queryStringParameters: Object.fromEntries(url.searchParams),
+                requestContext: {
+                    accountId: "123456789012",
+                    apiId: "api-id",
+                    authentication: {},
+                    authorizer: {},
+                    http: {
+                        method: req.method,
+                        path: url.pathname,
+                        protocol: "HTTP/" + req.httpVersion,
+                        sourceIp: req.socket.localAddress,
+                        userAgent: req.headers['user-agent'],
+                    },
+                    requestId: "id",
+                    routeKey: "$default",
+                    stage: "$default",
+                    time: new Date().toISOString(),
+                    timeEpoch: new Date().getTime(),
+                },
+                body: payload,
+                isBase64Encoded: req.headers['content-type'] !== 'application/json',
+            };
+        }
         callback(null, event);
     });
 }

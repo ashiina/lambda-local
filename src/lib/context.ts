@@ -196,14 +196,14 @@ Context.prototype.done = function(err, message) {
             this.logger.log('error', 'End - Error:');
         }
         if (this.verboseLevel > 0){
-            this.logger.log('error', err);
+            this.logger.log('error', utils.processJSON(err));
         }
     } else {
         if (this.verboseLevel > 1){
             this.logger.log('info', 'End - Result:');
         }
         if (this.verboseLevel > 0){
-            this.logger.log('info', message);
+            this.logger.log('info', utils.processJSON(message));
         }
     }
     this.finalCallback(); //Destroy env...

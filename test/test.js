@@ -698,7 +698,7 @@ describe("- Testing cli.js", function () {
             var r = spawnSync(command[0], command[1]);
             process_outputs(r);
             assert.equal(r.status, 0);
-            assert.ok((r.output.indexOf("[Circular]") !== -1), true)
+            assert.ok((r.output.indexOf("Circular") !== -1), true)
         });
     });
     describe("* Verbose test", function () {

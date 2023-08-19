@@ -31,30 +31,13 @@ export function generateRandomHex(length) {
 export function getWinstonConsole() {
     var winston = require("winston");
     const {combine, colorize, simple} = winston.format;
-    const _simple = simple();
-    const myFormat = winston.format(info => {
-        const stringifiedRest = processJSON(Object.assign({}, info, {
-            level: undefined,
-            message: undefined,
-            splat: undefined
-        }));
-        var new_info = {level: info.level, message: info.message};
-        if (new_info.message == undefined){
-            new_info.message = "";
-        }
-        if (stringifiedRest !== '{}') {
-            new_info.message += stringifiedRest;
-        }
-        return _simple.transform(new_info);
-    });
-
     const logger = winston.createLogger({
         level: "info",
         transports: [
             new winston.transports.Console({
                 format: combine(
                     colorize(),
-                    myFormat()
+                    simple(),
                 )
             })
         ]

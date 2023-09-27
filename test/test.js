@@ -301,6 +301,26 @@ describe("- Testing lambdalocal.js", function () {
             });
         });
     });
+    describe('* Context overwrite', function () {
+        it("Should overwrite context", function(cb){
+            var lambdalocal = require(lambdalocal_path);
+            lambdalocal.execute({
+                event: require(path.join(__dirname, "./events/test-event.js")),
+                lambdaPath: path.join(__dirname, "./functs/test-func.js"),
+                lambdaHandler: functionName,
+                contextOverwrite: function (ctx){
+                    ctx.awsRequestId = "test id";
+                    ctx.functionName = "test function";
+                },
+                callback: function (err, done) {
+                    assert.equal(done.result, "testvar");
+                    assert.equal(done.context.awsRequestId, "test id");
+                    assert.equal(done.context.functionName, "test function");
+                    cb();
+                }
+            });
+        });
+    });
     describe('* Nested Run', function () {
         it("Should handle nested calls properly (context singleton)", function (cb) {
             var lambdalocal = require(lambdalocal_path);

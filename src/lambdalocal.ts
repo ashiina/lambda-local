@@ -187,6 +187,7 @@ function _executeSync(opts) {
         timeoutMs = opts.timeoutMs || 3000,
         verboseLevel = opts.verboseLevel,
         callback = opts.callback,
+        contextOverwrite = opts.contextOverwrite,
         clientContext = null;
 
     if (opts.clientContext) {
@@ -301,6 +302,8 @@ function _executeSync(opts) {
     if(callback) context.callback = callback;
 
     var ctx = context.generate_context();
+
+    if(contextOverwrite) opts.contextOverwrite(ctx);
 
     const executeLambdaFunc = lambdaFunc => {
         try {

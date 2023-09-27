@@ -71,6 +71,7 @@ Executes a lambda given the `options` object, which is a dictionary where the ke
 | `verboseLevel`|optional, default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text and level 0 dismiss also the result.|
 | `callback`|optional, lambda third parameter [callback][1]. When left out a Promise is returned|
 | `clientContext`|optional, used to populated clientContext property of lambda second parameter (context)
+| `contextOverwrite`| optional, a function that overwrites the context object. It can get and overwrite the values of the context (such as awsRequestId). |
 
 #### `lambdaLocal.setLogger(logger)`
 #### `lambdaLocal.getLogger()`

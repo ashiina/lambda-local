@@ -590,14 +590,6 @@ describe("- Testing cli.js", function () {
             assert.equal(r.status, 1);
             console.log(r.output);
         });
-
-        it("should fail: esm with unsupported watch mode", function () {
-            var command = get_shell("node ../build/cli.js -l ./functs/test-func-esm.mjs --esm --watch");
-            var r = spawnSync(command[0], command[1]);
-            process_outputs(r);
-            assert.equal(r.status, 1);
-            console.log(r.output);
-        })
     });
 
     describe("* Environment test run", function () {
@@ -662,6 +654,19 @@ describe("- Testing cli.js", function () {
             });
             it("test watch with gateway event format", function (cb) {
                 var command = get_shell("node ../build/cli.js -l ./functs/test-func-echo.js --watch");
+                var r = spawnAsync(command[0], command[1]);
+                doRequestWhenReady(r,
+                    {
+                        "hey": "data",
+                    },
+                    (result) => {
+                        assert.deepEqual(result["body"], {"hey": "data"});
+                    },
+                    cb
+                );
+            });
+            it("test watch with esm", function (cb) {
+                var command = get_shell("node ../build/cli.js -l ./functs/test-func-esm-echo.mjs --watch --esm");
                 var r = spawnAsync(command[0], command[1]);
                 doRequestWhenReady(r,
                     {

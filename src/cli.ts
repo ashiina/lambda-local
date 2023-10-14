@@ -138,10 +138,6 @@ import utils = require('./lib/utils');
             console.log("Loading ESCMAScript modules not available on NodeJS < 12.0.0.");
             process.exit(1);
         }
-        if (program.watch) {
-            console.log("Watch mode not supported for ECMAScript lambda modules.");
-            process.exit(1);
-        }
     }
     var event = function(){
         if(program.watch) return null;

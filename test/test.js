@@ -708,7 +708,7 @@ describe("- Testing cli.js", function () {
                         "hey": "data",
                     },
                     (result) => {
-                        assert.deepEqual(result["body"], {"hey": "data"});
+                        assert.deepEqual(result["body"], JSON.stringify({"hey": "data"}));
                     },
                     cb
                 );

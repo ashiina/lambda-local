@@ -133,7 +133,7 @@ function _getRequestPayload(req, callback) {
                     time: new Date().toISOString(),
                     timeEpoch: new Date().getTime(),
                 },
-                body: payload,
+                body,
                 isBase64Encoded: req.headers['content-type'] !== 'application/json',
             };
         }

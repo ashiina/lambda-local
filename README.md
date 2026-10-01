@@ -10,6 +10,11 @@ It does not aim to be perfectly feature proof as projects like [serverless-offli
 
 The main target are unit tests and running lambda functions locally.
 
+# Maintainer wanted
+
+> [!WARNING]
+> Hi. I have been maintaining this project for the last 10 years, but lately no longer had the time to do so (the use case I had for this project also ended more than 8 years ago..). If you are interested in taking over, please reach out via e-mail :) -- gpotter2
+
 ## Install
 
 ```bash
